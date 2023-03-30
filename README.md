@@ -47,7 +47,7 @@ Klassen `DanmakuController` skal kunne endre på modellen basert på input fra b
 
 ## Steg for steg
 
-1. a
+1. lag Grid og Sprite
 2. Tegne banen
 3. Tegne Spiller
 4. Flytte spiller
