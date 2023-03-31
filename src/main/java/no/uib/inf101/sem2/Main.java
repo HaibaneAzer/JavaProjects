@@ -1,5 +1,6 @@
 package no.uib.inf101.sem2;
 
+import no.uib.inf101.sem2.controller.DanmakuController;
 import no.uib.inf101.sem2.model.DanmakuField;
 import no.uib.inf101.sem2.model.DanmakuModel;
 import no.uib.inf101.sem2.model.danmakus.DanmakuFactory;
@@ -10,10 +11,10 @@ import javax.swing.JFrame;
 
 public class Main {
 
-  static final int x = 10;
-  static final int y = 10;
+  static final int x = 25;
+  static final int y = 25;
   static final int Width = 500;
-  static final int Height = 600;
+  static final int Height = 800;
 
   public static void main(String[] args) {
 
@@ -22,7 +23,10 @@ public class Main {
     DanmakuModel Model = new DanmakuModel(Field, playableC);
     DanmakuView view = new DanmakuView(Model);
 
+    new DanmakuController(Model, view);
+
     JFrame frame = new JFrame();
+    frame.setResizable(false);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.setTitle("INF101");
     frame.setContentPane(view);
