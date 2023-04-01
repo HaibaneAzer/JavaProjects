@@ -59,8 +59,7 @@ public class DanmakuController {
    */
   protected void keyboardInput() {
     // move player down
-    if (this.keyBoard.keyDown(KeyEvent.VK_DOWN)) {
-      
+    if (this.keyBoard.keyDown(KeyEvent.VK_DOWN)) { 
       this.controllModel.movePlayer(0, this.playerSpeed);
     }
     // move player up
