@@ -1,5 +1,6 @@
 package no.uib.inf101.sem2.model.danmakus;
 
+import java.awt.Point;
 import java.lang.Math;
 
 import no.uib.inf101.sem2.grid.FieldDimension;
@@ -10,10 +11,8 @@ public final class Player {
   private String playerType; // used to determine player weapon (homing shot or concentrated)
   private int Radius;
   private Vector Position;
-  private Vector oldPosition; 
-  private Vector acceleration;
   private int Lives; // default 3
-  private int Power; // dmg multiplier from 0 to 5
+  private double Power; // dmg multiplier from 0 to 5
   
   private Player(String playerType, int Radius, Vector Position) {
     this.playerType = playerType;
@@ -29,8 +28,8 @@ public final class Player {
   */
   static Player newPlayer(String newPlayerType) {
     Player playableC = switch(newPlayerType) {
-      case "P1c" -> new Player(newPlayerType, 8, new Vector(-7, -7)); // want center at (0, 0)
-      case "P2c" -> new Player(newPlayerType, 10, new Vector(-9, -9));
+      case "P1c" -> new Player(newPlayerType, 8, new Vector(-8, -8)); // want center at (0, 0)
+      case "P2c" -> new Player(newPlayerType, 10, new Vector(-10, -10));
       default -> throw new IllegalArgumentException("Type '" + newPlayerType + "' does not match one of two playable characters");
     };
     return playableC;
@@ -59,15 +58,29 @@ public final class Player {
   }
   
   /**
-  * moves player
+  * NB: make into a common method for enemies, bullets and player
   */
   public Player shiftedBy(int dx, int dy) {
-    // Verlet integration formula:
-    // newPos = 2*currentPos + oldPos + accel*dt*dt
-    // where Pos and accel are vectors
-    Vector PosN2 = new Vector(this.Position.x() + dx, this.Position.y() + dy); 
-    Player shiftedPlayer = new Player(this.playerType, this.Radius, PosN2);
+    
+    Vector shiftedPos = this.Position.addVectors(new Vector(dx, dy));
+    Player shiftedPlayer = new Player(this.playerType, this.Radius, shiftedPos);
     return shiftedPlayer;
+  }
+
+  /**
+   * displaceBy moves the player in a direction vector where
+   * the scalar either represents distance (when used with {@link #shiftedToStartPoint}) 
+   * or speed (when called by movePlayer method from model).  
+   */
+  public Player displaceBy(Vector direction, double scalar) {
+    // math: position += direction * speed
+    // note: changing position over time can be done by
+    // multiplying with a scalar T, where T is time elapsed.
+    direction = direction.normaliseVector();
+    Vector newPosition = direction.scalarTimesVector(scalar);
+    Vector displacedPosition = this.Position.addVectors(newPosition);
+    Player displacedPlayer = new Player(this.playerType, this.Radius, displacedPosition);
+    return displacedPlayer;
   }
   
   /**
@@ -75,9 +88,14 @@ public final class Player {
   * 
   */
   public Player shiftedToStartPoint(FieldDimension dimension) {
-    int startX = (int) Math.round(dimension.width()/2) + 2*this.Radius;
-    int startY = (int) Math.round(0.8*dimension.height());
-    return shiftedBy(startX, startY);
+    int startX = (int) (Math.round(dimension.width()/2) + dimension.getFieldX());
+    int startY = (int) (Math.round(0.8*dimension.height()) + dimension.getFieldY());
+
+    Vector direction = new Vector(startX, startY);
+    direction = direction.normaliseVector();
+    double distance = Math.sqrt(startX*startX + startY*startY);
+
+    return displaceBy(direction, distance);
   }
   
   @Override

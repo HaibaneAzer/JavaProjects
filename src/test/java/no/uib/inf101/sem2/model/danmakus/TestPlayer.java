@@ -5,15 +5,22 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.junit.jupiter.api.Test;
 
+import no.uib.inf101.sem2.grid.Vector;
+
 public class TestPlayer {
     
 @Test
 public void testHashCodeAndEquals() {
+
+  Vector direction = new Vector(1, 0);
+  double distance = 1;
+
   Player t1 = Player.newPlayer("P1c");
   Player t2 = Player.newPlayer("P1c");
-  Player t3 = Player.newPlayer("P1c").shiftedBy(1, 0);
+  Player t3 = Player.newPlayer("P1c").displaceBy(direction, distance);
   Player s1 = Player.newPlayer("P2c");
-  Player s2 = Player.newPlayer("P2c").shiftedBy(0, 0);
+  // displacing with the zero-vector should not move player
+  Player s2 = Player.newPlayer("P2c").displaceBy(direction, 0); 
 
   assertEquals(t1, t2);
   assertEquals(s1, s2);

@@ -1,9 +1,9 @@
 package no.uib.inf101.sem2.controller;
 
+import no.uib.inf101.sem2.grid.Vector;
 import no.uib.inf101.sem2.view.DanmakuView;
 
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 public class DanmakuController {
     
@@ -12,6 +12,16 @@ public class DanmakuController {
   private KeyInputPoller keyBoard;
   private int playerSpeed;
   private int pollTimer;
+  private static final Vector playerDirections[] = {
+    new Vector(0, -1),
+    // up
+    new Vector(0, 1),
+    // down
+    new Vector(-1, 0),
+    // left
+    new Vector(1, 0)
+    // right
+  };
 
   /**
    * 
@@ -34,7 +44,7 @@ public class DanmakuController {
   /**
    * runPoller is the main method that processes all input from both the player and 
    * the ingame envoirment. 
-   * 
+   * NB: try using an ActionEvent method and Timer for ingame inputs.
    */
   public void runPoller() {
 
@@ -59,20 +69,20 @@ public class DanmakuController {
    */
   protected void keyboardInput() {
     // move player down
-    if (this.keyBoard.keyDown(KeyEvent.VK_DOWN)) { 
-      this.controllModel.movePlayer(0, this.playerSpeed);
+    if (this.keyBoard.keyDown(KeyEvent.VK_UP)) { 
+      this.controllModel.movePlayer(playerDirections[0], this.playerSpeed);
     }
     // move player up
-    if (this.keyBoard.keyDown(KeyEvent.VK_UP)) {
-      this.controllModel.movePlayer(0, -this.playerSpeed);
+    if (this.keyBoard.keyDown(KeyEvent.VK_DOWN)) {
+      this.controllModel.movePlayer(playerDirections[1], this.playerSpeed);
     }
     // move player left
     if (this.keyBoard.keyDown(KeyEvent.VK_LEFT)) {
-      this.controllModel.movePlayer(-this.playerSpeed, 0);
+      this.controllModel.movePlayer(playerDirections[2], this.playerSpeed);
     }
     // move player right
     if (this.keyBoard.keyDown(KeyEvent.VK_RIGHT)) {
-      this.controllModel.movePlayer(this.playerSpeed, 0);
+      this.controllModel.movePlayer(playerDirections[3], this.playerSpeed);
     }
     // change player speed
     if (this.keyBoard.keyDown(KeyEvent.VK_SHIFT)) {
