@@ -5,13 +5,13 @@ import no.uib.inf101.sem2.view.DanmakuView;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import javax.swing.Timer;
-
-public class DanmakuController implements KeyListener{
+public class DanmakuController {
     
   private final ControllableDanmakuModel controllModel;
   private final DanmakuView danView;
-  private Timer danTimer;
+  private KeyInputPoller keyBoard;
+  private int playerSpeed;
+  private int pollTimer;
 
   /**
    * 
@@ -19,47 +19,72 @@ public class DanmakuController implements KeyListener{
   public DanmakuController(ControllableDanmakuModel controllModel, DanmakuView danView) {
     this.controllModel = controllModel;
     this.danView = danView;
+    this.playerSpeed = 3;
+    this.pollTimer = 44000;
 
     // key input
+    this.keyBoard = new KeyInputPoller();
     this.danView.setFocusable(true);
-    this.danView.addKeyListener(this);
+    this.danView.addKeyListener(this.keyBoard);
 
   }
+  // idea: to make smoother key transitions, make a keyboard polling class
+  // to keep track of all the keys being pressed/typed/released at the same time.
+  // 
+  /**
+   * runPoller is the main method that processes all input from both the player and 
+   * the ingame envoirment. 
+   * 
+   */
+  public void runPoller() {
 
-  @Override
-  public void keyPressed(KeyEvent e) {
-    int speed = 9;
-    if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-      // Left arrow was pressed
-      this.controllModel.movePlayer(-speed, 0);
+    // exit with esc (change later with gamestate)
+    while (!this.keyBoard.keyDownOnce(KeyEvent.VK_ESCAPE)) {
+      this.keyBoard.poll();
+      // only process inputs every 44000 tick to prevent player teleportation.
+      if (this.pollTimer == 44000) {
+        // process input for player
+        keyboardInput();
+        this.pollTimer = 0;
+      }
+      this.pollTimer += 1;
     }
-    if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-      // Right arrow was pressed
-      this.controllModel.movePlayer(speed, 0);
+    
+    
+  }
+
+  /**
+   * 
+   * 
+   */
+  protected void keyboardInput() {
+    // move player down
+    if (this.keyBoard.keyDown(KeyEvent.VK_DOWN)) {
+      
+      this.controllModel.movePlayer(0, this.playerSpeed);
     }
-    if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-      // Down arrow was pressed
-      this.controllModel.movePlayer(0, speed);
+    // move player up
+    if (this.keyBoard.keyDown(KeyEvent.VK_UP)) {
+      this.controllModel.movePlayer(0, -this.playerSpeed);
     }
-    if (e.getKeyCode() == KeyEvent.VK_UP) {
-      // Up arrow was pressed
-      this.controllModel.movePlayer(0, -speed);
+    // move player left
+    if (this.keyBoard.keyDown(KeyEvent.VK_LEFT)) {
+      this.controllModel.movePlayer(-this.playerSpeed, 0);
     }
-    if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-      // Spacebar was pressed
+    // move player right
+    if (this.keyBoard.keyDown(KeyEvent.VK_RIGHT)) {
+      this.controllModel.movePlayer(this.playerSpeed, 0);
+    }
+    // change player speed
+    if (this.keyBoard.keyDown(KeyEvent.VK_SHIFT)) {
+      this.playerSpeed = 1;
+    }
+    else {
+      this.playerSpeed = 3;
     }
     this.danView.repaint();
-  
+
   }
 
-  @Override
-  public void keyReleased(KeyEvent arg0) {
-    
-  }
-
-  @Override
-  public void keyTyped(KeyEvent arg0) {
-    
-  }
 
 }

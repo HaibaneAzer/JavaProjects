@@ -23,7 +23,7 @@ public class Main {
     DanmakuModel Model = new DanmakuModel(Field, playableC);
     DanmakuView view = new DanmakuView(Model);
 
-    new DanmakuController(Model, view);
+    DanmakuController controller = new DanmakuController(Model, view);
 
     JFrame frame = new JFrame();
     frame.setResizable(false);
@@ -32,5 +32,13 @@ public class Main {
     frame.setContentPane(view);
     frame.pack();
     frame.setVisible(true);
+
+    // check for player inputs
+    
+    controller.runPoller();
+
+    // when controller is stopped, close window
+    frame.dispose();
+    
   }
 }
