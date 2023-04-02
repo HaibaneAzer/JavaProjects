@@ -18,4 +18,10 @@ public interface ViewableDanmakuModel {
   * @return playable character
   */
   Player getPlayer();
+
+  /**
+   * getter for FPS value calculated in controller.
+   * 
+   */
+  double getFPSValue();
 }

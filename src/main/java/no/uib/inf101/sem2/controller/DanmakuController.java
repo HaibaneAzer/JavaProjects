@@ -3,15 +3,29 @@ package no.uib.inf101.sem2.controller;
 import no.uib.inf101.sem2.grid.Vector;
 import no.uib.inf101.sem2.view.DanmakuView;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
-public class DanmakuController {
+import javax.swing.Timer;
+
+public class DanmakuController implements ActionListener{
     
   private final ControllableDanmakuModel controllModel;
   private final DanmakuView danView;
   private KeyInputPoller keyBoard;
   private int playerSpeed;
-  private int pollTimer;
+  // gameTick and adaptable frameRate
+  private Timer Timer;
+  private final int updateTick = 1000 / 60; // 60 frames per second
+  private double oldTime;
+  private double newTime;
+  private int[] tickList;
+  private double tickSum;
+  private int tickIndex;
+  private final int maxDeltaSamples = 100;
+  private double tick;
+  // player movement direction
   private static final Vector playerDirections[] = {
     new Vector(0, -1),
     // up
@@ -23,42 +37,33 @@ public class DanmakuController {
     // right
   };
 
-  /**
-   * 
-   */
+  
   public DanmakuController(ControllableDanmakuModel controllModel, DanmakuView danView) {
     this.controllModel = controllModel;
     this.danView = danView;
-    this.playerSpeed = 3;
-    this.pollTimer = 44000;
-
+    this.playerSpeed = 6;
+    // game tick
+    this.Timer = new Timer(updateTick, this);
+    this.Timer.start();
+    // fps counter
+    this.tickIndex = 0;
+    this.tickSum = 0;
+    this.tickList = new int[maxDeltaSamples];
+    this.tick = 0.0;
+    this.oldTime = System.currentTimeMillis();
     // key input
     this.keyBoard = new KeyInputPoller();
     this.danView.setFocusable(true);
     this.danView.addKeyListener(this.keyBoard);
 
   }
-  // idea: to make smoother key transitions, make a keyboard polling class
-  // to keep track of all the keys being pressed/typed/released at the same time.
-  // 
+  
   /**
-   * runPoller is the main method that processes all input from both the player and 
+   * updateModel is the main method that processes all input from both the player and 
    * the ingame envoirment. 
    * NB: try using an ActionEvent method and Timer for ingame inputs.
    */
-  public void runPoller() {
-
-    // exit with esc (change later with gamestate)
-    while (!this.keyBoard.keyDownOnce(KeyEvent.VK_ESCAPE)) {
-      this.keyBoard.poll();
-      // only process inputs every 44000 tick to prevent player teleportation.
-      if (this.pollTimer == 44000) {
-        // process input for player
-        keyboardInput();
-        this.pollTimer = 0;
-      }
-      this.pollTimer += 1;
-    }
+  public void updateModel(ActionEvent arg0) {
     
     
   }
@@ -86,13 +91,48 @@ public class DanmakuController {
     }
     // change player speed
     if (this.keyBoard.keyDown(KeyEvent.VK_SHIFT)) {
-      this.playerSpeed = 1;
-    }
-    else {
       this.playerSpeed = 3;
     }
+    else {
+      this.playerSpeed = 6;
+    }
+
+  }
+
+  @Override
+  public void actionPerformed(ActionEvent arg0) {
+
+    // keyboard input
+    this.keyBoard.poll();
+    // process input for player
+    keyboardInput();
+
+    // run other processes
+    updateModel(arg0);
+
+    // update FPS
+    newTime = System.currentTimeMillis();
+    int tickdiff = (int) Math.round(newTime - oldTime);
+    calcAverageFPS(tickdiff);
+    oldTime = newTime;
+
     this.danView.repaint();
 
+  }
+
+  private void calcAverageFPS(int newTick) {
+    
+    tickSum -= tickList[tickIndex];
+    tickSum += newTick;
+    tickList[tickIndex] = newTick;
+    tickIndex = (tickIndex + 1) % maxDeltaSamples;
+    double avgTick = tickSum/maxDeltaSamples;
+     
+    if (this.tick >= this.updateTick*60) {
+      controllModel.setFPSValue(avgTick);
+      this.tick = 0.0;
+    }
+    this.tick += this.updateTick;
   }
 
 

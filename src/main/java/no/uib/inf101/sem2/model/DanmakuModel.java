@@ -12,6 +12,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   private DanmakuField Field;
   private final DanmakuFactory playableC;
   private Player currentPlayer;
+  private double FPSCounter = 60.0;
   
   public DanmakuModel(DanmakuField Field, DanmakuFactory playableC) {
     this.Field = Field;
@@ -28,6 +29,16 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   @Override
   public Player getPlayer() {
     return this.currentPlayer;
+  }
+
+  @Override
+  public double getFPSValue() {
+    return this.FPSCounter;
+  }
+
+  @Override
+  public void setFPSValue(double newFPS) {
+    this.FPSCounter = newFPS;
   }
   
   @Override

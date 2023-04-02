@@ -10,8 +10,10 @@ import java.awt.event.KeyListener;
 
 public class KeyInputPoller implements KeyListener{
   
-  private static final int KEY_COUNT = 256; // increase if more keys needed
-        
+  private static final int KEY_COUNT = 93; // increase if more keys needed
+  // KeyCode List:
+  // https://stackoverflow.com/questions/15313469/java-keyboard-keycodes-list
+  
   private enum KeyState {
     RELEASED, // Not down
     PRESSED,  // Down, but not the first time

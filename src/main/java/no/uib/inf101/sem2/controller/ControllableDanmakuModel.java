@@ -9,4 +9,11 @@ public interface ControllableDanmakuModel {
    * 
    */
   boolean movePlayer(Vector direction, double speed);
+
+  /**
+   * set FPS value.
+   * updates every 2 seconds
+   * 
+   */
+  void setFPSValue(double newFPS);
 }
