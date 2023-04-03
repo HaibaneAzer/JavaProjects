@@ -24,7 +24,7 @@ public class TestDanmakuModel {
   DanmakuFactory factory = new DanmakuSpawner();
   DanmakuModel model = new DanmakuModel(field, factory);
 
-  Vector direction = new Vector(0, -1); // move up
+  Vector direction = new Vector(0, -1, 1); // move up
   double distance = 5;
   
   // move up by 5 pixels should return true when player is at spawn.
@@ -45,11 +45,12 @@ public class TestDanmakuModel {
   int radius = model.getPlayer().getRadius();
   Vector checkSpawn = new Vector(
     Math.round(width / 2) - radius, 
-    Math.round(0.8*height) - radius
+    Math.round(0.8*height) - radius,
+    1
   );  
   assertEquals(checkSpawn, model.getPlayer().getPosition());
 
-  Vector direction = new Vector(0, 1);
+  Vector direction = new Vector(0, 1, 1);
   double distance = 1;
   // move player to field lower bound
   for (int i = 0; i < 50; i++) {

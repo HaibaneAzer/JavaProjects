@@ -17,23 +17,23 @@ public class DanmakuController implements ActionListener{
   private int playerSpeed;
   // gameTick and adaptable frameRate
   private Timer Timer;
-  private final int updateTick = 1000 / 60; // 60 frames per second
+  private final int updateTick = 1000 / 120; // 60 frames per second
   private double oldTime;
   private double newTime;
-  private int[] tickList;
+  private double[] tickList;
   private double tickSum;
   private int tickIndex;
   private final int maxDeltaSamples = 100;
   private double tick;
   // player movement direction
   private static final Vector playerDirections[] = {
-    new Vector(0, -1),
+    new Vector(0, -1, 1),
     // up
-    new Vector(0, 1),
+    new Vector(0, 1, 1),
     // down
-    new Vector(-1, 0),
+    new Vector(-1, 0, 1),
     // left
-    new Vector(1, 0)
+    new Vector(1, 0, 1)
     // right
   };
 
@@ -48,9 +48,9 @@ public class DanmakuController implements ActionListener{
     // fps counter
     this.tickIndex = 0;
     this.tickSum = 0;
-    this.tickList = new int[maxDeltaSamples];
+    this.tickList = new double[maxDeltaSamples];
     this.tick = 0.0;
-    this.oldTime = System.currentTimeMillis();
+    this.oldTime = System.nanoTime();
     // key input
     this.keyBoard = new KeyInputPoller();
     this.danView.setFocusable(true);
@@ -110,17 +110,17 @@ public class DanmakuController implements ActionListener{
     // run other processes
     updateModel(arg0);
 
-    // update FPS
-    newTime = System.currentTimeMillis();
-    int tickdiff = (int) Math.round(newTime - oldTime);
-    calcAverageFPS(tickdiff);
-    oldTime = newTime;
-
     this.danView.repaint();
+
+    // update FPS
+    newTime = System.nanoTime();
+    double fpsTick = Math.round(1000000000 / (newTime - oldTime));
+    calcAverageFPS(fpsTick);
+    oldTime = newTime;
 
   }
 
-  private void calcAverageFPS(int newTick) {
+  private void calcAverageFPS(double newTick) {
     
     tickSum -= tickList[tickIndex];
     tickSum += newTick;
@@ -134,6 +134,5 @@ public class DanmakuController implements ActionListener{
     }
     this.tick += this.updateTick;
   }
-
 
 }

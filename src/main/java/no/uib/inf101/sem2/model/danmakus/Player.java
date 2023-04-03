@@ -28,8 +28,8 @@ public final class Player {
   */
   static Player newPlayer(String newPlayerType) {
     Player playableC = switch(newPlayerType) {
-      case "P1c" -> new Player(newPlayerType, 8, new Vector(-8, -8)); // want center at (0, 0)
-      case "P2c" -> new Player(newPlayerType, 10, new Vector(-10, -10));
+      case "P1c" -> new Player(newPlayerType, 8, new Vector(-8, -8, 1)); // want center at (0, 0)
+      case "P2c" -> new Player(newPlayerType, 10, new Vector(-10, -10, 1));
       default -> throw new IllegalArgumentException("Type '" + newPlayerType + "' does not match one of two playable characters");
     };
     return playableC;
@@ -62,7 +62,7 @@ public final class Player {
   */
   public Player shiftedBy(int dx, int dy) {
     
-    Vector shiftedPos = this.Position.addVectors(new Vector(dx, dy));
+    Vector shiftedPos = this.Position.addVect(new Vector(dx, dy, 1));
     Player shiftedPlayer = new Player(this.playerType, this.Radius, shiftedPos);
     return shiftedPlayer;
   }
@@ -76,9 +76,9 @@ public final class Player {
     // math: position += direction * speed
     // note: changing position over time can be done by
     // multiplying with a scalar T, where T is time elapsed.
-    direction = direction.normaliseVector();
-    Vector newPosition = direction.scalarTimesVector(scalar);
-    Vector displacedPosition = this.Position.addVectors(newPosition);
+    direction = direction.normaliseVect();
+    Vector newPosition = direction.multiplyScalar(scalar);
+    Vector displacedPosition = this.Position.addVect(newPosition);
     Player displacedPlayer = new Player(this.playerType, this.Radius, displacedPosition);
     return displacedPlayer;
   }
@@ -91,8 +91,8 @@ public final class Player {
     int startX = (int) (Math.round(dimension.width()/2) + dimension.getFieldX());
     int startY = (int) (Math.round(0.8*dimension.height()) + dimension.getFieldY());
 
-    Vector direction = new Vector(startX, startY);
-    direction = direction.normaliseVector();
+    Vector direction = new Vector(startX, startY, 1);
+    direction = direction.normaliseVect();
     double distance = Math.sqrt(startX*startX + startY*startY);
 
     return displaceBy(direction, distance);

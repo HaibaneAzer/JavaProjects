@@ -12,7 +12,7 @@ public class TestPlayer {
 @Test
 public void testHashCodeAndEquals() {
 
-  Vector direction = new Vector(1, 0);
+  Vector direction = new Vector(1, 0, 1);
   double distance = 1;
 
   Player t1 = Player.newPlayer("P1c");
