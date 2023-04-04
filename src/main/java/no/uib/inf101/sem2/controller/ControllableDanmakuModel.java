@@ -5,10 +5,10 @@ import no.uib.inf101.sem2.grid.Vector;
 public interface ControllableDanmakuModel {
     
   /**
-   * movePlayer
+   * movePlayer moves the player by dx and dy, given by the velocity Vector
    * 
    */
-  boolean movePlayer(Vector direction, double speed);
+  boolean movePlayer(Vector velocity);
 
   /**
    * set FPS value.

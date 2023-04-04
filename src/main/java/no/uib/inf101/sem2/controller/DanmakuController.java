@@ -76,19 +76,20 @@ public class DanmakuController implements ActionListener{
   protected void keyboardInput() {
     // move player down
     if (this.keyBoard.keyDown(KeyEvent.VK_UP)) { 
-      this.controllModel.movePlayer(playerDirections[0], this.playerSpeed);
+      
+      this.controllModel.movePlayer(playerDirections[0].multiplyScalar(this.playerSpeed));
     }
     // move player up
     if (this.keyBoard.keyDown(KeyEvent.VK_DOWN)) {
-      this.controllModel.movePlayer(playerDirections[1], this.playerSpeed);
+      this.controllModel.movePlayer(playerDirections[1].multiplyScalar(this.playerSpeed));
     }
     // move player left
     if (this.keyBoard.keyDown(KeyEvent.VK_LEFT)) {
-      this.controllModel.movePlayer(playerDirections[2], this.playerSpeed);
+      this.controllModel.movePlayer(playerDirections[2].multiplyScalar(this.playerSpeed));
     }
     // move player right
     if (this.keyBoard.keyDown(KeyEvent.VK_RIGHT)) {
-      this.controllModel.movePlayer(playerDirections[3], this.playerSpeed);
+      this.controllModel.movePlayer(playerDirections[3].multiplyScalar(this.playerSpeed));
     }
     // change player speed
     if (this.keyBoard.keyDown(KeyEvent.VK_SHIFT)) {

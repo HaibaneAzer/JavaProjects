@@ -42,13 +42,12 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   }
   
   @Override
-  public boolean movePlayer(Vector direction, double speed) {
+  public boolean movePlayer(Vector velocity) {
 
-    direction = direction.normaliseVect();
-    if (!insideField(this.currentPlayer.displaceBy(direction, speed))) {
+    if (!insideField(this.currentPlayer.displaceBy(velocity))) {
       return false;
     }
-    this.currentPlayer = this.currentPlayer.displaceBy(direction, speed);
+    this.currentPlayer = this.currentPlayer.displaceBy(velocity);
     return true;
 
   }

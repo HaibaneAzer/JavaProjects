@@ -5,8 +5,8 @@ import no.uib.inf101.sem2.grid.Vector;
 public abstract class Sprite<E, T> {
   
   private T directionState; // determine bullet and enemy pointing direction
-  private final E type; // Player, Enemy or Bullet
-  private final String Variation; // player1, player2, enemy1, enemy2, ball, arrow, etc...
+  private E type; // Player, Enemy or Bullet
+  private String Variation; // player1, player2, enemy1, enemy2, ball, arrow, etc...
   private int Radius;
   private Vector Position;
   private Vector Direction;
@@ -15,7 +15,11 @@ public abstract class Sprite<E, T> {
   /**
    * Constructor for abstract class sprite, used by child classes:
    * Player, Enemies and Bullets.
-   * 
+   * @param type represents the sprite type (bullet, player, etc...). used for collision check.
+   * @param Variation represents the any sub-type of given type. example: Enemy has variations monster1 and monster2.
+   * @param directionState determines how a given sprite should move. 
+   * Example: "aim" makes target move in the same direction as it faces (Direction vector) and
+   * sequence makes the sprite move in the same direction as a different sprite-object that spawned before it.
    */
   public Sprite(E type, String Variation, T directionState, int Radius, Vector Position, Vector Direction, Vector Velocity) {
     this.type = type;
@@ -27,10 +31,16 @@ public abstract class Sprite<E, T> {
     this.Velocity = Velocity;
   }
 
+  /**
+   * getter for type
+   */
   public E Type() {
     return this.type;
   };
 
+  /**
+   * getter for state
+   */
   public T State() {
     return this.directionState;
   };
@@ -40,7 +50,7 @@ public abstract class Sprite<E, T> {
    */
   public int Radius() {
     return this.Radius;
-  }
+  };
 
   /**
    * getter for position vector
@@ -67,8 +77,12 @@ public abstract class Sprite<E, T> {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
+    result = prime * result + ((directionState == null) ? 0 : directionState.hashCode());
+    result = prime * result + ((type == null) ? 0 : type.hashCode());
+    result = prime * result + ((Variation == null) ? 0 : Variation.hashCode());
     result = prime * result + Radius;
     result = prime * result + ((Position == null) ? 0 : Position.hashCode());
+    result = prime * result + ((Direction == null) ? 0 : Direction.hashCode());
     result = prime * result + ((Velocity == null) ? 0 : Velocity.hashCode());
     return result;
   }
@@ -81,14 +95,33 @@ public abstract class Sprite<E, T> {
       return false;
     if (getClass() != obj.getClass())
       return false;
-
     Sprite<E, T> other = (Sprite<E, T>) obj;
+    if (directionState == null) {
+      if (other.directionState != null)
+        return false;
+    } else if (!directionState.equals(other.directionState))
+      return false;
+    if (type == null) {
+      if (other.type != null)
+        return false;
+    } else if (!type.equals(other.type))
+      return false;
+    if (Variation == null) {
+      if (other.Variation != null)
+        return false;
+    } else if (!Variation.equals(other.Variation))
+      return false;
     if (Radius != other.Radius)
       return false;
     if (Position == null) {
       if (other.Position != null)
         return false;
     } else if (!Position.equals(other.Position))
+      return false;
+    if (Direction == null) {
+      if (other.Direction != null)
+        return false;
+    } else if (!Direction.equals(other.Direction))
       return false;
     if (Velocity == null) {
       if (other.Velocity != null)
@@ -97,6 +130,9 @@ public abstract class Sprite<E, T> {
       return false;
     return true;
   }
+
+  // equals and hashcode
+  
 
   
 

@@ -6,6 +6,7 @@ package no.uib.inf101.sem2.grid;
  * @param x is x coordinate of object
  * @param y is y coordinate of object
  * @param constant exists to make the Vector homogenous. Must be fixed at value 1.
+ * (or 0 for the 2 first vectors of transformation matrix)
  */
 public record Vector(double x, double y, int constant) {
 
@@ -29,6 +30,13 @@ public record Vector(double x, double y, int constant) {
   }
 
   /**
+   * 
+   */
+  public double length() {
+    return Math.sqrt(x*x + y*y);
+  }
+
+  /**
    * normaliseVector is used to make a Vector unit length.
    * Math: Vect(x, y) * 1 / |Vect(x, y)|
    */
@@ -36,6 +44,7 @@ public record Vector(double x, double y, int constant) {
     double invSqrt = 1 / Math.sqrt(x*x + y*y);
     return multiplyScalar(invSqrt);
   }
+
 
   /**
    * transformVect multiplies a Vector with an Affine transformation matrix
