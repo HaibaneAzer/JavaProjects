@@ -44,7 +44,6 @@ public record Vector(double x, double y, int constant) {
    * M((a, b, 0), (c, d, 0), (u, v, 1)) x (x, y) = (a*x + c*y + u, b*x + d*y + v, 1).
    * @param matrix3x3 is the transformation matrix. 
    * Example matrix's: M((1, 0, 0),(0, 1, 0),(tx, ty, 1)) is for translation 
-   * and M()
    * 
    */
   public Vector transformVect(Vector[] matrix3x3) {
