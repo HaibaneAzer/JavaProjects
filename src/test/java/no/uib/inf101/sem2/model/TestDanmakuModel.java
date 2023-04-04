@@ -1,14 +1,14 @@
-package no.uib.inf101.sem2.model.danmakus;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+package no.uib.inf101.sem2.model;
+  
+  import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
 import no.uib.inf101.sem2.grid.Vector;
-import no.uib.inf101.sem2.model.DanmakuField;
-import no.uib.inf101.sem2.model.DanmakuModel;
+import no.uib.inf101.sem2.model.danmakus.DanmakuFactory;
+import no.uib.inf101.sem2.model.danmakus.DanmakuSpawner;
 
 public class TestDanmakuModel {
 
@@ -64,3 +64,4 @@ public class TestDanmakuModel {
   }
 
 }
+
