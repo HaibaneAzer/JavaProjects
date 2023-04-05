@@ -47,10 +47,13 @@ public record Vector(double x, double y, int constant) {
 
   /**
    * normaliseVector is used to make a Vector unit length.
-   * Math: Vect(x, y) * 1 / |Vect(x, y)|
+   * Math: Vect(x, y) * 1 / |Vect(x, y)|, if zero vector scale vector by zero;
    */
   public Vector normaliseVect() {
-    double invSqrt = 1 / Math.sqrt(x*x + y*y);
+    double invSqrt = 0; 
+    if (x != 0 || y != 0) { // prevent divison by zero
+      invSqrt = 1 / Math.sqrt(x*x + y*y); 
+    }
     return multiplyScalar(invSqrt);
   }
 

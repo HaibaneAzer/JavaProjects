@@ -8,7 +8,6 @@ import no.uib.inf101.sem2.grid.Vector;
 
 public final class Player extends Sprite<SpriteType, SpriteState>{
   
-  private String Variation;
   private Vector accel;
   private Matricies Matrix = new Matricies();
   private static final Vector standStill = new Vector(0, 0, 1);
@@ -16,7 +15,7 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
   private double Power; // dmg multiplier from 0 to 5
   
   /**
-   * Use this constructor when transforming Player.
+   * transforming constructor
    */
   private Player(String playerVar, int Radius, Vector Position, Vector Velocity) {
     // spriteType is unchangeable, SpriteState can change.
@@ -26,9 +25,8 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
     this.Lives = 3;  
     this.Power = 1.0;
   }
-
   /**
-   * Use this constructor spawning player
+   * spawning constructor
    */
   private Player(String playerVar, int Radius, Vector Position) {
     // spriteType is unchangeable, SpriteState can change.
@@ -38,7 +36,7 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
     this.Lives = 3;  
     this.Power = 1.0;
   }
-  
+
   /**
   * newPlayer is a method that contains a list of valid playable characters.
   * playable: Circular hitbox: "P1c" and "P2c", rectangular hitbox: "P1r" and "P2r".
@@ -82,13 +80,6 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
     return this.Velocity;
   }
 
-  /** 
-   * setter velocity
-   */
-  public void setVelocity(Vector newVel) {
-    this.Velocity = newVel;
-  }
-
   /**
    * update velocity using constant acceleration. Delta is acceleration factor.
    * dt >= 1 where value 1 means the acceleration is unit length. 
@@ -113,14 +104,9 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
    * or speed. 
    */
   public Player displaceBy(Vector Velocity) {
-
-    double scalar = Velocity.length();                                                                                          
-    Velocity = Velocity.normaliseVect();
-    Vector[] scale = Matrix.ScaleMatrix(scalar);
-    Vector displacement = Velocity.transformVect(scale); // either distance to spawn or velocity vector 
-    Vector[] translate = Matrix.TranslationMatrix(displacement); // get translation matrix
     // Math: Matrix((1, 0, 0), (0, 1, 0), delta) x Position = Position + delta, 
     // where Position and delta are Vectors
+    Vector[] translate = Matrix.TranslationMatrix(Velocity); // get translation matrix
     Vector displacedPosition = this.Position.transformVect(translate); // displace position
 
     Player displacedPlayer = new Player(this.Variation, this.Radius, displacedPosition, this.Velocity);

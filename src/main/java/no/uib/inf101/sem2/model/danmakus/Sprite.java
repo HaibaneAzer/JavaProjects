@@ -76,8 +76,8 @@ public abstract class Sprite<E, T> {
   /**
    * setter for velocity vector
    */
-  public void setVelocity(Vector newVector) {
-    this.Velocity = newVector;
+  public void setVelocity(Vector newVel) {
+    this.Velocity = newVel;
   }
   
   @Override

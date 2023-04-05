@@ -13,15 +13,15 @@ public class TestPlayer {
 public void testHashCodeAndEquals() {
 
   Vector direction = new Vector(1, 0, 1);
+  Vector zeroVector = new Vector(0, 0, 1);
   double distance = 1;
 
   Player t1 = Player.newPlayer("P1c");
   Player t2 = Player.newPlayer("P1c");
-  Player t3 = Player.newPlayer("P1c").displaceBy(direction.multiplyScalar(distance));
+  Player t3 = Player.newPlayer("P1c").displaceBy(direction);
   Player s1 = Player.newPlayer("P2c");
   // displacing with the zero-vector should not move player
-  Player s2 = Player.newPlayer("P2c").displaceBy(direction.multiplyScalar(0)); 
-
+  Player s2 = Player.newPlayer("P2c").displaceBy(zeroVector); 
   assertEquals(t1, t2);
   assertEquals(s1, s2);
   assertEquals(t1.hashCode(), t2.hashCode());
