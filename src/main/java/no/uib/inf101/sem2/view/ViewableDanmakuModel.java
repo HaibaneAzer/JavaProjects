@@ -19,6 +19,8 @@ public interface ViewableDanmakuModel {
   */
   Player getPlayer();
 
+  
+
   /**
    * getter for FPS value calculated in controller.
    * 

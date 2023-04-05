@@ -21,6 +21,15 @@ public record Vector(double x, double y, int constant) {
   }
 
   /**
+   * subVectors performs subtraction between two vectors
+   * Math: Vect(x1, y1) + Vect(x2, y2) = Vect(x1 + x2, y1 + y2)
+   * @param Vect2 is our secondary vector
+   */
+  public Vector subVect(Vector Vect2) {
+    return new Vector(this.x - Vect2.x, this.y - Vect2.y, 1);
+  }
+
+  /**
    * scalarTimesVector performs scalar multiplication
    * Math: t * Vect(x, y) = Vect(x*t, y*t)
    * @param scalar is the 

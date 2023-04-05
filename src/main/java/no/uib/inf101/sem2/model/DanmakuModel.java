@@ -1,5 +1,7 @@
 package no.uib.inf101.sem2.model;
 
+import java.awt.event.KeyEvent;
+
 import no.uib.inf101.sem2.controller.ControllableDanmakuModel;
 import no.uib.inf101.sem2.grid.FieldDimension;
 import no.uib.inf101.sem2.grid.Vector;
@@ -40,14 +42,28 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   public void setFPSValue(double newFPS) {
     this.FPSCounter = newFPS;
   }
+
+  @Override
+  public void resetVelocity(boolean horisontal) {
+    if (horisontal) {
+      this.currentPlayer.setVelocity(new Vector(0, this.currentPlayer.getVelocity().y(), 1));
+    }
+    else {
+      this.currentPlayer.setVelocity(new Vector(this.currentPlayer.getVelocity().x(), 0, 1));
+    }
+
+  } 
   
   @Override
-  public boolean movePlayer(Vector velocity) {
-
-    if (!insideField(this.currentPlayer.displaceBy(velocity))) {
+  public boolean movePlayer(Vector targetVel, double dt) {
+    
+    /* this.currentPlayer.accelerate(targetVel, dt); */ // NB: acceleration is janky. please fix.
+    Vector displacement = targetVel;
+    if (!insideField(this.currentPlayer.displaceBy(displacement))) {
+      this.currentPlayer.setVelocity(new Vector(0, 0, 1));
       return false;
     }
-    this.currentPlayer = this.currentPlayer.displaceBy(velocity);
+    this.currentPlayer = this.currentPlayer.displaceBy(displacement);
     return true;
 
   }

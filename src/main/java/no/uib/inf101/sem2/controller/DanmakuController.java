@@ -18,6 +18,7 @@ public class DanmakuController implements ActionListener{
   // gameTick and adaptable frameRate
   private Timer Timer;
   private final int updateTick = 1000 / 120; // 60 frames per second
+  private double dt;
   private double oldTime;
   private double newTime;
   private double[] tickList;
@@ -27,15 +28,17 @@ public class DanmakuController implements ActionListener{
   private double tick;
   // list of common sprite movements
   // player movement direction
-  private static final Vector playerDirections[] = {
+  private static final Vector PlayerMove[] = {
     new Vector(0, -1, 1),
     // up
     new Vector(0, 1, 1),
     // down
     new Vector(-1, 0, 1),
     // left
-    new Vector(1, 0, 1)
+    new Vector(1, 0, 1),
     // right
+    new Vector(0, 0, 1)
+    // no movement
   };
 
   
@@ -43,6 +46,7 @@ public class DanmakuController implements ActionListener{
     this.controllModel = controllModel;
     this.danView = danView;
     this.playerSpeed = 6;
+    this.dt = 0;
     // game tick
     this.Timer = new Timer(updateTick, this);
     this.Timer.start();
@@ -74,22 +78,29 @@ public class DanmakuController implements ActionListener{
    * 
    */
   protected void keyboardInput() {
+    this.dt = 0.5*updateTick;
     // move player down
     if (this.keyBoard.keyDown(KeyEvent.VK_UP)) { 
-      
-      this.controllModel.movePlayer(playerDirections[0].multiplyScalar(this.playerSpeed));
+      this.controllModel.movePlayer(PlayerMove[0].multiplyScalar(this.playerSpeed), this.dt);
     }
     // move player up
     if (this.keyBoard.keyDown(KeyEvent.VK_DOWN)) {
-      this.controllModel.movePlayer(playerDirections[1].multiplyScalar(this.playerSpeed));
+      this.controllModel.movePlayer(PlayerMove[1].multiplyScalar(this.playerSpeed), this.dt);
     }
     // move player left
     if (this.keyBoard.keyDown(KeyEvent.VK_LEFT)) {
-      this.controllModel.movePlayer(playerDirections[2].multiplyScalar(this.playerSpeed));
+      this.controllModel.movePlayer(PlayerMove[2].multiplyScalar(this.playerSpeed), this.dt);
     }
     // move player right
     if (this.keyBoard.keyDown(KeyEvent.VK_RIGHT)) {
-      this.controllModel.movePlayer(playerDirections[3].multiplyScalar(this.playerSpeed));
+      this.controllModel.movePlayer(PlayerMove[3].multiplyScalar(this.playerSpeed), this.dt);
+    }
+    // reset playermovement when corrosponding key gets released
+    if (!(this.keyBoard.keyDown(KeyEvent.VK_UP) || (this.keyBoard.keyDown(KeyEvent.VK_DOWN)))) {
+      this.controllModel.resetVelocity(false);
+    }
+    if (!(this.keyBoard.keyDown(KeyEvent.VK_RIGHT) || (this.keyBoard.keyDown(KeyEvent.VK_LEFT)))) {
+      this.controllModel.resetVelocity(true);
     }
     // change player speed
     if (this.keyBoard.keyDown(KeyEvent.VK_SHIFT)) {
@@ -98,7 +109,6 @@ public class DanmakuController implements ActionListener{
     else {
       this.playerSpeed = 6;
     }
-
   }
 
   @Override

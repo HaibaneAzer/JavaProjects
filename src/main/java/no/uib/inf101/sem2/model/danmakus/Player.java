@@ -9,14 +9,31 @@ import no.uib.inf101.sem2.grid.Vector;
 public final class Player extends Sprite<SpriteType, SpriteState>{
   
   private String Variation;
+  private Vector accel;
   private Matricies Matrix = new Matricies();
   private static final Vector standStill = new Vector(0, 0, 1);
   private int Lives; // default 3
   private double Power; // dmg multiplier from 0 to 5
   
+  /**
+   * Use this constructor when transforming Player.
+   */
+  private Player(String playerVar, int Radius, Vector Position, Vector Velocity) {
+    // spriteType is unchangeable, SpriteState can change.
+    super(SpriteType.Player, playerVar, SpriteState.aim, Radius, Position, null, Velocity);
+    this.accel = new Vector(0, 0, 1);
+    // constants equal for all players.
+    this.Lives = 3;  
+    this.Power = 1.0;
+  }
+
+  /**
+   * Use this constructor spawning player
+   */
   private Player(String playerVar, int Radius, Vector Position) {
     // spriteType is unchangeable, SpriteState can change.
     super(SpriteType.Player, playerVar, SpriteState.aim, Radius, Position, null, standStill);
+    this.accel = new Vector(0, 0, 1);
     // constants equal for all players.
     this.Lives = 3;  
     this.Power = 1.0;
@@ -41,7 +58,7 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
    * getter radius
    */
   public int getRadius() {
-    return this.Radius();
+    return this.Radius;
   }
   
   /**
@@ -55,22 +72,39 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
   * getter position
   */
   public Vector getPosition() {
-    return this.Position();
+    return this.Position;
   }
 
   /**
    * getter velocity
    */
   public Vector getVelocity() {
-    return this.Velocity();
+    return this.Velocity;
+  }
+
+  /** 
+   * setter velocity
+   */
+  public void setVelocity(Vector newVel) {
+    this.Velocity = newVel;
   }
 
   /**
-   * update velocity by acceleration
+   * update velocity using constant acceleration. Delta is acceleration factor.
+   * dt >= 1 where value 1 means the acceleration is unit length. 
+   * Acceleration stops when oldVel = newVel.
    */
-  public Vector accelerate() {
+  public void accelerate(Vector targetVel, double dt) {
+    boolean TargetlessThanCur = 
+    this.Velocity.length() >= targetVel.length();
+
+    this.accel = targetVel.subVect(this.Velocity).normaliseVect().multiplyScalar(1 / dt);
+    if (!TargetlessThanCur) {
+      this.Velocity = this.Velocity.addVect(accel);
+    }
+
+    System.out.println(this.Velocity);
     
-    return null; 
   }
 
   /**
@@ -87,9 +121,9 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
     Vector[] translate = Matrix.TranslationMatrix(displacement); // get translation matrix
     // Math: Matrix((1, 0, 0), (0, 1, 0), delta) x Position = Position + delta, 
     // where Position and delta are Vectors
-    Vector displacedPosition = this.Position().transformVect(translate); // displace position
+    Vector displacedPosition = this.Position.transformVect(translate); // displace position
 
-    Player displacedPlayer = new Player(this.Variation, this.Radius(), displacedPosition);
+    Player displacedPlayer = new Player(this.Variation, this.Radius, displacedPosition, this.Velocity);
     return displacedPlayer;
   }
   

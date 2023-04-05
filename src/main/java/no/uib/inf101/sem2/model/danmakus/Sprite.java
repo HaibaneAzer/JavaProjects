@@ -4,13 +4,13 @@ import no.uib.inf101.sem2.grid.Vector;
 
 public abstract class Sprite<E, T> {
   
-  private T directionState; // determine bullet and enemy pointing direction
-  private E type; // Player, Enemy or Bullet
-  private String Variation; // player1, player2, enemy1, enemy2, ball, arrow, etc...
-  private int Radius;
-  private Vector Position;
-  private Vector Direction;
-  private Vector Velocity;
+  protected T directionState; // determine bullet and enemy pointing direction
+  protected E type; // Player, Enemy or Bullet
+  protected String Variation; // player1, player2, enemy1, enemy2, ball, arrow, etc...
+  protected int Radius;
+  protected Vector Position;
+  protected Vector Direction;
+  protected Vector Velocity;
 
   /**
    * Constructor for abstract class sprite, used by child classes:
@@ -34,45 +34,52 @@ public abstract class Sprite<E, T> {
   /**
    * getter for type
    */
-  public E Type() {
+  public E getType() {
     return this.type;
-  };
+  }
 
   /**
    * getter for state
    */
-  public T State() {
+  public T getState() {
     return this.directionState;
-  };
+  }
 
   /**
    * getter for Radius
    */
-  public int Radius() {
+  public int getRadius() {
     return this.Radius;
-  };
+  }
 
   /**
    * getter for position vector
    */
-  public Vector Position() {
+  public Vector getPosition() {
     return this.Position;
   }
 
   /**
    * getter for Direction vector
    */
-  public Vector AimVector() {
+  public Vector getAimVector() {
     return this.Direction;
   }
 
   /**
    * getter for velocity vector
    */
-  public Vector Velocity() {
+  public Vector getVelocity() {
     return this.Velocity;
   }
 
+  /**
+   * setter for velocity vector
+   */
+  public void setVelocity(Vector newVector) {
+    this.Velocity = newVector;
+  }
+  
   @Override
   public int hashCode() {
     final int prime = 31;
