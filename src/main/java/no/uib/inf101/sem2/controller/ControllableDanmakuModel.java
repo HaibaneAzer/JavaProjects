@@ -11,6 +11,12 @@ public interface ControllableDanmakuModel {
   boolean movePlayer(Vector velocity, double dt);
 
   /**
+   * rotateAxisEnemy rotates the enemy by angle theta, given by it's aim diretion Vector
+   * 
+   */
+  boolean rotateAxisEnemy(double theta);
+
+  /**
    * reset velocity in either x or y direction. 
    * @param horisontal is direction to reset
    */

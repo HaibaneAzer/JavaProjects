@@ -1,11 +1,12 @@
 package no.uib.inf101.sem2.grid;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
 /**
- * Testing the class Matricies
+ * Testing the class Matricies, NB: problems with matrix rotation.
  */
 public class TestMatricies {
 
@@ -71,6 +72,40 @@ public class TestMatricies {
       aTimesw.transformVect(M.TranslationMatrix(bTimesw)) 
     );
 
+  }
+
+  @Test
+  void RotationMatrixTest() {
+    Matricies M = new Matricies();
+    Vector a = new Vector(5, 0, 1);
+    Vector origin = new Vector(0, 0, 1);
+
+    // test -90 degree rotation around origin. Since our coordinate system has positive y down, a 
+    // 90 degrees clockwise rotation should put the vector parallell to y axis.
+    // pos is the starting point of vector a, which in this case is origin so we subtract it by it's length.
+    Vector rotatedA = a.transformVect(M.RotationMatrix( Math.PI / 2, origin));
+    assertEquals(new Vector(0, 5, 1), rotatedA);
+
+    Vector b = new Vector(25, 25, 1);
+    Vector c = new Vector(30, 25, 1);
+
+    // test 270 degree rotation of vector "a" at spesific point "b"
+    Vector rotatedAatB = c.transformVect(M.RotationMatrix( - Math.PI * 1.5 , b));
+    assertEquals(new Vector(25, 30, 1), rotatedAatB);
+
+    // test to see if turning by 2*pi/N, N times returns original vector
+    int N = 5;
+    Vector rotateA = a.transformVect(M.RotationMatrix(((2*Math.PI) / N), origin));
+
+    for (int i = 0; i < 2; ++i) {
+      rotateA = rotateA.transformVect(M.RotationMatrix(((2*Math.PI) / N), origin));
+    }
+
+    assertEquals(a, rotateA);
+
+    // large angle will not increase vector length.
+    Vector rotatedLargeCatB = c.transformVect(M.RotationMatrix(Math.PI*613, b));
+    assertEquals(5, rotatedLargeCatB.subVect(b).length());
   }
 
 }

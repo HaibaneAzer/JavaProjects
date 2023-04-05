@@ -18,7 +18,8 @@ public class DanmakuController implements ActionListener{
   // gameTick and adaptable frameRate
   private Timer Timer;
   private final int updateTick = 1000 / 120; // 60 frames per second
-  private double dt;
+  private double dt; // unit time for player movement
+  private double thetaCurEnemy; // increment angle for current (test) enemy rotation.
   private double oldTime;
   private double newTime;
   private double[] tickList;
@@ -47,6 +48,7 @@ public class DanmakuController implements ActionListener{
     this.danView = danView;
     this.playerSpeed = 6;
     this.dt = 0;
+    this.thetaCurEnemy = 0;
     // game tick
     this.Timer = new Timer(updateTick, this);
     this.Timer.start();
@@ -70,6 +72,9 @@ public class DanmakuController implements ActionListener{
    */
   public void updateModel(ActionEvent arg0) {
     
+    // current enemy rotation
+    this.thetaCurEnemy = Math.PI / (50*updateTick);
+    this.controllModel.rotateAxisEnemy(thetaCurEnemy);
     
   }
 

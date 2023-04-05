@@ -59,16 +59,28 @@ public class Matricies {
    * rotates vector around origin of coordinate system, 
    * then moves it back to its starting point.
    * @param angle determines how much a vector rotates
-   * @param pos is the current position of sprite-object.
+   * @param pos is the current starting position of the given Vector you want to rotate.
+   * remember to subtract the Vector by it's self to use as pos vector if you want to rotate
+   * something like the direction vector.
    */
   public Vector[] RotationMatrix(double angle, Vector pos) {
-    this.transform[0] = new Vector(Math.cos(angle), Math.sin(angle), 0);
-    this.transform[1] = new Vector(- Math.sin(angle), Math.cos(angle), 0);
+    this.transform[0] = new Vector(
+      Math.cos(angle), 
+      Math.sin(angle), 
+      0);
+    this.transform[1] = new Vector(
+      - Math.sin(angle), 
+      Math.cos(angle), 
+      0);
     this.transform[2] = new Vector(
-     - pos.x()*Math.cos(angle) + pos.y()*Math.sin(angle) + pos.x(),
+     - pos.x()*Math.cos(angle) - pos.y()*Math.sin(angle) + pos.x(),
      - pos.x()*Math.sin(angle) - pos.y()*Math.cos(angle) + pos.y(),
      1);
-     return this.transform;
+    // round down matrix Vectors.
+    this.transform[0] = this.transform[0].roundVector();
+    this.transform[1] = this.transform[1].roundVector();
+    this.transform[2] = this.transform[2].roundVector();
+    return this.transform;
   }
 
   /**

@@ -6,6 +6,7 @@ import no.uib.inf101.sem2.controller.ControllableDanmakuModel;
 import no.uib.inf101.sem2.grid.FieldDimension;
 import no.uib.inf101.sem2.grid.Vector;
 import no.uib.inf101.sem2.model.danmakus.DanmakuFactory;
+import no.uib.inf101.sem2.model.danmakus.Enemies;
 import no.uib.inf101.sem2.model.danmakus.Player;
 import no.uib.inf101.sem2.view.ViewableDanmakuModel;
 
@@ -14,12 +15,15 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   private DanmakuField Field;
   private final DanmakuFactory playableC;
   private Player currentPlayer;
+  private Enemies currentEnemy;
   private double FPSCounter = 60.0;
   
   public DanmakuModel(DanmakuField Field, DanmakuFactory playableC) {
     this.Field = Field;
     this.playableC = playableC;
     this.currentPlayer = playableC.getNewPlayer("P1c").shiftedToStartPoint(Field);
+    this.currentEnemy = playableC.getNewEnemy("monster1").shiftedToStartPoint(Field);
+    this.currentEnemy.updateDirectionState(this.currentEnemy.getState());
     
   }
   
@@ -31,6 +35,11 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   @Override
   public Player getPlayer() {
     return this.currentPlayer;
+  }
+
+  @Override
+  public Enemies getEnemy() {
+    return this.currentEnemy;
   }
 
   @Override
@@ -80,6 +89,15 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     }
     return true;
 
+  }
+
+  @Override
+  public boolean rotateAxisEnemy(double theta) {
+    
+    // add conditions for enemy rotation if needed.
+    this.currentEnemy = this.currentEnemy.rotateAxisBy(theta);
+    return true;
+    
   }
   
   

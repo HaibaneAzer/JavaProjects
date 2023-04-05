@@ -51,34 +51,6 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
     return playableC;
     
   }
-  
-  /**
-   * getter radius
-   */
-  public int getRadius() {
-    return this.Radius;
-  }
-  
-  /**
-  * getter variation
-  */
-  public String getVariation() {
-    return this.Variation;
-  }
-  
-  /**
-  * getter position
-  */
-  public Vector getPosition() {
-    return this.Position;
-  }
-
-  /**
-   * getter velocity
-   */
-  public Vector getVelocity() {
-    return this.Velocity;
-  }
 
   /**
    * update velocity using constant acceleration. Delta is acceleration factor.
@@ -99,7 +71,7 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
   }
 
   /**
-   * displaceBy moves the player position vector by direction vector, where
+   * displaceBy moves the player position vector by velocity vector, where
    * the scalar either represents distance (when used with {@link #shiftedToStartPoint}) 
    * or speed. 
    */

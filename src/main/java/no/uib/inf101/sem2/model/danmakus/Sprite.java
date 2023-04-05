@@ -60,7 +60,7 @@ public abstract class Sprite<E, T> {
   }
 
   /**
-   * getter for Direction vector
+   * getter for Direction vector in which the sprite is facing
    */
   public Vector getAimVector() {
     return this.Direction;

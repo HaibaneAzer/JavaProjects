@@ -1,6 +1,7 @@
 package no.uib.inf101.sem2.view;
 
 import no.uib.inf101.sem2.grid.FieldDimension;
+import no.uib.inf101.sem2.model.danmakus.Enemies;
 import no.uib.inf101.sem2.model.danmakus.Player;
 
 public interface ViewableDanmakuModel {
@@ -18,6 +19,13 @@ public interface ViewableDanmakuModel {
   * @return playable character
   */
   Player getPlayer();
+
+  /**
+  * 
+  * 
+  * @return next enemy
+  */
+  Enemies getEnemy();
 
   
 

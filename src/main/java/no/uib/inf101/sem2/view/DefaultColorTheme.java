@@ -20,6 +20,9 @@ public class DefaultColorTheme implements ColorTheme {
       case 'r' -> Color.RED;
       case 'b' -> Color.BLUE;
       case 'g' -> Color.GREEN;
+      case 'p' -> Color.PINK;
+      case 'c' -> Color.CYAN;
+      case 'y' -> Color.YELLOW;
       default -> throw new IllegalArgumentException("no available color '" + C + "'");
     };
     return color;

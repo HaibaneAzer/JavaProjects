@@ -39,6 +39,16 @@ public record Vector(double x, double y, int constant) {
   }
 
   /**
+   * rotateVect rotates the vector around a origin with theta as angle.
+   */
+  public Vector rotateVect(double Theta, Vector Pos) {
+    double rotX = this.x*Math.cos(Theta) + this.y*Math.sin(Theta);
+    double rotY = this.y*Math.cos(Theta) - this.x*Math.sin(Theta);
+    Vector rotatedVect = new Vector(rotX, rotY, 1);
+    return rotatedVect.roundVector();
+  }
+
+  /**
    * 
    */
   public double length() {
@@ -73,6 +83,16 @@ public record Vector(double x, double y, int constant) {
     double newY = matrix3x3[0].y*this.x + matrix3x3[1].y*this.y + matrix3x3[2].y;
 
     return new Vector(newX, newY, 1);
+  }
+
+  /**
+   * round down vector coordinates to prevent super small increments
+   * rounding to 4 decimal places (enough for smoother changes in animation)
+   */
+  public Vector roundVector() {
+    double roundedX = Math.round(this.x*1000000);
+    double roundedY = Math.round(this.y*1000000);
+    return new Vector(roundedX / 1000000, roundedY / 1000000, 1);
   }
 
 }

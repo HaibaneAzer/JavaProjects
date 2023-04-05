@@ -1,16 +1,20 @@
 package no.uib.inf101.sem2.view;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 
 import javax.swing.JPanel;
 
 import no.uib.inf101.sem2.grid.FieldDimension;
+import no.uib.inf101.sem2.grid.Vector;
+import no.uib.inf101.sem2.model.danmakus.Enemies;
 import no.uib.inf101.sem2.model.danmakus.Player;
 
 public class DanmakuView extends JPanel{
@@ -46,12 +50,13 @@ public class DanmakuView extends JPanel{
   private void drawGame(Graphics2D Canvas) {
     
     drawField(Canvas, this.Model.getDimension(), this.setColor);
-    drawSprites(Canvas, this.Model.getPlayer() ,this.setColor);
+    drawPlayer(Canvas, this.Model.getPlayer() ,this.setColor);
+    drawEnemy(Canvas, this.Model.getEnemy(), this.setColor);
     drawFPSCounter(Canvas, this.Model.getDimension(), setColor, this.Model.getFPSValue());
     
   }
   
-  private void drawSprites(Graphics2D Canvas, Player player, ColorTheme Color) {
+  private void drawPlayer(Graphics2D Canvas, Player player, ColorTheme Color) {
     double x;
     double y;
     double diameter;
@@ -66,6 +71,41 @@ public class DanmakuView extends JPanel{
     Canvas.setColor(Color.getSpriteColor('r'));
     Canvas.fill(playerBall);
     
+    
+  }
+
+  private void drawEnemy(Graphics2D Canvas, Enemies enemy, ColorTheme Color) {
+    double x;
+    double y;
+    Vector aimvectStartPoint = enemy.getPosition(); // aim vector starts at position.
+    Vector aimLength;
+    double aimX;
+    double aimY;
+    double width;
+    double diameter;
+    Ellipse2D enemyBall;
+    Line2D enemyAimArrow;
+    
+    x = enemy.getPosition().x() - enemy.getRadius();
+    y = enemy.getPosition().y() - enemy.getRadius();
+    diameter = 2*enemy.getRadius();
+    
+    enemyBall = new Ellipse2D.Double(x, y, diameter, diameter);
+    
+    Canvas.setColor(Color.getSpriteColor('b'));
+    Canvas.fill(enemyBall);
+
+    width = enemy.getRadius();
+
+    aimX = aimvectStartPoint.x();
+    aimY = aimvectStartPoint.y();
+    aimLength = aimvectStartPoint.addVect(enemy.getAimVector());
+    enemyAimArrow = new Line2D.Double(aimX, aimY, aimLength.x(), aimLength.y());
+
+    Canvas.setColor(Color.getSpriteColor('c'));
+    Canvas.setStroke(new BasicStroke(1));
+    Canvas.draw(enemyAimArrow);
+    //System.out.println(aimX + " and " + aimY);
     
   }
   
