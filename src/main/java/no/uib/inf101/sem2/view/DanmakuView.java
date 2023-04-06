@@ -81,7 +81,6 @@ public class DanmakuView extends JPanel{
     Vector aimLength;
     double aimX;
     double aimY;
-    double width;
     double diameter;
     Ellipse2D enemyBall;
     Line2D enemyAimArrow;
@@ -95,15 +94,13 @@ public class DanmakuView extends JPanel{
     Canvas.setColor(Color.getSpriteColor('b'));
     Canvas.fill(enemyBall);
 
-    width = enemy.getRadius();
-
     aimX = aimvectStartPoint.x();
     aimY = aimvectStartPoint.y();
     aimLength = aimvectStartPoint.addVect(enemy.getAimVector());
     enemyAimArrow = new Line2D.Double(aimX, aimY, aimLength.x(), aimLength.y());
 
     Canvas.setColor(Color.getSpriteColor('c'));
-    Canvas.setStroke(new BasicStroke(1));
+    Canvas.setStroke(new BasicStroke(2));
     Canvas.draw(enemyAimArrow);
     //System.out.println(aimX + " and " + aimY);
     

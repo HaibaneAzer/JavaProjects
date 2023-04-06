@@ -69,7 +69,6 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
    */
   public Enemies rotateAxisBy(double theta) {
     /* Vector[] rotateAroundPosition = Matrix.RotationMatrix(theta, this.Position); // get rotation matrix */ // check unit tests
-    System.out.println(this.Direction);
     Vector rotatedDirection = this.Direction.rotateVect(theta, new Vector(0, 0, 1));
 
     Enemies rotatedEnemy = new Enemies(this.Variation, this.healthPoints, this.healthBars, this.Radius, this.Position, rotatedDirection, this.Velocity);
@@ -84,7 +83,6 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
 
     if (this.directionState.equals(SpriteState.aim)) {
       this.Direction = startingAim; // direction is set to enemy aim
-      System.out.println(Direction);
     } 
     else if (this.directionState.equals(SpriteState.absolute)) {
       /* set aim relative to coordinates on field */
