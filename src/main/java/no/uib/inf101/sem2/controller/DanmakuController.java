@@ -15,7 +15,7 @@ public class DanmakuController implements ActionListener{
   private final DanmakuView danView;
   private KeyInputPoller keyBoard;
   private int playerSpeed;
-  private static final int playerFireRate = 10;
+  private static final int playerFireRate = 9;
   // gameTick and adaptable frameRate
   private Timer Timer;
   private final int updateTick = 1000 / 120; // 60 frames per second

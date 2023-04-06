@@ -89,6 +89,8 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
         this.playerBullet = this.playerBullet.displaceBy(this.currentPlayer.getPosition().addVect(this.currentPlayer.getAimVector()));
         // set bullet speed to players aim
         this.playerBullet.updateBulletVelocity(this.currentPlayer.getAimVector());
+        // update bullets aimvector to it's velocity
+        this.playerBullet.updateBulletDirection(this.playerBullet.getVelocity());
         // add current bullet to bullet list.
         this.bulletsOnField.add(this.playerBullet);
         System.out.println(this.bulletsOnField.size());
@@ -148,7 +150,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
 
     for (int i = 0; i < this.bulletsOnField.size(); i++) {
       Bullets bullet = this.bulletsOnField.get(i);
-      if (!bulletInsideScreen(bullet.displaceBy(bullet.getVelocity())) && !this.bulletsOnField.isEmpty()) {
+      if (!bulletInsideScreen(bullet.displaceBy(bullet.getVelocity()))) {
         // vanish bullet
         this.bulletsOnField.remove(i);
       }
@@ -160,6 +162,10 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
 
   }
 
+  /**
+   * bulletInsideScreen
+   * 
+   */
   private boolean bulletInsideScreen(Bullets shiftedBullet) {
     // the entire hitbox of a bullet must be outside the screen before vanishing
     boolean withinScreen = (
@@ -171,6 +177,24 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     if (!withinScreen) {
       return false;
     }
+    return true;
+  }
+
+  /**
+   * checkHitboxCollision is a helper method used by {@link #bulletInsideScreen}.
+   * checks if the hitboxes of sprites overlap. Conditions:
+   * First, check if player is touching enemy's hitbox or their bullets hitbox 
+   * (not including player bullets). Second, check if player bullets is overlapping enemy hitboxes.
+   * Whenever overlapping happens to the player loses 1 life and gets immunity frames for 3 seconds.
+   * Whenever overlapping happens to the enemy, subtract their hp by dmg value of bullet.
+   * Idea: use grid for whole field (cell dimension same size as smallest sprite) where two for loops loop
+   * through the grid until a cell containing atleast one sprite is found, check all neighbouring cells for sprites
+   * and compare these with eachother. might make comparisons faster when number of bullets gets up in the 1000s.
+   */
+  private boolean checkHitboxCollision() {
+
+
+
     return true;
   }
 

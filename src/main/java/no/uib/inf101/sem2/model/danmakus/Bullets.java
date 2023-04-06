@@ -6,7 +6,7 @@ import no.uib.inf101.sem2.grid.Vector;
 public class Bullets extends Sprite<SpriteType, SpriteState>{
 
   private double damage;
-  private int bulletLifeTime; // time left until the bullet vanishes
+  private int bulletLifeTime = 0; // time left until the bullet vanishes
   private Matricies Matrix = new Matricies();
   private static final Vector spawnAim = new Vector(0, 0, 1);
   private static final Vector standStill = new Vector(0, 0, 1);
@@ -73,6 +73,14 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
   }
 
   /**
+   * getter for bullet life time
+   * 
+   */
+  public int getBulletLifeTime() {
+    return this.bulletLifeTime;
+  }
+
+  /**
    * setBulletOwner changes spriteType to either PlayerBullet or EnemyBullet.
    * Used to determine collision action.
    * 
@@ -83,11 +91,20 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
 
   /**
    * updateBulletVelocity sets a new velocity vector of the bullet-object.
-   * How the bullet gets updated depends on it's bullet state.
+   * How the bullet gets updated should depend on it's bullet state.
    * 
    */
   public void updateBulletVelocity(Vector newVel) {
     this.Velocity = newVel;
+  }
+
+  /**
+   * updateBulletDirection sets a new aim vector of the bullet-object.
+   * How the bullet gets updated should depend on it's bullet state
+   * 
+   */
+  public void updateBulletDirection(Vector newAim) {
+    this.Direction = newAim;
   }
 
   /**

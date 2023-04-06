@@ -11,7 +11,7 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
   private Vector accel;
   private Matricies Matrix = new Matricies();
   private static final Vector standStill = new Vector(0, 0, 1);
-  private static final Vector startingAim = new Vector(0, -3, 1);
+  private static final Vector startingAim = new Vector(0, -10, 1);
   private int Lives; // default 3
   private double Power; // dmg multiplier from 0 to 5
   
@@ -52,6 +52,22 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
     };
     return playableC;
     
+  }
+
+  /**
+   * getter for lives
+   * 
+   */
+  public int getLives() {
+    return this.Lives;
+  }
+
+  /**
+   * getter for power
+   * 
+   */
+  public double getPower() {
+    return this.Power;
   }
 
   /**
