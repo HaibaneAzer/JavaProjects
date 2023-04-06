@@ -46,6 +46,12 @@ public abstract class Sprite<E, T> {
   }
 
   /**
+   * getter for variation
+   */
+  public String getVariation() {
+    return this.Variation;
+  }
+  /**
    * getter for Radius
    */
   public int getRadius() {
@@ -137,10 +143,6 @@ public abstract class Sprite<E, T> {
       return false;
     return true;
   }
-
-  // equals and hashcode
-  
-
   
 
 }

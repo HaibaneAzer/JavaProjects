@@ -14,7 +14,6 @@ public void testHashCodeAndEquals() {
 
   Vector direction = new Vector(1, 0, 1);
   Vector zeroVector = new Vector(0, 0, 1);
-  double distance = 1;
 
   Player t1 = Player.newPlayer("P1c");
   Player t2 = Player.newPlayer("P1c");

@@ -16,8 +16,8 @@ public class DanmakuSpawner implements DanmakuFactory{
 
   @Override
   public Bullets getNewBullet(String C) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getNewBullet'");
+    Bullets newBullet = Bullets.newBullet(C);
+    return newBullet;
   }
   
   

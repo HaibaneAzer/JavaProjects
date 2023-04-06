@@ -96,8 +96,8 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
   }
 
   /**
-  * sets player spawn on field
-  * 
+  * sets enemy spawn on field.
+  * idea: make spawnpoint on upper half of field randomized
   */
   public Enemies shiftedToStartPoint(FieldDimension dimension) {
     int startX = (int) (Math.round(dimension.width()/2) + dimension.getFieldX());

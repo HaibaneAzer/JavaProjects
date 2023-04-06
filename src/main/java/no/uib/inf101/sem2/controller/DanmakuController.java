@@ -15,6 +15,7 @@ public class DanmakuController implements ActionListener{
   private final DanmakuView danView;
   private KeyInputPoller keyBoard;
   private int playerSpeed;
+  private static final int playerFireRate = 10;
   // gameTick and adaptable frameRate
   private Timer Timer;
   private final int updateTick = 1000 / 120; // 60 frames per second
@@ -75,6 +76,9 @@ public class DanmakuController implements ActionListener{
     // current enemy rotation
     this.thetaCurEnemy = Math.PI / (50*updateTick);
     this.controllModel.rotateAxisEnemy(thetaCurEnemy);
+    if (this.controllModel.getBulletsOnField().iterator().hasNext()) {
+      this.controllModel.moveAllBullets();
+    }
     
   }
 
@@ -114,6 +118,11 @@ public class DanmakuController implements ActionListener{
     else {
       this.playerSpeed = 6;
     }
+    // player shoots bullets
+    if (this.keyBoard.keyDown(KeyEvent.VK_Z)) {
+      this.controllModel.playerFire(playerFireRate); // 1 bullets per second
+    }
+      
   }
 
   @Override

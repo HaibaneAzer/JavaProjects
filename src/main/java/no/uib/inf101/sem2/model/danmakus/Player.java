@@ -11,15 +11,16 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
   private Vector accel;
   private Matricies Matrix = new Matricies();
   private static final Vector standStill = new Vector(0, 0, 1);
+  private static final Vector startingAim = new Vector(0, -3, 1);
   private int Lives; // default 3
   private double Power; // dmg multiplier from 0 to 5
   
   /**
    * transforming constructor
    */
-  private Player(String playerVar, int Radius, Vector Position, Vector Velocity) {
+  private Player(String playerVar, int Radius, Vector Position, Vector Direction, Vector Velocity) {
     // spriteType is unchangeable, SpriteState can change.
-    super(SpriteType.Player, playerVar, SpriteState.aim, Radius, Position, null, Velocity);
+    super(SpriteType.Player, playerVar, SpriteState.aim, Radius, Position, Direction, Velocity);
     this.accel = new Vector(0, 0, 1);
     // constants equal for all players.
     this.Lives = 3;  
@@ -30,7 +31,7 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
    */
   private Player(String playerVar, int Radius, Vector Position) {
     // spriteType is unchangeable, SpriteState can change.
-    super(SpriteType.Player, playerVar, SpriteState.aim, Radius, Position, null, standStill);
+    super(SpriteType.Player, playerVar, SpriteState.aim, Radius, Position, startingAim, standStill);
     this.accel = new Vector(0, 0, 1);
     // constants equal for all players.
     this.Lives = 3;  
@@ -39,10 +40,11 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
 
   /**
   * newPlayer is a method that contains a list of valid playable characters.
-  * playable: Circular hitbox: "P1c" and "P2c", rectangular hitbox: "P1r" and "P2r".
+  * playable: Circular hitbox: "P1c" and "P2c".
   * 
   */
   static Player newPlayer(String newPlayerType) {
+
     Player playableC = switch(newPlayerType) {
       case "P1c" -> new Player(newPlayerType, 8, new Vector(-8, -8, 1)); // want center at (0, 0)
       case "P2c" -> new Player(newPlayerType, 10, new Vector(-10, -10, 1));
@@ -81,7 +83,7 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
     Vector[] translate = Matrix.TranslationMatrix(Velocity); // get translation matrix
     Vector displacedPosition = this.Position.transformVect(translate); // displace position
 
-    Player displacedPlayer = new Player(this.Variation, this.Radius, displacedPosition, this.Velocity);
+    Player displacedPlayer = new Player(this.Variation, this.Radius, displacedPosition, this.Direction, this.Velocity);
     return displacedPlayer;
   }
   
@@ -97,12 +99,6 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
 
     return displaceBy(originToSpawn);
   }
-  
-
-  
-  
-  // remake hashcode and equals later.
-  
   
   
   

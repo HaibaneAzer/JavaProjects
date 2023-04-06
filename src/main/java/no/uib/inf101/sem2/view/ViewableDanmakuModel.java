@@ -1,6 +1,10 @@
 package no.uib.inf101.sem2.view;
 
+import java.util.Iterator;
+import java.util.List;
+
 import no.uib.inf101.sem2.grid.FieldDimension;
+import no.uib.inf101.sem2.model.danmakus.Bullets;
 import no.uib.inf101.sem2.model.danmakus.Enemies;
 import no.uib.inf101.sem2.model.danmakus.Player;
 
@@ -26,6 +30,12 @@ public interface ViewableDanmakuModel {
   * @return next enemy
   */
   Enemies getEnemy();
+
+  /**
+   * 
+   * @return list of bullets existing on field
+   */
+  Iterable<Bullets> getBulletsOnField();
 
   
 

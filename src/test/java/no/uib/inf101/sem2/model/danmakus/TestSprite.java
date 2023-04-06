@@ -14,7 +14,6 @@ public class TestSprite {
 
   Vector direction = new Vector(1, 0, 1);
   Vector zeroVector = new Vector(0, 0, 1);
-  double distance = 1;
   
   // testing for Player
   Sprite<SpriteType, SpriteState> p1 = Player.newPlayer("P1c");
@@ -45,7 +44,18 @@ public class TestSprite {
   assertNotEquals(t1, s1);
 
   // testing for Bullets
-
+  Sprite<SpriteType, SpriteState> b1 = Bullets.newBullet("arrow");
+  Sprite<SpriteType, SpriteState> b2 = Bullets.newBullet("arrow");
+  Sprite<SpriteType, SpriteState> b3 = Bullets.newBullet("arrow").displaceBy(direction);
+  Sprite<SpriteType, SpriteState> l1 = Bullets.newBullet("circleSmall");
+  // displacing with the zero-vector should not move player
+  Sprite<SpriteType, SpriteState> l2 = Bullets.newBullet("circleSmall").displaceBy(zeroVector); 
+  assertEquals(b1, b2);
+  assertEquals(l1, l2);
+  assertEquals(b1.hashCode(), b2.hashCode());
+  assertEquals(l1.hashCode(), l2.hashCode());
+  assertNotEquals(b1, b3);
+  assertNotEquals(b1, l1);
 }
 
 }
