@@ -53,8 +53,7 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
    * or speed. 
    */
   public Enemies displaceBy(Vector Velocity) {
-    // Math: Matrix((1, 0, 0), (0, 1, 0), delta) x Position = Position + delta, 
-    // where Position and delta are Vectors
+    
     Vector[] translate = Matrix.TranslationMatrix(Velocity); // get translation matrix
     Vector displacedPosition = this.Position.transformVect(translate); // displace position
 
@@ -65,11 +64,13 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
   /**
    * rotateAxisBy rotates the enemy around its own axis, where 
    * the angle theta either depends on time or fixed rotations.
-   * 
+   * Rotation can be done at any point on field, but note that the vector being rotated must be position.vect + direction.Vect. 
+   * example: rotate direction vector(5, 0, 1) to vector(0, 5, 1) "- 90 degrees" at position vector(25, 25, 1). Then, 
+   * (direction + pos) * rotationMatrix(- pi / 2, pos) = vector(25, 30, 1), since (direction + pos) = vector(30, 25, 1).
    */
   public Enemies rotateAxisBy(double theta) {
-    /* Vector[] rotateAroundPosition = Matrix.RotationMatrix(theta, this.Position); // get rotation matrix */ // check unit tests
-    Vector rotatedDirection = this.Direction.rotateVect(theta, new Vector(0, 0, 1));
+    Vector[] rotateAroundPosition = Matrix.RotationMatrix(theta, new Vector(0, 0, 1)); // get rotation matrix, 
+    Vector rotatedDirection = this.Direction.transformVect(rotateAroundPosition);
 
     Enemies rotatedEnemy = new Enemies(this.Variation, this.healthPoints, this.healthBars, this.Radius, this.Position, rotatedDirection, this.Velocity);
     return rotatedEnemy;

@@ -90,9 +90,25 @@ public record Vector(double x, double y, int constant) {
    * rounding to 4 decimal places (enough for smoother changes in animation)
    */
   public Vector roundVector() {
-    double roundedX = Math.round(this.x*1000000);
-    double roundedY = Math.round(this.y*1000000);
-    return new Vector(roundedX / 1000000, roundedY / 1000000, 1);
+    int decimals = 10000;
+    double roundedX = Math.round(this.x*decimals);
+    double roundedY = Math.round(this.y*decimals);
+    return new Vector(roundedX / decimals, roundedY / decimals, 1);
+  }
+
+  // equals for vector
+  public boolean equals(Object obj) {
+    final double TOLERANCE = 1e-8; 
+    if (this == obj) {
+      return true;
+    }
+    if (!(obj instanceof Vector)) {
+      return false;
+    }
+    Vector other = (Vector) obj;
+    return Math.abs(this.x - other.x) < TOLERANCE &&
+    Math.abs(this.y - other.y) < TOLERANCE &&
+    this.constant == other.constant;
   }
 
 }

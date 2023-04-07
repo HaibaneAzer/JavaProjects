@@ -32,7 +32,7 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
   }
 
   /**
-   * constructor for spawnin bullet Enemy.
+   * constructor for spawning bullet Enemy.
    * collision with player removes 1 life.
    */
   public Bullets(String bulletVar, int Radius, Vector Position) {
@@ -41,7 +41,7 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
   }
 
   /**
-  * newPlayer is a method that contains a list of valid playable characters.
+  * newBullet is a method that contains a list of valid bullet variations.
   * playable: enemy bullets: "circleSmall" and "ellipseLarge", player bullets: "arrow".
   * 
   */
@@ -55,9 +55,11 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
     Vector arrowPos = new Vector(-arrowR, -arrowR, 1);
 
     Bullets bullet = switch(newBulletVar) {
+      // enemy bullets
       case "circleSmall" -> new Bullets(newBulletVar, circleSmallR, circleSmallPos);
       case "ellipseLarge" -> new Bullets(newBulletVar, ellipseLargeR, ellipseLargePos);
-      case "arrow" -> new Bullets(newBulletVar, arrowR, arrowPos, 1); // player bullet
+      // player bullets
+      case "arrow" -> new Bullets(newBulletVar, arrowR, arrowPos, 1); 
       default -> throw new IllegalArgumentException("Type '" + newBulletVar + "' does not match one of two playable characters");
     };
     return bullet;
@@ -109,8 +111,7 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
 
   /**
    * displaceBy moves the bullet position vector by velocity vector, where
-   * the scalar either represents distance (when used with {@link #shiftedToStartPoint}) 
-   * or speed. 
+   * the scalar either represents distance or speed. 
    */
   public Bullets displaceBy(Vector Velocity) {
     // Math: Matrix((1, 0, 0), (0, 1, 0), delta) x Position = Position + delta, 
@@ -123,13 +124,16 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
   }
 
   /**
-   * rotateAxisBy rotates the enemy around its own axis, where 
+   * rotateAxisBy rotates the bullet around its own axis, where 
    * the angle theta either depends on time or fixed rotations.
-   * 
+   * Rotation can be done at any point on field, but note that the vector being rotated must be position.vect + direction.Vect. 
+   * example: rotate direction vector(5, 0, 1) to vector(0, 5, 1) "- 90 degrees" at position vector(25, 25, 1). Then, 
+   * (direction + pos) * rotationMatrix(- pi / 2, pos) = vector(25, 30, 1), since (direction + pos) = vector(30, 25, 1).
    */
   public Bullets rotateAxisBy(double theta) {
-    /* Vector[] rotateAroundPosition = Matrix.RotationMatrix(theta, this.Position); // get rotation matrix */ // check unit tests
-    Vector rotatedDirection = this.Direction.rotateVect(theta, new Vector(0, 0, 1));
+    Vector[] rotateAroundPosition = Matrix.RotationMatrix(theta, new Vector(0, 0, 1)); // get rotation matrix // check unit tests
+  
+    Vector rotatedDirection = this.Direction.transformVect(rotateAroundPosition);
 
     Bullets rotatedEnemy = new Bullets(this.Variation, this.Radius, this.Position, rotatedDirection, this.Velocity);
     return rotatedEnemy;

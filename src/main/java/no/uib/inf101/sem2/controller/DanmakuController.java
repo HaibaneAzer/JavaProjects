@@ -120,7 +120,7 @@ public class DanmakuController implements ActionListener{
     }
     // player shoots bullets
     if (this.keyBoard.keyDown(KeyEvent.VK_Z)) {
-      this.controllModel.playerFire(playerFireRate); // 1 bullets per second
+      this.controllModel.playerFire(playerFireRate, this.keyBoard.keyDown(KeyEvent.VK_SHIFT)); // 1 bullets per second
     }
       
   }

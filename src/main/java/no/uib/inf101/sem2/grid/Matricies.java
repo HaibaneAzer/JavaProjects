@@ -1,5 +1,7 @@
 package no.uib.inf101.sem2.grid;
 
+import java.util.Arrays;
+
 public class Matricies {
   
   private Vector transform[] = { // identity matrix
@@ -73,13 +75,13 @@ public class Matricies {
       Math.cos(angle), 
       0);
     this.transform[2] = new Vector(
-     - pos.x()*Math.cos(angle) - pos.y()*Math.sin(angle) + pos.x(),
+     - pos.x()*Math.cos(angle) + pos.y()*Math.sin(angle) + pos.x(),
      - pos.x()*Math.sin(angle) - pos.y()*Math.cos(angle) + pos.y(),
      1);
     // round down matrix Vectors.
-    this.transform[0] = this.transform[0].roundVector();
-    this.transform[1] = this.transform[1].roundVector();
-    this.transform[2] = this.transform[2].roundVector();
+    this.transform[0] = this.transform[0];
+    this.transform[1] = this.transform[1];
+    this.transform[2] = this.transform[2];
     return this.transform;
   }
 
@@ -90,5 +92,22 @@ public class Matricies {
   public Vector[] getTransform() {
     return this.transform;
   }
+
+  // equals for matricies
+
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (!(obj instanceof Matricies)) {
+      return false;
+    }
+    Matricies matrix = (Matricies) obj;
+    return transform[0].equals(matrix.transform[0]) &&
+    transform[1].equals(matrix.transform[1]) &&
+    transform[2].equals(matrix.transform[2]);
+  }
+
+  
 
 }

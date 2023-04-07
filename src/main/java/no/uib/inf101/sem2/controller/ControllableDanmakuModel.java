@@ -18,7 +18,7 @@ public interface ControllableDanmakuModel {
    * which the player can switch between by holding shift-key.
    * fireRate controlls how often bullets gets fired when holding down z-key
    */
-  void playerFire(int fireRate);
+  void playerFire(int fireRate, boolean holdingShift);
 
   /**
    * moveAllBullets goes through the list of bullets on field and moves each according to their velocity vector.

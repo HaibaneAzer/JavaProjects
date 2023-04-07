@@ -1,7 +1,6 @@
 package no.uib.inf101.sem2.model;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import no.uib.inf101.sem2.controller.ControllableDanmakuModel;
@@ -11,19 +10,18 @@ import no.uib.inf101.sem2.model.danmakus.Bullets;
 import no.uib.inf101.sem2.model.danmakus.DanmakuFactory;
 import no.uib.inf101.sem2.model.danmakus.Enemies;
 import no.uib.inf101.sem2.model.danmakus.Player;
-import no.uib.inf101.sem2.model.danmakus.SpriteType;
 import no.uib.inf101.sem2.view.ViewableDanmakuModel;
 
-public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuModel, Iterable<Bullets>{
+public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuModel{
   
   private DanmakuField Field;
   private final DanmakuFactory getSprite;
   private Player currentPlayer;
-  private Bullets playerBullet;
+  private List<Bullets> playerBullets = new ArrayList<Bullets>(); // number of bullets player shoots at the same time.
   private int playerFireCounter = 0;
   private Enemies currentEnemy;
-  private Bullets enemyBullet;
-  private List<Bullets> bulletsOnField = new ArrayList<Bullets>(); 
+  private List<Bullets> enemyBullet = new ArrayList<Bullets>(); // number of bullets enemy shoots at the same time.
+  private List<Bullets> bulletsOnField = new ArrayList<Bullets>(); // total bullets from both player and enemies.
   private double FPSCounter = 60.0;
   
   public DanmakuModel(DanmakuField Field, DanmakuFactory getSprite) {
@@ -78,26 +76,59 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   } 
 
   @Override
-  public void playerFire(int fireRate) {
+  public void playerFire(int fireRate, boolean holdingShift) {
     if (this.playerFireCounter == 0) {
-      // triple shot
-      if (this.currentPlayer.getVariation().equals("P1c")) {
-        Bullets newBullet = this.getSprite.getNewBullet("arrow");
-        this.playerBullet = newBullet;
-        this.playerBullet.setBulletOwner(SpriteType.PlayerBullet);
-        // spawn infront of player
-        this.playerBullet = this.playerBullet.displaceBy(this.currentPlayer.getPosition().addVect(this.currentPlayer.getAimVector()));
-        // set bullet speed to players aim
-        this.playerBullet.updateBulletVelocity(this.currentPlayer.getAimVector());
-        // update bullets aimvector to it's velocity
-        this.playerBullet.updateBulletDirection(this.playerBullet.getVelocity());
-        // add current bullet to bullet list.
-        this.bulletsOnField.add(this.playerBullet);
-        System.out.println(this.bulletsOnField.size());
+      // determine shooting pattern
+      playerShootingPatterns(this.currentPlayer.getVariation(), holdingShift);
+      // add current bullet to bullet list.
+      for (Bullets bullet : this.playerBullets) {
+        this.bulletsOnField.add(bullet);
       }
-      // homing shot
+      this.playerBullets.clear();
+      
     }
     this.playerFireCounter = (this.playerFireCounter + 1) % fireRate;
+  }
+
+  /**
+   * playerShootingPatterns is a helper method for {@link #playerFire} which contains all patterns that the player can shoot with. 
+   * each pattern also changes whenever shift-key is held (turning default spread shot to focused shot).
+   * number of bullets returned depends on pattern type (given by player variation), player power and wether shots are focused or not.
+   * @param variation is a spesific character. Used to determine shooting pattern.
+   * @return number of bullets being shot at the same time.
+   */
+  private List<Bullets> playerShootingPatterns(String variation, boolean holdingShift) {
+    // triple shot:
+    if (variation.equals("P1c")) {
+      int spacedBy = 30; // distance between bullets spawn points
+      // check for focused mode
+      if (holdingShift) {
+        spacedBy = 15;
+      }
+      Vector displaceFromDefaultSpawn = new Vector(-spacedBy, 0, 1); 
+      // add 3 bullets per shot
+      for (int i = 0; i < 3; i++) {
+        Bullets newBullet = this.getSprite.getNewBullet("arrow");
+        Vector bulletRadius = new Vector(newBullet.getRadius(), 0, 1);
+        // set bullets default spawnpoint
+        Vector spawnPoint = this.currentPlayer.getPosition().addVect(this.currentPlayer.getAimVector()).addVect(displaceFromDefaultSpawn);
+        spawnPoint = spawnPoint.addVect(bulletRadius);
+        newBullet = newBullet.displaceBy(spawnPoint);
+        // set bullet speed to players aim
+        newBullet.updateBulletVelocity(this.currentPlayer.getAimVector());
+        // update bullets direction to it's velocity
+        newBullet.updateBulletDirection(newBullet.getVelocity());
+        this.playerBullets.add(i, newBullet);
+        // set spawnpoint for next bullet
+        displaceFromDefaultSpawn = displaceFromDefaultSpawn.addVect(new Vector(spacedBy, 0, 1));
+      }    
+      
+    }
+    // homing shot
+    else if (variation.equals("P2c")) {
+
+    }
+    return this.playerBullets;
   }
   
   @Override
@@ -140,15 +171,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   @Override
   public void moveAllBullets() {
     
-    /* for (Bullets bullet : this.bulletsOnField) {
-      if (!bulletInsideScreen(bullet.displaceBy(bullet.getVelocity()))) {
-        // vanish bullet
-        this.bulletsOnField.remove(bullet);
-      }
-      bullet = bullet.displaceBy(bullet.getVelocity());
-    } */ // for-each loop gives concurrentModificationException error
-
-    for (int i = 0; i < this.bulletsOnField.size(); i++) {
+    for (int i = this.bulletsOnField.size() - 1; i >= 0; i--) {
       Bullets bullet = this.bulletsOnField.get(i);
       if (!bulletInsideScreen(bullet.displaceBy(bullet.getVelocity()))) {
         // vanish bullet
@@ -163,8 +186,10 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   }
 
   /**
-   * bulletInsideScreen
-   * 
+   * bulletInsideScreen checks if bullet is within screen bounds + bullet diameter from bounds. 
+   * bound is larger than screen to make bullet vanishing more seemless.
+   * @param shiftedBullet is the shifted position of bullet being checked.
+   * @return true if bullet is still inside screen boundary.
    */
   private boolean bulletInsideScreen(Bullets shiftedBullet) {
     // the entire hitbox of a bullet must be outside the screen before vanishing
@@ -198,10 +223,5 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     return true;
   }
 
-  @Override
-  public Iterator<Bullets> iterator() {
-    return this.bulletsOnField.iterator();
-  }
-  
   
 }

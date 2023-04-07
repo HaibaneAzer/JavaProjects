@@ -1,6 +1,7 @@
 package no.uib.inf101.sem2.grid;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -86,25 +87,30 @@ public class TestMatricies {
     assertEquals(new Vector(0, 5, 1), rotatedA);
 
     Vector b = new Vector(25, 25, 1);
-    Vector c = new Vector(30, 25, 1);
 
     // test 270 degree rotation of vector "a" at spesific point "b"
-    Vector rotatedAatB = c.transformVect(M.RotationMatrix( - Math.PI * 1.5 , b));
+    Vector AatB = a.addVect(b);
+    Vector rotatedAatB = AatB.transformVect(M.RotationMatrix( - Math.PI * 1.5 , b));
     assertEquals(new Vector(25, 30, 1), rotatedAatB);
 
+    // test 0 degree rotation not changing vector
+    Vector unchangedA = AatB.transformVect(M.RotationMatrix(0, b));
+    assertEquals(AatB, unchangedA);
+
     // test to see if turning by 2*pi/N, N times returns original vector
-    int N = 5;
-    Vector rotateA = a.transformVect(M.RotationMatrix(((2*Math.PI) / N), origin));
-
-    for (int i = 0; i < 2; ++i) {
-      rotateA = rotateA.transformVect(M.RotationMatrix(((2*Math.PI) / N), origin));
+    int N = 9;
+    Vector rotateA = a.transformVect(M.RotationMatrix(0, origin));
+    
+    for (int i = 0; i < N ; ++i) {
+      rotateA = rotateA.transformVect(M.RotationMatrix((2.0 / N)*Math.PI, origin));
     }
-
+    
     assertEquals(a, rotateA);
-
+    double tolerance = 1e-8; // close enough for length comparisons.
     // large angle will not increase vector length.
-    Vector rotatedLargeCatB = c.transformVect(M.RotationMatrix(Math.PI*613, b));
-    assertEquals(5, rotatedLargeCatB.subVect(b).length());
+    Vector rotatedLargeCatB = AatB.transformVect(M.RotationMatrix(Math.PI*613, b));
+    assertTrue(5 - rotatedLargeCatB.subVect(b).length() < tolerance);
+
   }
 
 }
