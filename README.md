@@ -27,7 +27,10 @@ Modellen skal ha:
 Klasser som må skrives:
 - `DanmakuModel` som representerer tilstanden til et komplett spill. Klassen skal ha feltvariabler som representerer hele banen, data om spiller og fiendene, samt info om hvor i spillet vi befinner oss (stage, game over, menu)
 - `DanmakuField` representerer et rektangulært område hvor spiller, fiender og skudd skal befinne seg inn i.
+- `Sprite` er en abstrakt klasse som bullets, player og enemies klassene utvider.
 - `Bullets` klassen representerer skuddene på banen som blir skutt av spilleren og fienden.
+- `Player` klassen representerer karakter(er) som man kontrollerer med tastatur: pil-taster for bevegelse, z-tast for å skyte, shift-tast for å bevege seg tregere og fokusere skuddene til spilleren. Hver karakter har sitt eget skyte mønster. Spilleren starter med 3 liv, hvor en kan miste et liv ved å berøre fiende skudd eller fiendene selv.
+- `Enemies` klassen representerer alle fiender som skyter på spilleren. For enhver stage så kommer enemies ned på banen i ulike intervaller og skyter skudd i veldig varierte mønstre. Hver av dem har healthpoints som spilleren my skytte flere skudd for å tømme helt.
 
 ### Visning
 
@@ -37,7 +40,7 @@ planen er at klassen `DanmakuView` skal:
 - deretter tegne spiller og fiendene, og
 - tilslutt tegne skuddene.
 
-I tillegg skal banen kunne endre på seg uten at den blir så tegnet oppå spilleren og skuddene. Dette trengs for å kunne lage en rullende bakgrunn på banen for å gi illusjonen av at spilleren beveger seg opp et fjell. `ViewableDanmakuModel` vil være et grensesnitt som `DanmakuModel` skal implementere.
+I tillegg skal banen kunne endre på seg uten at den blir så tegnet oppå spilleren og skuddene. Dette trengs for å kunne lage en rullende bakgrunn på banen for å gi illusjonen av at spilleren beveger seg oppover. `ViewableDanmakuModel` vil være et grensesnitt som `DanmakuModel` skal implementere.
 
 ### Kontroll
 
@@ -53,15 +56,20 @@ Klassen `DanmakuController` skal kunne endre på modellen basert på input fra b
 4. Flytte spiller
 5. Skytte skudd med spiller
 6. Tegne fiender
-7. Gi fiender ulike periodiske bevegelser
+7. Gi fiender ulike periodiske bevegelser 
 8. Få spillerens skudd til å skade og eleminere fiender.
-8. lag stage(s) og håndtere game over.
-9. En timer som bytter fiendens bevegelses type
-10. Lag en Boss-fiende og timer for angrep.
-11. Annet...
+8. lag stage(s) (begynn med 2) og håndtere game over (Her skal fiender komme med gitte intervaller forskjellig for hver stage).
+9. En timer som bytter fiendens bevegelses type (eksempel: gå i sirkel 3 ganger, deretter gå ned)
+10. Lag en Boss-fiende og timer for angreps faser (normal phase og super attack phase).
+11. Legge til pixel art for spiller, skudd og fiender.
+(spillet ansees som ferdig etter steg 11, men legger til mer hvis mulig)
+12. lag menu screen hvor du kan velge mellom player 1 og 2
+13. legge til rulende backgrunn (pixel art eller annet) unik for hvert stage.
+14. tegne scoreboard ved siden av banen.
+15. implementer mer komplekse skudd mønstre for fiender og boss (kan stort sett lages med trigonometriske funksjoner)
 
 ### Progresjon
 
-0 av 11
+6 av 11
 
 
