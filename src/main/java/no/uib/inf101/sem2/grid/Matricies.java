@@ -1,7 +1,11 @@
 package no.uib.inf101.sem2.grid;
 
-import java.util.Arrays;
-
+/**
+ * Matricies is a class doing operations with Vector-objects {@link no.uib.inf101.sem2.grid.Vector}. 
+ * Mostly uses Affine transformation matricies to perform scaling and rotation, as well as translation made
+ * possible using a 3x3 matrix instead for 2x2 in 2D coordinate system. Vectors must therefore have 3 values, 
+ * but third coordinate can stay fixed since it will not be used.
+ */
 public class Matricies {
   
   private Vector transform[] = { // identity matrix
@@ -23,7 +27,7 @@ public class Matricies {
    * choose between custom transformations. 
    * Theory: matrix is based on a Vector field, where the matrix transforms 
    * a vector into the velocity vector at a given position on the Vector field.
-   * Examples:
+   * 
    * 
    * 
    */

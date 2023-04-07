@@ -15,12 +15,13 @@ public class DanmakuController implements ActionListener{
   private final DanmakuView danView;
   private KeyInputPoller keyBoard;
   private int playerSpeed;
-  private static final int playerFireRate = 9;
+  private static final int playerFireRate = 9; // about 13 shots per second
   // gameTick and adaptable frameRate
   private Timer Timer;
   private final int updateTick = 1000 / 120; // 60 frames per second
   private double dt; // unit time for player movement
   private double thetaCurEnemy; // increment angle for current (test) enemy rotation.
+  // variables for fps calculation
   private double oldTime;
   private double newTime;
   private double[] tickList;
@@ -146,6 +147,12 @@ public class DanmakuController implements ActionListener{
 
   }
 
+  /**
+   * calcAverageFPS updates values in sum of N measured frame rates and divides by N to get average fps value.
+   * Method comes from author KPexEA and editor Sigod at stackoverflow ( + minor optimizations).
+   * Link: https://stackoverflow.com/questions/87304/calculating-frames-per-second-in-a-game.
+   * 
+   */
   private void calcAverageFPS(double newTick) {
     
     tickSum -= tickList[tickIndex];

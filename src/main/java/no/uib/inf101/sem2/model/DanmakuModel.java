@@ -27,6 +27,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   public DanmakuModel(DanmakuField Field, DanmakuFactory getSprite) {
     this.Field = Field;
     this.getSprite = getSprite;
+    // change how enemies are spawned given stage. 
     this.currentPlayer = getSprite.getNewPlayer("P1c").shiftedToStartPoint(Field);
     this.currentEnemy = getSprite.getNewEnemy("monster1").shiftedToStartPoint(Field);
     this.currentEnemy.updateDirectionState(this.currentEnemy.getState());
@@ -162,7 +163,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   @Override
   public boolean rotateAxisEnemy(double theta) {
     
-    // add conditions for enemy rotation if needed.
+    // NB: update or change completely when making advanced movement patterns.
     this.currentEnemy = this.currentEnemy.rotateAxisBy(theta);
     return true;
     
@@ -206,7 +207,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   }
 
   /**
-   * checkHitboxCollision is a helper method used by {@link #bulletInsideScreen}.
+   * checkHitboxCollision is a helper method used by {@link #bulletInsideScreen} (or implemented seperately?).
    * checks if the hitboxes of sprites overlap. Conditions:
    * First, check if player is touching enemy's hitbox or their bullets hitbox 
    * (not including player bullets). Second, check if player bullets is overlapping enemy hitboxes.
