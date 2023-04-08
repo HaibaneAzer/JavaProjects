@@ -39,11 +39,14 @@ public interface ControllableDanmakuModel {
   boolean rotateAxisEnemy(double theta);
 
   /**
-   * reset velocity in either x or y direction. 
-   * @param horisontal is direction to reset
+   * moveEnemiesInWaves spawns a set number of enemies (not total) per wave and gives them a custom path to move in. 
+   * Method runs in conjunction with (insert stage setter method), where each stage has around 4 to 5 waves of enemies spawning. 
+   * Movement for a wave is considered finished when all enemies has moved out of screen (wether or not player kills them doesn't affect completion time).
+   * time interval per wave is fixed, but short enough for each wave to overlap, making it necessary for the player to eliminate the enemies
+   * as fast as possible before more spawns. 
+   * For sake of simplicity we will give each enemy variation a set movement path.
    */
-  void resetVelocity(boolean horisontal);
-
+  void moveEnemiesInWaves();
 
   /**
    * set FPS value.

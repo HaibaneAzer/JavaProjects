@@ -5,7 +5,7 @@ import no.uib.inf101.sem2.grid.Vector;
 
 public class Bullets extends Sprite<SpriteType, SpriteState>{
 
-  private double damage;
+  private int damage;
   private int bulletLifeTime = 0; // time left until the bullet vanishes
   private Matricies Matrix = new Matricies();
   private static final Vector spawnAim = new Vector(0, 0, 1);
@@ -15,9 +15,9 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
    * Constructor for bullet movement.
    * 
    */
-  public Bullets(String bulletVar, int Radius, Vector Position, Vector bulletAim, Vector Velocity) {
-    super(SpriteType.Bullet, bulletVar, SpriteState.relative, Radius, Position, bulletAim, Velocity);
-    
+  public Bullets(SpriteType type, String bulletVar, int Radius, Vector Position, Vector bulletAim, Vector Velocity, int damage) {
+    super(type, bulletVar, SpriteState.relative, Radius, Position, bulletAim, Velocity);
+    this.damage = damage;
 
   }
 
@@ -25,7 +25,7 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
    * constructor for spawning bullet Player.
    * damage depends on player power and bullet type
    */
-  public Bullets(String bulletVar, int Radius, Vector Position, double damage) {
+  public Bullets(String bulletVar, int Radius, Vector Position, int damage) {
     super(SpriteType.Bullet, bulletVar, SpriteState.relative, Radius, Position, spawnAim, standStill);
     this.damage = damage;
 
@@ -70,7 +70,7 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
    * getter for damage
    * 
    */
-  public double getDamage() {
+  public int getDamage() {
     return this.damage;
   }
 
@@ -119,7 +119,7 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
     Vector[] translate = Matrix.TranslationMatrix(Velocity); // get translation matrix
     Vector displacedPosition = this.Position.transformVect(translate); // displace position
 
-    Bullets displacedBullet = new Bullets(this.Variation, this.Radius, displacedPosition, this.Direction, this.Velocity);
+    Bullets displacedBullet = new Bullets(this.type, this.Variation, this.Radius, displacedPosition, this.Direction, this.Velocity, this.damage);
     return displacedBullet;
   }
 
@@ -135,7 +135,7 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
   
     Vector rotatedDirection = this.Direction.transformVect(rotateAroundPosition);
 
-    Bullets rotatedEnemy = new Bullets(this.Variation, this.Radius, this.Position, rotatedDirection, this.Velocity);
+    Bullets rotatedEnemy = new Bullets(this.type, this.Variation, this.Radius, this.Position, rotatedDirection, this.Velocity, this.damage);
     return rotatedEnemy;
   }
 

@@ -26,7 +26,7 @@ public interface ViewableDanmakuModel {
   * 
   * @return next enemy
   */
-  Enemies getEnemy();
+  Iterable<Enemies> getEnemiesOnField();
 
   /**
    * 

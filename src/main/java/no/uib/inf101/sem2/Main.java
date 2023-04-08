@@ -13,8 +13,8 @@ public class Main {
 
   static final int x = 25;
   static final int y = 25;
-  static final int Width = 500;
-  static final int Height = 800;
+  static final int Width = 480; // keep ratio at 1.154
+  static final int Height = 560;
 
   public static void main(String[] args) {
 

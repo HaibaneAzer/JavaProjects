@@ -52,7 +52,7 @@ public class DanmakuView extends JPanel{
     
     drawField(Canvas, this.Model.getDimension(), this.setColor);
     drawPlayer(Canvas, this.Model.getPlayer() ,this.setColor);
-    drawEnemy(Canvas, this.Model.getEnemy(), this.setColor);
+    drawEnemy(Canvas, this.Model.getEnemiesOnField(), this.setColor);
     drawBulletsOnField(Canvas, this.Model.getBulletsOnField(), this.setColor);
     drawFPSCounter(Canvas, this.Model.getDimension(), setColor, this.Model.getFPSValue());
     
@@ -76,36 +76,39 @@ public class DanmakuView extends JPanel{
     
   }
 
-  private void drawEnemy(Graphics2D Canvas, Enemies enemy, ColorTheme Color) {
+  private void drawEnemy(Graphics2D Canvas, Iterable<Enemies> enemies, ColorTheme Color) {
     double x;
     double y;
-    Vector aimvectStartPoint = enemy.getPosition(); // aim vector starts at position.
     Vector aimLength;
     double aimX;
     double aimY;
     double diameter;
     Ellipse2D enemyBall;
     Line2D enemyAimArrow;
-    
-    x = enemy.getPosition().x() - enemy.getRadius();
-    y = enemy.getPosition().y() - enemy.getRadius();
-    diameter = 2*enemy.getRadius();
-    
-    enemyBall = new Ellipse2D.Double(x, y, diameter, diameter);
-    
-    Canvas.setColor(Color.getSpriteColor('b'));
-    Canvas.fill(enemyBall);
 
-    aimX = aimvectStartPoint.x();
-    aimY = aimvectStartPoint.y();
-    aimLength = aimvectStartPoint.addVect(enemy.getAimVector());
-    enemyAimArrow = new Line2D.Double(aimX, aimY, aimLength.x(), aimLength.y());
-
-    Canvas.setColor(Color.getSpriteColor('c'));
-    Canvas.setStroke(new BasicStroke(2));
-    Canvas.draw(enemyAimArrow);
-    //System.out.println(aimX + " and " + aimY);
+    for (Enemies enemy : enemies) {
+      Vector aimvectStartPoint = enemy.getPosition(); // aim vector starts at position.
     
+      x = enemy.getPosition().x() - enemy.getRadius();
+      y = enemy.getPosition().y() - enemy.getRadius();
+      diameter = 2*enemy.getRadius();
+    
+      enemyBall = new Ellipse2D.Double(x, y, diameter, diameter);
+    
+      Canvas.setColor(Color.getSpriteColor('b'));
+      Canvas.fill(enemyBall);
+
+      aimX = aimvectStartPoint.x();
+      aimY = aimvectStartPoint.y();
+      aimLength = aimvectStartPoint.addVect(enemy.getAimVector());
+      enemyAimArrow = new Line2D.Double(aimX, aimY, aimLength.x(), aimLength.y());
+
+      Canvas.setColor(Color.getSpriteColor('c'));
+      Canvas.setStroke(new BasicStroke(2));
+      Canvas.draw(enemyAimArrow);
+      //System.out.println(aimX + " and " + aimY);
+    }
+
   }
 
   private void drawBulletsOnField(Graphics2D Canvas, Iterable<Bullets> bulletList, ColorTheme Color) {
@@ -154,6 +157,11 @@ public class DanmakuView extends JPanel{
     Rectangle2D newRect = new Rectangle2D.Double(x, y, width, height);
     Canvas.setColor(Color.getFieldColor());
     Canvas.fill(newRect);
+
+    // draw line of collection
+    Canvas.setColor(Color.getSpriteColor('r'));
+    Line2D collectionLine = new Line2D.Double(x, y + (height*(0.28)), x + width, y + (height*(0.28)));
+    Canvas.draw(collectionLine);
     
   }
 

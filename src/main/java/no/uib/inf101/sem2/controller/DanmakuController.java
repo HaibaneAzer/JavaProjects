@@ -105,13 +105,6 @@ public class DanmakuController implements ActionListener{
     if (this.keyBoard.keyDown(KeyEvent.VK_RIGHT)) {
       this.controllModel.movePlayer(PlayerMove[3].multiplyScalar(this.playerSpeed), this.dt);
     }
-    // reset playermovement when corrosponding key gets released
-    if (!(this.keyBoard.keyDown(KeyEvent.VK_UP) || (this.keyBoard.keyDown(KeyEvent.VK_DOWN)))) {
-      this.controllModel.resetVelocity(false);
-    }
-    if (!(this.keyBoard.keyDown(KeyEvent.VK_RIGHT) || (this.keyBoard.keyDown(KeyEvent.VK_LEFT)))) {
-      this.controllModel.resetVelocity(true);
-    }
     // change player speed
     if (this.keyBoard.keyDown(KeyEvent.VK_SHIFT)) {
       this.playerSpeed = 3;

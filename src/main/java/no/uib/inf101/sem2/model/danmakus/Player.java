@@ -13,6 +13,7 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
   private static final Vector standStill = new Vector(0, 0, 1);
   private static final Vector startingAim = new Vector(0, -10, 1);
   private int Lives; // default 3
+  private int defaultLives; // reseting lifes per game
   private double Power; // dmg multiplier from 0 to 5
   
   /**
@@ -22,9 +23,6 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
     // spriteType is unchangeable, SpriteState can change.
     super(SpriteType.Player, playerVar, SpriteState.aim, Radius, Position, Direction, Velocity);
     this.accel = new Vector(0, 0, 1);
-    // constants equal for all players.
-    this.Lives = 3;  
-    this.Power = 1.0;
   }
   /**
    * spawning constructor
@@ -33,8 +31,9 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
     // spriteType is unchangeable, SpriteState can change.
     super(SpriteType.Player, playerVar, SpriteState.aim, Radius, Position, startingAim, standStill);
     this.accel = new Vector(0, 0, 1);
-    // constants equal for all players.
+    // default spawn variables for all players.
     this.Lives = 3;  
+    this.defaultLives = this.Lives;
     this.Power = 1.0;
   }
 
@@ -63,11 +62,33 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
   }
 
   /**
+   * getter for default max lives
+   */
+  public int getDefaultLives() {
+    return this.defaultLives;
+  }
+
+  /**
    * getter for power
    * 
    */
   public double getPower() {
     return this.Power;
+  }
+
+  /**
+   * isAlive checks if player has lives left.
+   */
+  public boolean isAlive() {
+    return this.Lives > 0;
+  }
+
+  /**
+   * killPlayer removes lifes from player when getting hit. if player has no lives left, stop respawning.
+   * 
+   */
+  public void killPlayer() {
+    this.Lives--;
   }
 
   /**

@@ -22,7 +22,7 @@ public record Vector(double x, double y, int constant) {
 
   /**
    * subVectors performs subtraction between two vectors
-   * Math: Vect(x1, y1) + Vect(x2, y2) = Vect(x1 + x2, y1 + y2)
+   * Math: Vect(x1, y1) - Vect(x2, y2) = Vect(x1 - x2, y1 - y2)
    * @param Vect2 is our secondary vector
    */
   public Vector subVect(Vector Vect2) {
@@ -39,7 +39,7 @@ public record Vector(double x, double y, int constant) {
   }
 
   /**
-   * rotateVect rotates the vector around a origin with theta as angle.
+   * rotateVect rotates the vector around origin with theta as angle.
    */
   public Vector rotateVect(double Theta, Vector Pos) {
     double rotX = this.x*Math.cos(Theta) + this.y*Math.sin(Theta);

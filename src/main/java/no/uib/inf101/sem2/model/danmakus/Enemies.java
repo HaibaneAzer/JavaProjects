@@ -10,6 +10,7 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
   private static final Vector standStill = new Vector(0, 0, 1);
   private static final Vector startingAim = new Vector(0, 25, 1); // unit length aim Vector
   private int healthPoints;
+  private int maxHealth;
   private int healthBars;
 
   /**
@@ -27,6 +28,7 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
   public Enemies(String EnemyVar, int healthPoints, int healthBars, int Radius, Vector Position) {
     super(SpriteType.Enemy, EnemyVar, SpriteState.aim, Radius, Position, startingAim, standStill);
     this.healthPoints = healthPoints;
+    this.maxHealth = healthPoints;
     this.healthBars = healthBars;
   }
   
@@ -45,6 +47,35 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
     };
     return enemy;
     
+  }
+
+  /**
+   * getter for enemy healthpoints
+   */
+  public int getHealthPoints() {
+    return this.healthPoints;
+  }
+
+  /**
+   * getter for maxhealth of enemy
+   */
+  public int getMaxhealth() {
+    return this.maxHealth;
+  }
+
+  /**
+   * getter for enemy healthBars
+   */
+  public int getHealthBars() {
+    return this.healthBars;
+  }
+
+  /**
+   * isAlive checks if enemy still lives. When all healthbars are depleted, return false.
+   * 
+   */
+  public boolean isAlive() {
+    return this.healthBars > 0;
   }
 
   /**
@@ -109,5 +140,20 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
     return displaceBy(originToSpawn);
   }
 
+  /**
+   * attackEnemy removes healthpoints from enemy by players damage. 
+   * if enemy healthpoints is less than or equal to 0, remove
+   * one healthbar. if enemy is not alive, return false, otherwise return true;
+   * 
+   */
+  public void attackEnemy(int damageTaken) {
+    this.healthPoints -= damageTaken;
+    if (this.healthPoints <= 0) {
+      this.healthPoints = this.maxHealth;
+      this.healthBars--;
+      
+    }
+    
+  }
   
 }

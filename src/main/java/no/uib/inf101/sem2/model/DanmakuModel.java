@@ -10,6 +10,7 @@ import no.uib.inf101.sem2.model.danmakus.Bullets;
 import no.uib.inf101.sem2.model.danmakus.DanmakuFactory;
 import no.uib.inf101.sem2.model.danmakus.Enemies;
 import no.uib.inf101.sem2.model.danmakus.Player;
+import no.uib.inf101.sem2.model.danmakus.SpriteType;
 import no.uib.inf101.sem2.view.ViewableDanmakuModel;
 
 public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuModel{
@@ -19,8 +20,10 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   private Player currentPlayer;
   private List<Bullets> playerBullets = new ArrayList<Bullets>(); // number of bullets player shoots at the same time.
   private int playerFireCounter = 0;
-  private Enemies currentEnemy;
-  private List<Bullets> enemyBullet = new ArrayList<Bullets>(); // number of bullets enemy shoots at the same time.
+  private List<Enemies> currentEnemies = new ArrayList<Enemies>(); // number of spawned enemies alive (or not despawned)
+  private Enemies enemy1;
+  private Enemies enemy2;
+  private List<Bullets> enemyBullets = new ArrayList<Bullets>(); // number of bullets enemy shoots at the same time.
   private List<Bullets> bulletsOnField = new ArrayList<Bullets>(); // total bullets from both player and enemies.
   private double FPSCounter = 60.0;
   
@@ -29,8 +32,14 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     this.getSprite = getSprite;
     // change how enemies are spawned given stage. 
     this.currentPlayer = getSprite.getNewPlayer("P1c").shiftedToStartPoint(Field);
-    this.currentEnemy = getSprite.getNewEnemy("monster1").shiftedToStartPoint(Field);
-    this.currentEnemy.updateDirectionState(this.currentEnemy.getState());
+    this.enemy1 = getSprite.getNewEnemy("monster1").shiftedToStartPoint(Field);
+    this.enemy2 = getSprite.getNewEnemy("monster2").shiftedToStartPoint(Field).displaceBy(new Vector(40, 0, 1));
+    this.enemy1.updateDirectionState(this.enemy1.getState());
+    this.enemy2.updateDirectionState(this.enemy2.getState());
+    // keep track of enemies
+    // NB: later remove instance variables for enemy and add new ones to list with an algorithm.
+    this.currentEnemies.add(enemy1);
+    this.currentEnemies.add(enemy2);
     
     
   }
@@ -46,8 +55,8 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   }
 
   @Override
-  public Enemies getEnemy() {
-    return this.currentEnemy;
+  public Iterable<Enemies> getEnemiesOnField() {
+    return this.currentEnemies;
   }
 
   @Override
@@ -64,17 +73,6 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   public void setFPSValue(double newFPS) {
     this.FPSCounter = newFPS;
   }
-
-  @Override
-  public void resetVelocity(boolean horisontal) {
-    if (horisontal) {
-      this.currentPlayer.setVelocity(new Vector(0, this.currentPlayer.getVelocity().y(), 1));
-    }
-    else {
-      this.currentPlayer.setVelocity(new Vector(this.currentPlayer.getVelocity().x(), 0, 1));
-    }
-
-  } 
 
   @Override
   public void playerFire(int fireRate, boolean holdingShift) {
@@ -107,9 +105,11 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
         spacedBy = 15;
       }
       Vector displaceFromDefaultSpawn = new Vector(-spacedBy, 0, 1); 
-      // add 3 bullets per shot
+      // add 3 + N bullets per shot, where N is determined by player power
+      // power >= 2 -> N = 1, power >= 3 -> N = 2, power >= 4 -> N = 3
       for (int i = 0; i < 3; i++) {
         Bullets newBullet = this.getSprite.getNewBullet("arrow");
+        newBullet.setBulletOwner(SpriteType.PlayerBullet);
         Vector bulletRadius = new Vector(newBullet.getRadius(), 0, 1);
         // set bullets default spawnpoint
         Vector spawnPoint = this.currentPlayer.getPosition().addVect(this.currentPlayer.getAimVector()).addVect(displaceFromDefaultSpawn);
@@ -146,6 +146,10 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
 
   }
   
+  /**
+   * insideField is a helper method for {@link #movePlayer}, which is used to check if player is trying to move out the field.
+   * 
+   */
   private boolean insideField(Player shiftedplayer) {
     boolean withinField = (
       shiftedplayer.getPosition().x() - shiftedplayer.getRadius() >= this.Field.getFieldX() && 
@@ -163,10 +167,20 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   @Override
   public boolean rotateAxisEnemy(double theta) {
     
+    // placeholder function for enemy movement pattern.
     // NB: update or change completely when making advanced movement patterns.
-    this.currentEnemy = this.currentEnemy.rotateAxisBy(theta);
+    for (int i = this.currentEnemies.size() - 1; i >= 0; i--) {
+      this.currentEnemies.set(i, this.currentEnemies.get(i).rotateAxisBy(theta));
+    }
     return true;
     
+  }
+
+  @Override
+  public void moveEnemiesInWaves() {
+    // we need:
+    // * a list of 1 enemy variation, which gets renewed after wave is over.
+    // * movement path information (saved as string or list of values).
   }
 
   @Override
@@ -175,7 +189,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     for (int i = this.bulletsOnField.size() - 1; i >= 0; i--) {
       Bullets bullet = this.bulletsOnField.get(i);
       if (!bulletInsideScreen(bullet.displaceBy(bullet.getVelocity()))) {
-        // vanish bullet
+        // vanish bullet when outside field
         this.bulletsOnField.remove(i);
       }
       else {
@@ -183,12 +197,11 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
       }
     }
 
-
   }
 
   /**
-   * bulletInsideScreen checks if bullet is within screen bounds + bullet diameter from bounds. 
-   * bound is larger than screen to make bullet vanishing more seemless.
+   * bulletInsideScreen is a helper method for {@link #moveAllBullets} checks if bullet is within screen bounds + bullet diameter from bounds. 
+   * bound is larger than screen to make bullet vanishing more seemless. Continues to {@link #checkBulletCollision}.
    * @param shiftedBullet is the shifted position of bullet being checked.
    * @return true if bullet is still inside screen boundary.
    */
@@ -203,23 +216,46 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     if (!withinScreen) {
       return false;
     }
-    return true;
+    // no bullets outside? check bullet collision
+    return checkBulletCollision(shiftedBullet);
   }
 
   /**
-   * checkHitboxCollision is a helper method used by {@link #bulletInsideScreen} (or implemented seperately?).
-   * checks if the hitboxes of sprites overlap. Conditions:
-   * First, check if player is touching enemy's hitbox or their bullets hitbox 
-   * (not including player bullets). Second, check if player bullets is overlapping enemy hitboxes.
-   * Whenever overlapping happens to the player loses 1 life and gets immunity frames for 3 seconds.
-   * Whenever overlapping happens to the enemy, subtract their hp by dmg value of bullet.
+   * checkPlayerBulletCollision is a helper method used by {@link #bulletInsideScreen}.
+   * checks if the hitboxes of player/enemy overlap bullets from enemy/player.
    * Idea: use grid for whole field (cell dimension same size as smallest sprite) where two for loops loop
    * through the grid until a cell containing atleast one sprite is found, check all neighbouring cells for sprites
    * and compare these with eachother. might make comparisons faster when number of bullets gets up in the 1000s.
    */
-  private boolean checkHitboxCollision() {
-
-
+  private boolean checkBulletCollision(Bullets shiftedBullet) {
+    // player bullet hit enemy
+    if (shiftedBullet.getType().equals(SpriteType.PlayerBullet)) { 
+      for (int i = this.currentEnemies.size() - 1; i >= 0; i--) {
+        // collision formula: |P1 - P2| < r1 + r2, where r is radius and P is position vectors
+        Enemies enemy = this.currentEnemies.get(i);
+        if (shiftedBullet.getPosition().subVect(enemy.getPosition()).length() < shiftedBullet.getRadius() + enemy.getRadius()) {
+          enemy.attackEnemy(shiftedBullet.getDamage());
+          this.currentEnemies.set(i, enemy);
+          if (!enemy.isAlive()) {
+            this.currentEnemies.remove(i);
+          }
+          return false;
+        }
+        
+      }
+    }
+    // enemy bullet hit player
+    else if (shiftedBullet.getType().equals(SpriteType.EnemyBullet)) {
+      
+      if (shiftedBullet.getPosition().subVect(this.currentPlayer.getPosition()).length() < shiftedBullet.getRadius() + this.currentPlayer.getRadius()) {
+        this.currentPlayer.killPlayer();
+        if (!this.currentPlayer.isAlive()) {
+          this.currentPlayer = null; // NB: improve despawning player when game over
+        }
+        this.currentPlayer = getSprite.getNewPlayer(this.currentPlayer.getVariation()).shiftedToStartPoint(Field);
+        return false;
+      }
+    }
 
     return true;
   }
