@@ -21,6 +21,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   private List<Bullets> playerBullets = new ArrayList<Bullets>(); // number of bullets player shoots at the same time.
   private int playerFireCounter = 0;
   private List<Enemies> currentEnemies = new ArrayList<Enemies>(); // number of spawned enemies alive (or not despawned)
+  private List<Enemies> TotalEnemies = new ArrayList<Enemies>(); // total enemies per game.
   private Enemies enemy1;
   private Enemies enemy2;
   private List<Bullets> enemyBullets = new ArrayList<Bullets>(); // number of bullets enemy shoots at the same time.
@@ -179,8 +180,51 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   @Override
   public void moveEnemiesInWaves() {
     // we need:
-    // * a list of 1 enemy variation, which gets renewed after wave is over.
+    // * a list of enemies, which gets renewed after one wave is over.
     // * movement path information (saved as string or list of values).
+    int currentWaves = 4;
+    List<String> movements = new ArrayList<>();
+    movements.add("aim"); // move in direction of aim
+    movements.add("cosine"); 
+    movements.add("horizontal");
+    movements.add("downwards");
+    movements.add("circleTurn");
+    movements.add("reverse"); // repeat any movement backwards
+    movements.add("stop"); // mostly used to connect two different movements.
+
+    // get 3 or 1 enemies from total and put them in wave (extend later)
+    List<Enemies> waveEnemies = new ArrayList<>(); // make instance variable?
+    if (this.currentEnemies.size() % 3 == 0) {
+      for (int i = this.currentEnemies.size() - 1;i >= 0;i--) {
+        if (this.currentEnemies.get(i).getVariation().equals("monster1")) {
+          waveEnemies.add(this.currentEnemies.get(i));
+          this.currentEnemies.remove(i);
+          if (waveEnemies.size() == 3) {
+            break;
+          }
+        }
+      }
+    }
+    else if (!this.currentEnemies.isEmpty()) {
+      Enemies enemy = findEnemyVariation("monster2");
+      waveEnemies.add(enemy);
+      this.currentEnemies.remove(this.currentEnemies.indexOf(enemy));
+    }
+    // start wave
+    // spawn first enemy in list and set movement. 
+    // wait T ticks (based on controller timer) before spawning next enemy in list.
+    // when wave list is empty, move to next wave.
+
+
+  }
+
+  /**
+   * findEnemyVariation goes through the total list of enemies and retrieves only the enemy of a spesific variation.
+   * Code snippet from stackoverflow by oleg.cherednik.
+   * link: https://stackoverflow.com/questions/17526608/how-to-find-an-object-in-an-arraylist-by-property.
+   */
+  private Enemies findEnemyVariation(String variation) {
+    return this.currentEnemies.stream().filter(enemy -> variation.equals(enemy.getVariation())).findFirst().orElse(null);
   }
 
   @Override
