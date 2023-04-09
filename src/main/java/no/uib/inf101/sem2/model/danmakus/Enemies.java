@@ -8,7 +8,7 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
 
   private Matricies Matrix = new Matricies();
   private static final Vector standStill = new Vector(0, 0, 1);
-  private static final Vector startingAim = new Vector(0, 25, 1); // unit length aim Vector
+  private static final Vector startingAim = new Vector(0, 20, 1); // unit length aim Vector
   private int healthPoints;
   private int maxHealth;
   private int healthBars;
@@ -83,13 +83,22 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
    * the scalar either represents distance (when used with {@link #shiftedToStartPoint}) 
    * or speed. 
    */
-  public Enemies displaceBy(Vector Velocity) {
+  public Enemies displaceBy(Vector displacement) {
     
-    Vector[] translate = Matrix.TranslationMatrix(Velocity); // get translation matrix
+    Vector[] translate = Matrix.TranslationMatrix(displacement); // get translation matrix
     Vector displacedPosition = this.Position.transformVect(translate); // displace position
 
-    Enemies displacedPlayer = new Enemies(this.Variation, this.healthPoints, this.healthBars, this.Radius, displacedPosition, this.Direction, this.Velocity);
-    return displacedPlayer;
+    Enemies displacedEnemy = new Enemies(this.Variation, this.healthPoints, this.healthBars, this.Radius, displacedPosition, this.Direction, this.Velocity);
+    return displacedEnemy;
+  }
+
+  /**
+   * setNewPosition sets current position to any Vector. New Vector can be a transformed version of old position
+   * example: Vect(sin(x), sin(y) + center, 1) returns a displacement moving along a sine wave center, where center is a line parallell to 
+   * x-axis.
+   */
+  public Enemies setNewPosition(Vector displacedPosition) {
+    return new Enemies(this.Variation, this.healthPoints, this.healthBars, this.Radius, displacedPosition, this.Direction, this.Velocity);
   }
 
   /**
@@ -128,12 +137,11 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
   }
 
   /**
-  * sets enemy spawn on field.
-  * idea: make spawnpoint on upper half of field randomized
+  * sets enemy default spawn on field.
   */
   public Enemies shiftedToStartPoint(FieldDimension dimension) {
     int startX = (int) (Math.round(dimension.width()/2) + dimension.getFieldX());
-    int startY = (int) (Math.round(0.1*dimension.height()) + dimension.getFieldY());
+    int startY = (int) (0);
 
     Vector originToSpawn = new Vector(startX, startY, 1);
 

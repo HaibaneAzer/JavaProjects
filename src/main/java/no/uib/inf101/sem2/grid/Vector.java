@@ -49,6 +49,22 @@ public record Vector(double x, double y, int constant) {
   }
 
   /**
+   * sineVect changes vector coordinates given displacement from y/x axis and displacement vector.
+   * @param sineWave returns sinewave movement along x-axis if true, false returns sine movement along y-axis.
+   * @param dt is displacement from current position. with vector you use it's length.
+   * @param center is distance from either axis. if sineWave is true, then it uses distance from y-axis
+   */
+  public Vector sineVect(int center, double dt, boolean sineWave) {
+    double newY = Math.sin(this.y + dt);
+    double newX = newY + center;
+    if (sineWave) {
+      newX = Math.sin(this.x + dt);
+      newY = newX + center;
+    }
+    return new Vector(newX, newY, 1);
+  }
+
+  /**
    * 
    */
   public double length() {

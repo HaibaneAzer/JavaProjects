@@ -20,10 +20,11 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   private Player currentPlayer;
   private List<Bullets> playerBullets = new ArrayList<Bullets>(); // number of bullets player shoots at the same time.
   private int playerFireCounter = 0;
-  private List<Enemies> currentEnemies = new ArrayList<Enemies>(); // number of spawned enemies alive (or not despawned)
-  private List<Enemies> TotalEnemies = new ArrayList<Enemies>(); // total enemies per game.
-  private Enemies enemy1;
-  private Enemies enemy2;
+  private List<Enemies> currentEnemies = new ArrayList<Enemies>(); // number of enemies spawned per wave)
+  private List<Enemies> TotalEnemies = new ArrayList<Enemies>(); // total enemies per stage.
+  private int currentStage;
+  private int currentWave;
+  private boolean createWaves = true;
   private List<Bullets> enemyBullets = new ArrayList<Bullets>(); // number of bullets enemy shoots at the same time.
   private List<Bullets> bulletsOnField = new ArrayList<Bullets>(); // total bullets from both player and enemies.
   private double FPSCounter = 60.0;
@@ -31,17 +32,11 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   public DanmakuModel(DanmakuField Field, DanmakuFactory getSprite) {
     this.Field = Field;
     this.getSprite = getSprite;
+    this.currentStage = 1;
+    this.currentWave = 1;
     // change how enemies are spawned given stage. 
     this.currentPlayer = getSprite.getNewPlayer("P1c").shiftedToStartPoint(Field);
-    this.enemy1 = getSprite.getNewEnemy("monster1").shiftedToStartPoint(Field);
-    this.enemy2 = getSprite.getNewEnemy("monster2").shiftedToStartPoint(Field).displaceBy(new Vector(40, 0, 1));
-    this.enemy1.updateDirectionState(this.enemy1.getState());
-    this.enemy2.updateDirectionState(this.enemy2.getState());
-    // keep track of enemies
-    // NB: later remove instance variables for enemy and add new ones to list with an algorithm.
-    this.currentEnemies.add(enemy1);
-    this.currentEnemies.add(enemy2);
-    
+    this.TotalEnemies = getSprite.getTotalEnemies(this.currentStage);
     
   }
   
@@ -170,19 +165,16 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     
     // placeholder function for enemy movement pattern.
     // NB: update or change completely when making advanced movement patterns.
-    for (int i = this.currentEnemies.size() - 1; i >= 0; i--) {
+    /* for (int i = this.currentEnemies.size() - 1; i >= 0; i--) {
       this.currentEnemies.set(i, this.currentEnemies.get(i).rotateAxisBy(theta));
-    }
+    } */
     return true;
     
   }
 
   @Override
   public void moveEnemiesInWaves() {
-    // we need:
-    // * a list of enemies, which gets renewed after one wave is over.
-    // * movement path information (saved as string or list of values).
-    int currentWaves = 4;
+   
     List<String> movements = new ArrayList<>();
     movements.add("aim"); // move in direction of aim
     movements.add("cosine"); 
@@ -190,31 +182,56 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     movements.add("downwards");
     movements.add("circleTurn");
     movements.add("reverse"); // repeat any movement backwards
-    movements.add("stop"); // mostly used to connect two different movements.
+    movements.add("stop"); // stop current movement path.
 
-    // get 3 or 1 enemies from total and put them in wave (extend later)
-    List<Enemies> waveEnemies = new ArrayList<>(); // make instance variable?
-    if (this.currentEnemies.size() % 3 == 0) {
-      for (int i = this.currentEnemies.size() - 1;i >= 0;i--) {
-        if (this.currentEnemies.get(i).getVariation().equals("monster1")) {
-          waveEnemies.add(this.currentEnemies.get(i));
-          this.currentEnemies.remove(i);
-          if (waveEnemies.size() == 3) {
-            break;
+    // get 3 or 1 enemies from total and put them in one wave (extend later to 8 per wave)
+    if (this.createWaves) {
+      // ................
+      if (this.TotalEnemies.size() > 2) { 
+        for (int i = this.TotalEnemies.size() - 1;i >= 0;i--) {
+          if (this.TotalEnemies.get(i).getVariation().equals("monster1")) {
+            this.currentEnemies.add(this.TotalEnemies.get(i));
+            this.TotalEnemies.remove(i);
+            if (this.currentEnemies.size() == 3) {
+              break;
+            }
           }
         }
       }
+      else if (!this.TotalEnemies.isEmpty()) {
+        Enemies enemy = findEnemyVariation("monster2");
+        if (enemy.equals(null)) {
+          enemy = findEnemyVariation("monster1");
+        }
+        this.currentEnemies.add(enemy);
+        this.TotalEnemies.remove(this.TotalEnemies.indexOf(enemy));
+      }
+      // ..................
+      this.createWaves = false;
+      System.out.println("repeat: ");
+      setSpawnWaveEnemies(this.currentWave);
     }
-    else if (!this.currentEnemies.isEmpty()) {
-      Enemies enemy = findEnemyVariation("monster2");
-      waveEnemies.add(enemy);
-      this.currentEnemies.remove(this.currentEnemies.indexOf(enemy));
+    if (this.currentWave == 0) {
+      this.createWaves = true;
     }
     // start wave
     // spawn first enemy in list and set movement. 
+    
     // wait T ticks (based on controller timer) before spawning next enemy in list.
     // when wave list is empty, move to next wave.
-
+    setMovementWaveEnemies(""); // not made yet
+    // basic movement complete. need enemies to move seperately and not at the same time.
+    // maybe change setspawnwaveenemies?
+    for (int i = this.currentEnemies.size() - 1; i >= 0; i--) {
+      Enemies enemy = this.currentEnemies.get(i);
+      enemy.setVelocity(new Vector(0, 3, 1));
+      double newY = enemy.getPosition().y() + 0.3*enemy.getVelocity().length();
+      double newX = 80*Math.sin(0.01*enemy.getPosition().y()) + 120;
+      Enemies displacedEnemy = enemy.setNewPosition(new Vector(newX, newY, 1));
+      System.out.println("new pos: " + enemy.getPosition() + " for " + i);
+      this.currentEnemies.set(i, displacedEnemy);
+      
+    }
 
   }
 
@@ -224,7 +241,54 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
    * link: https://stackoverflow.com/questions/17526608/how-to-find-an-object-in-an-arraylist-by-property.
    */
   private Enemies findEnemyVariation(String variation) {
-    return this.currentEnemies.stream().filter(enemy -> variation.equals(enemy.getVariation())).findFirst().orElse(null);
+    return this.TotalEnemies.stream().filter(enemy -> variation.equals(enemy.getVariation())).findFirst().orElse(null);
+  }
+
+  /**
+   * setSpawnWaveEnemies is a method that contains preset spawns positions for enemies depending on wave number, stage
+   * and list of wave enemies.
+   * helper method for moveEnemiesInWaves.
+   */
+  private void setSpawnWaveEnemies(int wave) {
+  
+    if (wave == 1 && this.currentStage == 1) {
+      for (int i = this.currentEnemies.size() - 1; i >= 0; i--) {
+        // spawn left from top center
+        this.currentEnemies.set(i, this.currentEnemies.get(i).shiftedToStartPoint(Field).displaceBy(new Vector(1, 30, 1)));
+      }
+    }
+    else if (wave == 2 && this.currentStage == 1) {
+      for (int i = this.currentEnemies.size() - 1; i >= 0; i--) {
+        // spawn right from top center
+        this.currentEnemies.set(i, this.currentEnemies.get(i).shiftedToStartPoint(Field).displaceBy(new Vector(50, 0, 1)));
+      }
+    }
+    else if (wave == 3 && this.currentStage == 1) {
+      for (int i = this.currentEnemies.size() - 1; i >= 0; i--) {
+        // spawn left from top center
+        this.currentEnemies.set(i, this.currentEnemies.get(i).shiftedToStartPoint(Field).displaceBy(new Vector(-50, 0, 1)));
+      }
+    }
+    else if (wave == 4 && this.currentStage == 1) {
+      for (int i = this.currentEnemies.size() - 1; i >= 0; i--) {
+        // spawn at top center
+        this.currentEnemies.set(i, this.currentEnemies.get(i).shiftedToStartPoint(Field));
+      }
+    }
+    else if (wave == 1 && this.currentStage == 2) {
+      for (int i = this.currentEnemies.size() - 1; i >= 0; i--) {
+        // spawn left from top center
+        this.currentEnemies.set(i, this.currentEnemies.get(i).shiftedToStartPoint(Field));
+      }
+    }
+
+  }
+
+  /**
+   * setMovementWaveEnemies is method that contains preset movement patterns for enemies depending on enemy variation
+   */
+  private void setMovementWaveEnemies(String enemyVariation) {
+    
   }
 
   @Override

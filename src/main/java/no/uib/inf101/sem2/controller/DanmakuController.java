@@ -20,6 +20,7 @@ public class DanmakuController implements ActionListener{
   private Timer Timer;
   private final int updateTick = 1000 / 120; // 60 frames per second
   private double dt; // unit time for player movement
+  private int count = 0;
   private double thetaCurEnemy; // increment angle for current (test) enemy rotation.
   // variables for fps calculation
   private double oldTime;
@@ -76,7 +77,11 @@ public class DanmakuController implements ActionListener{
     
     // current enemy rotation
     this.thetaCurEnemy = Math.PI / (50*updateTick);
-    this.controllModel.rotateAxisEnemy(thetaCurEnemy);
+    if (count <= 0) {
+      this.controllModel.moveEnemiesInWaves();
+      count = 2;
+    }
+    count--;
     if (this.controllModel.getBulletsOnField().iterator().hasNext()) {
       this.controllModel.moveAllBullets();
     }
