@@ -12,6 +12,14 @@ Men vær forsiktig, fordi disse gudene har mange allierte som kan skytte "bullet
  
 ------------------------
 
+# BrukerManual
+
+------- Keyboard -------
+- Flytt spilleren opp, ned, venstre og høyre med pil-tastene.
+- Skyte med Z-tast.
+- Senk fart og skifte til "focused"-mode med leftshift-tast.
+------------------------
+
 # Oversikt
 
 ### Modellen
@@ -50,15 +58,15 @@ Klassen `DanmakuController` skal kunne endre på modellen basert på input fra b
 
 ## Steg for steg
 
-1. lag Grid og Sprite
-2. Tegne banen
-3. Tegne Spiller
-4. Flytte spiller
-5. Skytte skudd med spiller
-6. Tegne fiender
-7. Gi fiender ulike periodiske bevegelser 
-8. Få spillerens skudd til å skade og eleminere fiender.
-9. lag stage(s) (begynn med 2) og håndtere game over (Her skal fiender komme med gitte intervaller forskjellig for hver stage).
+1. lag Grid og Sprite ✓
+2. Tegne banen ✓
+3. Tegne Spiller ✓
+4. Flytte spiller ✓
+5. Skytte skudd med spiller ✓
+6. Tegne fiender ✓
+7. Gi fiender ulike periodiske bevegelser ✓
+8. Få spillerens skudd til å skade og eleminere fiender. ✓
+9. lag stage(s) (begynn med 2) og håndtere game over (Her skal fiender komme med gitte intervaller forskjellig for hver stage). ✓
 10. En timer som bytter fiendens bevegelses type (eksempel: gå i sirkel 3 ganger, deretter gå ned)
 11. Lag en Boss-fiende og timer for angreps faser (normal phase og super attack phase).
 12. Legge til pixel art for spiller, skudd og fiender.
@@ -70,6 +78,6 @@ Klassen `DanmakuController` skal kunne endre på modellen basert på input fra b
 
 ### Progresjon
 
-8 av 12
+9 av 12
 
 
