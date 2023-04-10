@@ -27,6 +27,60 @@ public class DefaultColorTheme implements ColorTheme {
     };
     return color;
   }
+
+  @Override
+  public Color getScoreBoardColor(String C) {
+    Color color = switch (C) {
+      case "back" -> Color.DARK_GRAY;
+      case "score" -> Color.WHITE;
+      default -> throw new IllegalArgumentException("No available color for '" + C + "'\nTry 'back' or 'score'.");
+    };
+    return color;
+  }
+
+  @Override
+  public Color getGameOverColor(String C) {
+    Color color = switch(C) {
+      case "back" -> new Color(0, 0, 0, 192);
+      case "gameover" -> Color.decode("#4F0001").brighter().brighter().brighter();
+      case "key" -> Color.decode("#4F0001").brighter().brighter().brighter();
+      default -> throw new IllegalArgumentException("No available color for '" + C + "'\nTry 'back', 'gameover' or 'key'.");
+    };
+    return color;
+  }
+
+  @Override
+  public Color getMenuScreenColor(String C) {
+    Color color = switch(C) {
+      case "back" -> Color.BLACK.brighter();
+      case "title" -> Color.WHITE.darker();
+      case "key" -> Color.WHITE.darker();
+      default -> throw new IllegalArgumentException("No available color for '" + C + "'\nTry 'back', 'title' or 'key'.");
+    };
+    return color;
+  }
+
+  @Override
+  public Color getPauseScreenColor(String C) {
+    Color color = switch(C) {
+      case "back" -> new Color(0, 0, 0, 192);
+      case "paused" -> Color.WHITE.darker();
+      case "key" -> Color.WHITE.darker();
+      default -> throw new IllegalArgumentException("No available color for '" + C + "'\nTry 'back', 'paused' or 'key'.");
+    };
+    return color;
+  }
+
+  @Override
+  public Color getStatisticsColor(String C) {
+    Color color = switch(C) {
+      case "curscore" -> Color.GRAY;
+      case "hiscore" -> Color.GRAY;
+      case "stage" -> Color.GRAY;
+      default -> throw new IllegalArgumentException("No available color for '" + C + "'\nTry 'curscore', 'hiscore' or 'stage'.");
+    };
+    return color;
+  }
   
   
   

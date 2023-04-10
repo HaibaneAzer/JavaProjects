@@ -1,6 +1,7 @@
 package no.uib.inf101.sem2.controller;
 
 import no.uib.inf101.sem2.grid.Vector;
+import no.uib.inf101.sem2.model.GameState;
 import no.uib.inf101.sem2.model.danmakus.Bullets;
 
 public interface ControllableDanmakuModel {
@@ -9,7 +10,7 @@ public interface ControllableDanmakuModel {
    * movePlayer moves the player by dx and dy, given by the velocity Vector
    * 
    */
-  boolean movePlayer(Vector velocity, double dt);
+  boolean movePlayer(Vector velocity);
 
   /**
    * playerFire spawns a new bullet(s) belonging to player. 
@@ -48,4 +49,15 @@ public interface ControllableDanmakuModel {
    * 
    */
   void setFPSValue(double newFPS);
+
+  /**
+   * getter for gameState
+   */
+  GameState getGameState();
+
+  /**
+   * setter for gameState
+   */
+  void setGameState(GameState newState);
+
 }

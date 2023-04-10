@@ -1,6 +1,7 @@
 package no.uib.inf101.sem2.view;
 
 import no.uib.inf101.sem2.grid.FieldDimension;
+import no.uib.inf101.sem2.model.GameState;
 import no.uib.inf101.sem2.model.danmakus.Bullets;
 import no.uib.inf101.sem2.model.danmakus.Enemies;
 import no.uib.inf101.sem2.model.danmakus.Player;
@@ -38,6 +39,11 @@ public interface ViewableDanmakuModel {
    * getter for stages
    */
   int getCurrentStage();
+
+  /**
+   * getter for gameState
+   */
+  GameState getGameState();
 
   /**
    * getter for FPS value calculated in controller.

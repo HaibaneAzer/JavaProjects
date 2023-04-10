@@ -1,6 +1,7 @@
 package no.uib.inf101.sem2.controller;
 
 import no.uib.inf101.sem2.grid.Vector;
+import no.uib.inf101.sem2.model.GameState;
 import no.uib.inf101.sem2.view.DanmakuView;
 
 import java.awt.event.ActionEvent;
@@ -19,9 +20,6 @@ public class DanmakuController implements ActionListener{
   // gameTick and adaptable frameRate
   private Timer Timer;
   private final int updateTick = 1000 / 120; // 60 frames per second
-  private double dt; // unit time for player movement
-  private int count = 0;
-  private double thetaCurEnemy; // increment angle for current (test) enemy rotation.
   // variables for fps calculation
   private double oldTime;
   private double newTime;
@@ -50,8 +48,6 @@ public class DanmakuController implements ActionListener{
     this.controllModel = controllModel;
     this.danView = danView;
     this.playerSpeed = 6;
-    this.dt = 0;
-    this.thetaCurEnemy = 0;
     // game tick
     this.Timer = new Timer(updateTick, this);
     this.Timer.start();
@@ -76,7 +72,6 @@ public class DanmakuController implements ActionListener{
   public void updateModel(ActionEvent arg0) {
     
     // current enemy rotation
-    this.thetaCurEnemy = Math.PI / (50*updateTick);
     this.controllModel.moveEnemiesInWaves();
     if (this.controllModel.getBulletsOnField().iterator().hasNext()) {
       this.controllModel.moveAllBullets();
@@ -89,47 +84,78 @@ public class DanmakuController implements ActionListener{
    * 
    */
   protected void keyboardInput() {
-    this.dt = 0.5*updateTick;
-    // move player down
-    if (this.keyBoard.keyDown(KeyEvent.VK_UP)) { 
-      this.controllModel.movePlayer(PlayerMove[0].multiplyScalar(this.playerSpeed), this.dt);
+    if (controllModel.getGameState().equals(GameState.GAME_MENU)) {
+      if (this.keyBoard.keyDownOnce(KeyEvent.VK_ENTER)) {
+        this.controllModel.setGameState(GameState.ACTIVE_GAME);
+        
+      }
     }
-    // move player up
-    if (this.keyBoard.keyDown(KeyEvent.VK_DOWN)) {
-      this.controllModel.movePlayer(PlayerMove[1].multiplyScalar(this.playerSpeed), this.dt);
+    else if (controllModel.getGameState().equals(GameState.ACTIVE_GAME)) {
+      if (this.keyBoard.keyDown(KeyEvent.VK_UP)) { 
+        this.controllModel.movePlayer(PlayerMove[0].multiplyScalar(this.playerSpeed));
+      }
+      if (this.keyBoard.keyDown(KeyEvent.VK_DOWN)) {
+        this.controllModel.movePlayer(PlayerMove[1].multiplyScalar(this.playerSpeed));
+      }
+      if (this.keyBoard.keyDown(KeyEvent.VK_LEFT)) {
+        this.controllModel.movePlayer(PlayerMove[2].multiplyScalar(this.playerSpeed));
+      }
+      if (this.keyBoard.keyDown(KeyEvent.VK_RIGHT)) {
+        this.controllModel.movePlayer(PlayerMove[3].multiplyScalar(this.playerSpeed));
+      }
+      if (this.keyBoard.keyDown(KeyEvent.VK_SHIFT)) {
+        this.playerSpeed = 3;
+      }
+      else {
+        this.playerSpeed = 5;
+      }
+      if (this.keyBoard.keyDown(KeyEvent.VK_Z)) {
+        this.controllModel.playerFire(playerFireRate, this.keyBoard.keyDown(KeyEvent.VK_SHIFT)); // 1 bullets per second
+      }
+      // pause menu
+      if (this.keyBoard.keyDownOnce(KeyEvent.VK_ESCAPE)) {
+        this.controllModel.setGameState(GameState.PAUSE_GAME);
+      }
     }
-    // move player left
-    if (this.keyBoard.keyDown(KeyEvent.VK_LEFT)) {
-      this.controllModel.movePlayer(PlayerMove[2].multiplyScalar(this.playerSpeed), this.dt);
+    else if (controllModel.getGameState().equals(GameState.PAUSE_GAME)) {
+      if (this.keyBoard.keyDownOnce(KeyEvent.VK_ENTER)) {
+        // reset field and set game active
+
+        controllModel.setGameState(GameState.ACTIVE_GAME);
+      }
+      else if (this.keyBoard.keyDownOnce(KeyEvent.VK_BACK_SPACE)) {
+        // reset field and set game menu
+
+        controllModel.setGameState(GameState.GAME_MENU);
+      }    
     }
-    // move player right
-    if (this.keyBoard.keyDown(KeyEvent.VK_RIGHT)) {
-      this.controllModel.movePlayer(PlayerMove[3].multiplyScalar(this.playerSpeed), this.dt);
-    }
-    // change player speed
-    if (this.keyBoard.keyDown(KeyEvent.VK_SHIFT)) {
-      this.playerSpeed = 3;
-    }
-    else {
-      this.playerSpeed = 6;
-    }
-    // player shoots bullets
-    if (this.keyBoard.keyDown(KeyEvent.VK_Z)) {
-      this.controllModel.playerFire(playerFireRate, this.keyBoard.keyDown(KeyEvent.VK_SHIFT)); // 1 bullets per second
+    else if (controllModel.getGameState().equals(GameState.GAME_OVER)) {
+      if (this.keyBoard.keyDownOnce(KeyEvent.VK_ENTER)) {
+        // reset field and set game active
+
+        controllModel.setGameState(GameState.ACTIVE_GAME);
+      }
+      else if (this.keyBoard.keyDownOnce(KeyEvent.VK_BACK_SPACE)) {
+        // reset field and set game menu
+
+        controllModel.setGameState(GameState.GAME_MENU);
+      }    
     }
       
   }
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
-    System.out.println("haha");
+
     // keyboard input
     this.keyBoard.poll();
     // process input for player
     keyboardInput();
 
+    if (this.controllModel.getGameState().equals(GameState.ACTIVE_GAME)) {
+      updateModel(arg0);
+    }
     // run other processes
-    updateModel(arg0);
 
     this.danView.repaint();
 

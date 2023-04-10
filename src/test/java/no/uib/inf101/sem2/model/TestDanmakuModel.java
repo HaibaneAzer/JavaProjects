@@ -28,7 +28,7 @@ public class TestDanmakuModel {
   double distance = 5;
   
   // move up by 5 pixels should return true when player is at spawn.
-  assertTrue(model.movePlayer(direction.multiplyScalar(distance), 1));
+  assertTrue(model.movePlayer(direction.multiplyScalar(distance)));
     
   }
 
@@ -54,10 +54,10 @@ public class TestDanmakuModel {
   double distance = 1;
   // move player to field lower bound
   for (int i = 0; i < 50; i++) {
-    model.movePlayer(direction.multiplyScalar(distance), 1);
+    model.movePlayer(direction.multiplyScalar(distance));
   }
   // should return false when player can't move past field border
-  assertFalse(model.movePlayer(direction.multiplyScalar(distance), 1));
+  assertFalse(model.movePlayer(direction.multiplyScalar(distance)));
 
   // check if player is still on field
   assertTrue(model.getPlayer().getPosition().y() < height - radius);

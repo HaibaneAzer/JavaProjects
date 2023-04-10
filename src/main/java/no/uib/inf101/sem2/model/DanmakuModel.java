@@ -17,6 +17,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   
   private DanmakuField Field;
   private final DanmakuFactory getSprite;
+  private GameState gameState;
   private Player currentPlayer;
   private List<Bullets> playerBullets = new ArrayList<Bullets>(); // number of bullets player shoots at the same time.
   private int playerFireDelay;
@@ -31,13 +32,14 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   private final int spawnEnemyInterval = 100; // enemy spawn rate
   private int spawnEnemyTimer;
   private int nextEnemyIndex;
-  private List<Bullets> enemyBullets = new ArrayList<Bullets>(); // number of bullets enemy shoots at the same time.
+  /* private List<Bullets> enemyBullets = new ArrayList<Bullets>(); */ // number of bullets enemy shoots at the same time.
   private List<Bullets> bulletsOnField = new ArrayList<Bullets>(); // total bullets from both player and enemies.
   private double FPSCounter = 60.0;
   
   public DanmakuModel(DanmakuField Field, DanmakuFactory getSprite) {
     this.Field = Field;
     this.getSprite = getSprite;
+    this.gameState = GameState.GAME_MENU;
     // handle waves and stages
     this.currentStage = 1;
     this.currentWaveIndex = 0;
@@ -85,6 +87,16 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   @Override
   public void setFPSValue(double newFPS) {
     this.FPSCounter = newFPS;
+  }
+
+  @Override
+  public GameState getGameState() {
+    return this.gameState;
+  }
+
+  @Override
+  public void setGameState(GameState newState) {
+    this.gameState = newState;
   }
 
   /* ################################################ */
@@ -150,7 +162,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   }
   
   @Override
-  public boolean movePlayer(Vector targetVel, double dt) {
+  public boolean movePlayer(Vector targetVel) {
     
     /* this.currentPlayer.accelerate(targetVel, dt); */ // NB: acceleration is janky. please fix.
     Vector displacement = targetVel;
@@ -202,9 +214,6 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
       if (this.spawnEnemyTimer >= this.spawnEnemyInterval && this.waveDelay == 0) {
         this.currentEnemies.add(this.TotalEnemies.get(this.currentWaveIndex).get(this.nextEnemyIndex));
         setSpawnWaveEnemies(this.currentWaveIndex);
-        System.out.println("index:  " + this.nextEnemyIndex + ", wave: " + this.currentWaveIndex + ", stage: " + this.currentStage);
-        System.out.println("how many alive? " + this.currentEnemies.size());
-        System.out.println("max enemies this wave? " + this.TotalEnemies.get(this.currentWaveIndex).size());
         this.nextEnemyIndex++;
         this.spawnEnemyTimer = 0;
       }
@@ -243,9 +252,9 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
    * Code snippet from stackoverflow by oleg.cherednik.
    * link: https://stackoverflow.com/questions/17526608/how-to-find-an-object-in-an-arraylist-by-property.
    */
-  private Enemies findEnemyVariation(String variation, int currentWave) {
+  /* private Enemies findEnemyVariation(String variation, int currentWave) {
     return this.TotalEnemies.get(currentWave).stream().filter(enemy -> variation.equals(enemy.getVariation())).findFirst().orElse(null);
-  }
+  } */
 
   /**
    * setSpawnWaveEnemies is a method that contains preset spawns positions for enemies depending on wave number, stage
