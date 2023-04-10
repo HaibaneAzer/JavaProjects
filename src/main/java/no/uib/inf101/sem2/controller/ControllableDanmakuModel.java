@@ -33,12 +33,6 @@ public interface ControllableDanmakuModel {
   Iterable<Bullets> getBulletsOnField();
 
   /**
-   * rotateAxisEnemy rotates the enemy by angle theta, given by it's aim diretion Vector
-   * 
-   */
-  boolean rotateAxisEnemy(double theta);
-
-  /**
    * moveEnemiesInWaves spawns a set number of enemies (not total) per wave and gives them a custom path to move in. 
    * Method runs in conjunction with (insert stage setter method), where each stage has around 4 to 5 waves of enemies spawning. 
    * Movement for a wave is considered finished when all enemies has moved out of screen (wether or not player kills them doesn't affect completion time).

@@ -77,11 +77,7 @@ public class DanmakuController implements ActionListener{
     
     // current enemy rotation
     this.thetaCurEnemy = Math.PI / (50*updateTick);
-    if (count <= 0) {
-      this.controllModel.moveEnemiesInWaves();
-      count = 2;
-    }
-    count--;
+    this.controllModel.moveEnemiesInWaves();
     if (this.controllModel.getBulletsOnField().iterator().hasNext()) {
       this.controllModel.moveAllBullets();
     }
@@ -126,7 +122,7 @@ public class DanmakuController implements ActionListener{
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
-
+    System.out.println("haha");
     // keyboard input
     this.keyBoard.poll();
     // process input for player

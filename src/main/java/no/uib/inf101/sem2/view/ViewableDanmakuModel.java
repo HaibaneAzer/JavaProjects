@@ -34,7 +34,10 @@ public interface ViewableDanmakuModel {
    */
   Iterable<Bullets> getBulletsOnField();
 
-  
+  /**
+   * getter for stages
+   */
+  int getCurrentStage();
 
   /**
    * getter for FPS value calculated in controller.

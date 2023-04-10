@@ -22,18 +22,25 @@ public class DanmakuView extends JPanel{
   
   private final ViewableDanmakuModel Model;
   private final ColorTheme setColor;
-  
+  private double SCOREBOARDWIDTH;
+  private static final double WFactor = 0.7;
+  private double SCOREBOARDHEIGHT;
+  private static final double HFactor = 0.1;
   
   public DanmakuView(ViewableDanmakuModel Model) {
     this.setFocusable(true);
     this.Model = Model;
     
-    //
+    // prefered field dimensions
     int x = this.Model.getDimension().getFieldX();
     int y = this.Model.getDimension().getFieldY();
     int Width = this.Model.getDimension().width();
     int Height = this.Model.getDimension().height();
-    int preferredWidth = (int) (Width + 2*x);
+    // prefered scoreboard dimension
+    this.SCOREBOARDWIDTH = WFactor*(Width);
+    this.SCOREBOARDHEIGHT = Height + 2*y;
+    
+    int preferredWidth = (int) (Width + 2*x + this.SCOREBOARDWIDTH);
     int preferredHeight = (int) (Height + 2*y);
     
     this.setPreferredSize(new Dimension(preferredWidth, preferredHeight));
@@ -54,7 +61,7 @@ public class DanmakuView extends JPanel{
     drawPlayer(Canvas, this.Model.getPlayer() ,this.setColor);
     drawEnemy(Canvas, this.Model.getEnemiesOnField(), this.setColor);
     drawBulletsOnField(Canvas, this.Model.getBulletsOnField(), this.setColor);
-    drawFPSCounter(Canvas, this.Model.getDimension(), setColor, this.Model.getFPSValue());
+    drawStatistics(Canvas, this.Model.getDimension(), setColor, this.Model);
     
   }
   
@@ -151,7 +158,7 @@ public class DanmakuView extends JPanel{
   private void drawField(Graphics2D Canvas, FieldDimension Field, ColorTheme Color) {
     double x = (double) Field.getFieldX();
     double y = (double) Field.getFieldY();
-    double width = this.getWidth() - 2*x;
+    double width = (this.getWidth() - this.SCOREBOARDWIDTH) - 2*x;
     double height = this.getHeight() - 2*y;
     
     Rectangle2D newRect = new Rectangle2D.Double(x, y, width, height);
@@ -165,13 +172,24 @@ public class DanmakuView extends JPanel{
     
   }
 
-  private void drawFPSCounter(Graphics2D Canvas, FieldDimension field, ColorTheme color, double fps) {
+  private void drawStatistics(Graphics2D Canvas, FieldDimension field, ColorTheme color, ViewableDanmakuModel model) {
+    // fps counter
     int x = field.getFieldX();
     int y = field.getFieldY();
     
     Canvas.setColor(Color.RED);
     Canvas.setFont(new Font("Arial", Font.BOLD, 18));
-    Inf101Graphics.drawCenteredString(Canvas, "fps: " + fps, 2*x, 2*y, 50, 50);
+    Inf101Graphics.drawCenteredString(Canvas, "fps: " + model.getFPSValue(), 2*x, 2*y, 50, 50);
+    
+    // current stage
+    x = field.getFieldX() + field.width();
+    y = field.getFieldY();
+    double Width = this.SCOREBOARDWIDTH;
+    double HeightStageBoard = 0.2*this.SCOREBOARDHEIGHT;
+
+    Canvas.setColor(Color.DARK_GRAY);
+    Canvas.setFont(new Font("Arial", Font.BOLD, 25));
+    Inf101Graphics.drawCenteredString(Canvas, "Stage: " + model.getCurrentStage(), x, y, Width, HeightStageBoard);
 
   }
   

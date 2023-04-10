@@ -3,8 +3,6 @@ package no.uib.inf101.sem2.model.danmakus;
 import java.util.ArrayList;
 import java.util.List;
 
-import no.uib.inf101.sem2.grid.Vector;
-
 public class DanmakuSpawner implements DanmakuFactory{
 
   private final String[][][] enemySpawnList = {
@@ -44,16 +42,19 @@ public class DanmakuSpawner implements DanmakuFactory{
   }
 
   @Override
-  public List<Enemies> getTotalEnemies(int StageNumber) {
-    List<Enemies> newEnemies = new ArrayList<>();
+  public List<List<Enemies>> getTotalEnemies(int StageNumber) {
+    List<List<Enemies>> newStageEnemies = new ArrayList<List<Enemies>>();
     int waveNumber = 0;
+    StageNumber = StageNumber - 1;
     for (int waveCount = 0; waveCount < enemySpawnList[StageNumber].length; waveCount++) {
+      List<Enemies> newWaveEnemies = new ArrayList<Enemies>();
       for (int enemyCount = 0; enemyCount < enemySpawnList[StageNumber][waveNumber].length; enemyCount++) {
-        newEnemies.add(Enemies.newEnemy(enemySpawnList[StageNumber][waveNumber][enemyCount]));
+        newWaveEnemies.add(Enemies.newEnemy(enemySpawnList[StageNumber][waveNumber][enemyCount]));
       }
+      newStageEnemies.add(newWaveEnemies);
       waveNumber++;
     }
-    return newEnemies;
+    return newStageEnemies;
   }
   
   

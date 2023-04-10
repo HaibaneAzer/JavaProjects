@@ -72,7 +72,6 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
 
   /**
    * isAlive checks if enemy still lives. When all healthbars are depleted, return false.
-   * 
    */
   public boolean isAlive() {
     return this.healthBars > 0;
@@ -137,7 +136,7 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
   }
 
   /**
-  * sets enemy default spawn on field.
+  * sets enemy default spawn on field. Uses {@link #setNewPosition} to make position change relative to coordinate system.
   */
   public Enemies shiftedToStartPoint(FieldDimension dimension) {
     int startX = (int) (Math.round(dimension.width()/2) + dimension.getFieldX());
@@ -145,7 +144,7 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
 
     Vector originToSpawn = new Vector(startX, startY, 1);
 
-    return displaceBy(originToSpawn);
+    return setNewPosition(originToSpawn); 
   }
 
   /**

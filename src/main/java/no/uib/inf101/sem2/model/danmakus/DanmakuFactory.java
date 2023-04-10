@@ -18,11 +18,10 @@ public interface DanmakuFactory {
   Enemies getNewEnemy(String C);
 
   /**
-   * getTotalEnemies returns a list of all Enemies-objects 
-   * for a stage. change enemies list by inputing a different stage.
-   * 
+   * getTotalEnemies returns a 2d list where every list inside represents each wave
+   * and each list has N amount of enemies. change enemies list by inputing a different stage.
    */
-  List<Enemies> getTotalEnemies(int StageNumber);
+  List<List<Enemies>> getTotalEnemies(int StageNumber);
 
   /**
   * getNewBullet returns a new Bullets-object
