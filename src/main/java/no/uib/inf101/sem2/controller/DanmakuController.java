@@ -125,19 +125,19 @@ public class DanmakuController implements ActionListener{
       }
       else if (this.keyBoard.keyDownOnce(KeyEvent.VK_BACK_SPACE)) {
         // reset field and set game menu
-
+        this.controllModel.resetField();
         controllModel.setGameState(GameState.GAME_MENU);
       }    
     }
     else if (controllModel.getGameState().equals(GameState.GAME_OVER)) {
       if (this.keyBoard.keyDownOnce(KeyEvent.VK_ENTER)) {
         // reset field and set game active
-
+        this.controllModel.resetField();
         controllModel.setGameState(GameState.ACTIVE_GAME);
       }
       else if (this.keyBoard.keyDownOnce(KeyEvent.VK_BACK_SPACE)) {
         // reset field and set game menu
-
+        this.controllModel.resetField();
         controllModel.setGameState(GameState.GAME_MENU);
       }    
     }

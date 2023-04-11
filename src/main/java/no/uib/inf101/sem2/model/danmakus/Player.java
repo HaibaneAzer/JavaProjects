@@ -12,9 +12,8 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
   private Matricies Matrix = new Matricies();
   private static final Vector standStill = new Vector(0, 0, 1);
   private static final Vector startingAim = new Vector(0, -10, 1);
-  private int Lives; // default 3
-  private int defaultLives; // reseting lifes per game
-  private double Power; // dmg multiplier from 0 to 5
+  private int Lives = 3; // default 3
+  private double Power = 1.0; // dmg multiplier from 0 to 5
   
   /**
    * transforming constructor
@@ -22,19 +21,15 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
   private Player(String playerVar, int Radius, Vector Position, Vector Direction, Vector Velocity) {
     // spriteType is unchangeable, SpriteState can change.
     super(SpriteType.Player, playerVar, SpriteState.aim, Radius, Position, Direction, Velocity);
-    this.accel = new Vector(0, 0, 1);
   }
+
   /**
    * spawning constructor
    */
   private Player(String playerVar, int Radius, Vector Position) {
     // spriteType is unchangeable, SpriteState can change.
     super(SpriteType.Player, playerVar, SpriteState.aim, Radius, Position, startingAim, standStill);
-    this.accel = new Vector(0, 0, 1);
     // default spawn variables for all players.
-    this.Lives = 3;  
-    this.defaultLives = this.Lives;
-    this.Power = 1.0;
   }
 
   /**
@@ -62,13 +57,6 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
   }
 
   /**
-   * getter for default max lives
-   */
-  public int getDefaultLives() {
-    return this.defaultLives;
-  }
-
-  /**
    * getter for power
    * 
    */
@@ -85,7 +73,7 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
 
   /**
    * killPlayer removes lifes from player when getting hit. if player has no lives left, stop respawning.
-   * 
+   * @param lifesRemoved is 1 by default.
    */
   public void killPlayer() {
     this.Lives--;

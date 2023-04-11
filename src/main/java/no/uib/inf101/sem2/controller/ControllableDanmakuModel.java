@@ -60,4 +60,9 @@ public interface ControllableDanmakuModel {
    */
   void setGameState(GameState newState);
 
+  /**
+   * resetField resets all sprite-objects on field and statistics to start value.
+   */
+  void resetField();
+
 }

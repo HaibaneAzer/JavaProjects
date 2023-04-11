@@ -19,9 +19,10 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   private final DanmakuFactory getSprite;
   private GameState gameState;
   private Player currentPlayer;
+  /* private int immunityFrames; */
   private List<Bullets> playerBullets = new ArrayList<Bullets>(); // number of bullets player shoots at the same time.
   private int playerFireDelay;
-  private List<Enemies> currentEnemies = new ArrayList<Enemies>(); // number of enemies spawned per wave)
+  private List<Enemies> currentEnemies = new ArrayList<Enemies>(); // number of enemies spawned per wave
   private List<List<Enemies>> TotalEnemies = new ArrayList<List<Enemies>>(); // total enemies per stage.
   // handle waves and stages
   private int currentStage;
@@ -47,6 +48,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     // player stuff:
     this.currentPlayer = getSprite.getNewPlayer("P1c").shiftedToStartPoint(Field);
     this.playerFireDelay = 0;
+    /* this.immunityFrames = 0; */
     // enemies stuff:
     this.TotalEnemies = getSprite.getTotalEnemies(this.currentStage);
     this.spawnEnemyTimer = spawnEnemyInterval; 
@@ -97,6 +99,23 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   @Override
   public void setGameState(GameState newState) {
     this.gameState = newState;
+  }
+
+  @Override 
+  public void resetField() {
+    this.currentEnemies.clear();
+    this.TotalEnemies.clear();
+    // handle waves and stages
+    this.currentStage = 1;
+    this.currentWaveIndex = 0;
+    this.waveDelay = 0;
+    // player stuff:
+    this.currentPlayer = getSprite.getNewPlayer("P1c").shiftedToStartPoint(Field);
+    this.playerFireDelay = 0;
+    // enemies stuff:
+    this.TotalEnemies = getSprite.getTotalEnemies(this.currentStage);
+    this.spawnEnemyTimer = spawnEnemyInterval; 
+    this.nextEnemyIndex = 0;
   }
 
   /* ################################################ */
@@ -167,7 +186,6 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     /* this.currentPlayer.accelerate(targetVel, dt); */ // NB: acceleration is janky. please fix.
     Vector displacement = targetVel;
     if (!insideField(this.currentPlayer.displaceBy(displacement))) {
-      this.currentPlayer.setVelocity(new Vector(0, 0, 1));
       return false;
     }
     this.currentPlayer = this.currentPlayer.displaceBy(displacement);
@@ -189,8 +207,41 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     if (!withinField) {
       return false;
     }
+    if (!checkEnemyCollision(shiftedplayer)) {
+      return false;
+    }
     return true;
 
+  }
+
+  /**
+   * checkEnemyCollision is a helper method for {@link #insideField}, which is used to check if player hitbox
+   * overlaps enemy hitbox 
+   * 
+   */
+  private boolean checkEnemyCollision(Player shiftedPlayer) {
+    for (int i = this.currentEnemies.size() - 1; i >= 0; i--) {
+      if (shiftedPlayer.getPosition().subVect(this.currentEnemies.get(i).getPosition()).length() < shiftedPlayer.getRadius() + this.currentEnemies.get(i).getRadius() ) {
+        // kill and respawn player if lives left
+        System.out.println(this.currentPlayer.getLives());
+        this.currentPlayer.killPlayer();
+        if (this.currentPlayer.isAlive()) {
+          this.currentPlayer = getSprite.getNewPlayer(this.currentPlayer.getVariation()).shiftedToStartPoint(Field);
+        }
+        else {
+          setGameState(GameState.GAME_OVER);
+        }
+        // kill enemy
+        this.currentEnemies.get(i).attackEnemy(this.currentEnemies.get(i).getMaxhealth());
+        if (!this.currentEnemies.get(i).isAlive()) {
+          this.currentEnemies.remove(i);
+        }
+        System.out.println(this.currentPlayer.getLives());
+        return false;
+      }
+      
+    }
+    return true;
   }
 
   /* ############################################### */
@@ -234,7 +285,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
           this.currentWaveIndex++; 
         }
         else if (this.waveDelay == 0) {
-          this.currentWaveIndex = 0; // NB: change when adding stages.
+          this.currentWaveIndex = 0; 
           this.currentStage++;
         }
       }
@@ -246,15 +297,6 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     
     
   }
-
-  /**
-   * findEnemyVariation goes through the total list of enemies and retrieves only the enemy of a spesific variation.
-   * Code snippet from stackoverflow by oleg.cherednik.
-   * link: https://stackoverflow.com/questions/17526608/how-to-find-an-object-in-an-arraylist-by-property.
-   */
-  /* private Enemies findEnemyVariation(String variation, int currentWave) {
-    return this.TotalEnemies.get(currentWave).stream().filter(enemy -> variation.equals(enemy.getVariation())).findFirst().orElse(null);
-  } */
 
   /**
    * setSpawnWaveEnemies is a method that contains preset spawns positions for enemies depending on wave number, stage
@@ -287,16 +329,17 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     }
     else if (wave == 0 && this.currentStage == 2) {
       // spawn left from top center
+      System.out.println("wave 1");
       this.currentEnemies.set(nextSpawnIndex, this.currentEnemies.get(nextSpawnIndex).shiftedToStartPoint(Field)).displaceBy(new Vector(-100, 0, 1));
     }
     else if (wave == 1 && this.currentStage == 2) {
       // spawn left from top center
-      System.out.println("wave 3");
+      System.out.println("wave 2");
       this.currentEnemies.set(nextSpawnIndex, this.currentEnemies.get(nextSpawnIndex).shiftedToStartPoint(Field).displaceBy(new Vector(100, 0, 1)));
     }
     else if (wave == 2 && this.currentStage == 2) {
       // spawn at top center
-      System.out.println("wave 4");
+      System.out.println("wave 3");
       this.currentEnemies.set(nextSpawnIndex, this.currentEnemies.get(nextSpawnIndex).shiftedToStartPoint(Field)).displaceBy(new Vector(-100, 0, 1));
     }
     else if (wave == 3 && this.currentStage == 2) {

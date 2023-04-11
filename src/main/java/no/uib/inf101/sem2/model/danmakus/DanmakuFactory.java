@@ -7,7 +7,7 @@ public interface DanmakuFactory {
   
   /**
   * getNewPlayer returns a new Player-object
-  * @return new Player-object. Replace old before new object
+  * @return new Player-object. Replace old before new object.
   */
   Player getNewPlayer(String C);
 
