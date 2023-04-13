@@ -33,7 +33,8 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   private final int spawnEnemyInterval = 100; // enemy spawn rate
   private int spawnEnemyTimer;
   private int nextEnemyIndex;
-  /* private List<Bullets> enemyBullets = new ArrayList<Bullets>(); */ // number of bullets enemy shoots at the same time.
+  private List<Bullets> enemyBullets = new ArrayList<Bullets>(); // number of bullets enemy shoots at the same time.
+  private int enemiesFireDelay; // NB: give enemy class fire delay instance variable? to make each enemy shoot at different times.
   private List<Bullets> bulletsOnField = new ArrayList<Bullets>(); // total bullets from both player and enemies.
   private double FPSCounter = 60.0;
   
@@ -48,7 +49,6 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     // player stuff:
     this.currentPlayer = getSprite.getNewPlayer("P1c").shiftedToStartPoint(Field);
     this.playerFireDelay = 0;
-    /* this.immunityFrames = 0; */
     // enemies stuff:
     this.TotalEnemies = getSprite.getTotalEnemies(this.currentStage);
     this.spawnEnemyTimer = spawnEnemyInterval; 
@@ -183,7 +183,6 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   @Override
   public boolean movePlayer(Vector targetVel) {
     
-    /* this.currentPlayer.accelerate(targetVel, dt); */ // NB: acceleration is janky. please fix.
     Vector displacement = targetVel;
     if (!insideField(this.currentPlayer.displaceBy(displacement))) {
       return false;
@@ -229,6 +228,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
           this.currentPlayer = getSprite.getNewPlayer(this.currentPlayer.getVariation()).shiftedToStartPoint(Field);
         }
         else {
+          this.currentPlayer = null;
           setGameState(GameState.GAME_OVER);
         }
         // kill enemy
@@ -402,6 +402,39 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     return true;
   }
 
+  /**
+   * enemyFire makes all enemies on field shoot bullets. bullet pattern is determined by {@link #enemyBulletPattern}
+   * 
+   */
+  public void enemyFire() {
+
+
+    // add if statement that makes bullets appear only when enemy has passed a certain line 
+    // (0.95 of field height)
+    if (this.playerFireDelay == 0) {
+      // determine shooting pattern
+      enemyBulletPattern();
+      // add current bullet to bullet list.
+      for (Bullets bullet : this.enemyBullets) {
+        this.bulletsOnField.add(bullet);
+      }
+      this.enemyBullets.clear();
+      
+    }
+    this.playerFireDelay = (this.playerFireDelay + 1) % 100; // NB: change delay with variable
+
+  }
+
+  
+  private List<Bullets> enemyBulletPattern() {
+    /* start with 2 different patterns */
+    // pattern 1: 3 bullet homing burst.
+
+    // pattern 2: 5 bullet spread shot.
+
+    return this.enemyBullets;
+  }
+
   /* ############################################### */
   /* ################### Bullets ################### */
   /* ############################################### */
@@ -468,6 +501,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
         this.currentPlayer.killPlayer();
         if (!this.currentPlayer.isAlive()) {
           this.currentPlayer = null; // NB: improve despawning player when game over
+          setGameState(GameState.GAME_OVER);
         }
         this.currentPlayer = getSprite.getNewPlayer(this.currentPlayer.getVariation()).shiftedToStartPoint(Field);
         return false;
