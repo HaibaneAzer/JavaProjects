@@ -42,8 +42,8 @@ public record Vector(double x, double y, int constant) {
    * rotateVect rotates the vector around origin with theta as angle.
    */
   public Vector rotateVect(double Theta, Vector Pos) {
-    double rotX = this.x*Math.cos(Theta) + this.y*Math.sin(Theta);
-    double rotY = this.y*Math.cos(Theta) - this.x*Math.sin(Theta);
+    double rotX = this.x*Math.cos(Theta) - this.y*Math.sin(Theta);
+    double rotY = this.y*Math.cos(Theta) + this.x*Math.sin(Theta);
     Vector rotatedVect = new Vector(rotX, rotY, 1);
     return rotatedVect.roundVector();
   }

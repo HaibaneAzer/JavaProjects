@@ -22,13 +22,18 @@ public interface ControllableDanmakuModel {
   void playerFire(int fireRate, boolean holdingShift);
 
   /**
+   * enemyFire makes all enemies on field shoot bullets. bullet pattern and spawn position depends on enemy variation.
+   * 
+   */
+  void enemyFire();
+
+  /**
    * moveAllBullets goes through the list of bullets on field and moves each according to their velocity vector.
    * 
    */
   void moveAllBullets();
 
   /**
-   * 
    * @return list of bullets existing on field
    */
   Iterable<Bullets> getBulletsOnField();

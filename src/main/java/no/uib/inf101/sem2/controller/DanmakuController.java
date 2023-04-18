@@ -70,9 +70,11 @@ public class DanmakuController implements ActionListener{
    * NB: try using an ActionEvent method and Timer for ingame inputs.
    */
   public void updateModel(ActionEvent arg0) {
-    
-    // current enemy rotation
+    // enemy movement and spawning
     this.controllModel.moveEnemiesInWaves();
+    // enemy bullet fire
+    this.controllModel.enemyFire();
+    // update bullet pos
     if (this.controllModel.getBulletsOnField().iterator().hasNext()) {
       this.controllModel.moveAllBullets();
     }

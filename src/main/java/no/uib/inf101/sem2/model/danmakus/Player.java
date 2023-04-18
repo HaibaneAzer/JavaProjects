@@ -73,7 +73,6 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
 
   /**
    * killPlayer removes lifes from player when getting hit. if player has no lives left, stop respawning.
-   * @param lifesRemoved is 1 by default.
    */
   public void killPlayer() {
     this.Lives--;
