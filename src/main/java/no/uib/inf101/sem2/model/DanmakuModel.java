@@ -25,13 +25,13 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   private List<List<Enemies>> TotalEnemies = new ArrayList<List<Enemies>>(); // total enemies per stage.
   // handle waves and stages
   private int currentStage;
-  private final int stageMaxInterval = 500; // time between each stage
+  private final int stageMaxInterval = 450; // time between each stage
   private int stageDelay;
   private int currentWaveIndex;
-  private final int WaveMaxInterval = 200; // time between each wave
+  private final int WaveMaxInterval = 300; // time between each wave
   private int waveDelay;
   // setSpawnWaveEnemies method: 
-  private final int spawnEnemyInterval = 100; // enemy spawn rate
+  private final int spawnEnemyInterval = 150; // enemy spawn rate
   private int spawnEnemyTimer;
   private int nextEnemyIndex;
   private List<Bullets> enemyBullets = new ArrayList<Bullets>(); // number of bullets enemy shoots at the same time.
