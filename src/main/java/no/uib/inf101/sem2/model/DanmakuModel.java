@@ -5,7 +5,6 @@ import java.util.List;
 
 import no.uib.inf101.sem2.controller.ControllableDanmakuModel;
 import no.uib.inf101.sem2.grid.FieldDimension;
-import no.uib.inf101.sem2.grid.Matricies;
 import no.uib.inf101.sem2.grid.Vector;
 import no.uib.inf101.sem2.model.danmakus.Bullets;
 import no.uib.inf101.sem2.model.danmakus.DanmakuFactory;
@@ -19,7 +18,6 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   private DanmakuField Field;
   private final DanmakuFactory getSprite;
   private GameState gameState;
-  private Matricies matrix = new Matricies();
   private Player currentPlayer;
   private List<Bullets> playerBullets = new ArrayList<Bullets>(); // number of bullets player shoots at the same time.
   private int playerFireDelay;
@@ -27,6 +25,8 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   private List<List<Enemies>> TotalEnemies = new ArrayList<List<Enemies>>(); // total enemies per stage.
   // handle waves and stages
   private int currentStage;
+  private final int stageMaxInterval = 500; // time between each stage
+  private int stageDelay;
   private int currentWaveIndex;
   private final int WaveMaxInterval = 200; // time between each wave
   private int waveDelay;
@@ -46,6 +46,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     this.currentStage = 1;
     this.currentWaveIndex = 0;
     this.waveDelay = 0;
+    this.stageDelay = 0;
     // player stuff:
     this.currentPlayer = getSprite.getNewPlayer("P1c").shiftedToStartPoint(Field);
     this.playerFireDelay = 0;
@@ -105,6 +106,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   public void resetField() {
     this.currentEnemies.clear();
     this.TotalEnemies.clear();
+    this.bulletsOnField.clear();
     // handle waves and stages
     this.currentStage = 1;
     this.currentWaveIndex = 0;
@@ -220,23 +222,18 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
    */
   private boolean checkEnemyCollision(Player shiftedPlayer) {
     for (int i = this.currentEnemies.size() - 1; i >= 0; i--) {
-      if (shiftedPlayer.getPosition().subVect(this.currentEnemies.get(i).getPosition()).length() < shiftedPlayer.getRadius() + this.currentEnemies.get(i).getRadius() ) {
+      if (shiftedPlayer.getPosition().subVect(this.currentEnemies.get(i).getPosition()).length() < shiftedPlayer.getRadius() + this.currentEnemies.get(i).getRadius()) {
         // kill and respawn player if lives left
-        System.out.println(this.currentPlayer.getLives());
-        this.currentPlayer.killPlayer();
         if (this.currentPlayer.isAlive()) {
-          this.currentPlayer = getSprite.getNewPlayer(this.currentPlayer.getVariation()).shiftedToStartPoint(Field);
+          this.currentPlayer = this.currentPlayer.respawnPlayer(this.currentPlayer.getLives() - 1).shiftedToStartPoint(Field);
+          System.out.println(this.currentPlayer.getLives());
         }
         else {
-          this.currentPlayer = null;
-          setGameState(GameState.GAME_OVER);
+          this.gameState = GameState.GAME_OVER;
         }
         // kill enemy
-        this.currentEnemies.get(i).attackEnemy(this.currentEnemies.get(i).getMaxhealth());
-        if (!this.currentEnemies.get(i).isAlive()) {
-          this.currentEnemies.remove(i);
-        }
-        System.out.println(this.currentPlayer.getLives());
+        this.currentEnemies.remove(i);
+        
         return false;
       }
       
@@ -261,32 +258,38 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
 
     // game won when all stages complete
     if (this.currentStage < 3) {
-      // get 3 or 1 enemies from total and put them in one wave (extend later to 8 per wave)
-      if (this.spawnEnemyTimer >= this.spawnEnemyInterval && this.waveDelay == 0) {
-        this.currentEnemies.add(this.TotalEnemies.get(this.currentWaveIndex).get(this.nextEnemyIndex));
-        setSpawnWaveEnemies(this.currentWaveIndex);
-        this.nextEnemyIndex++;
-        this.spawnEnemyTimer = 0;
+      if (this.stageDelay <= this.stageMaxInterval) {
+        this.stageDelay++;
       }
-      this.spawnEnemyTimer = (this.spawnEnemyTimer + 1) % (this.spawnEnemyInterval + 1);
-      // when all enemies has spawned, update wave.
-      if (this.nextEnemyIndex > this.TotalEnemies.get(this.currentWaveIndex).size() - 1) {
-        // delay next wave
-        if (this.waveDelay <= this.WaveMaxInterval) {
-          this.waveDelay++;
+      else {
+        // get 3 or 1 enemies from total and put them in one wave (extend later to 8 per wave)
+        if (this.spawnEnemyTimer >= this.spawnEnemyInterval && this.waveDelay == 0) {
+          this.currentEnemies.add(this.TotalEnemies.get(this.currentWaveIndex).get(this.nextEnemyIndex));
+          setSpawnWaveEnemies(this.currentWaveIndex);
+          this.nextEnemyIndex++;
+          this.spawnEnemyTimer = 0;
         }
-        else {
-          this.nextEnemyIndex = 0;  
-          this.waveDelay = 0;
-          this.spawnEnemyTimer = this.spawnEnemyInterval;
-        }
-        // move to next wave
-        if (this.currentWaveIndex < this.TotalEnemies.size() - 1 && this.waveDelay == 0) {
-          this.currentWaveIndex++; 
-        }
-        else if (this.waveDelay == 0) {
-          this.currentWaveIndex = 0; 
-          this.currentStage++;
+        this.spawnEnemyTimer = (this.spawnEnemyTimer + 1) % (this.spawnEnemyInterval + 1);
+        // when all enemies has spawned, update wave.
+        if (this.nextEnemyIndex > this.TotalEnemies.get(this.currentWaveIndex).size() - 1) {  
+          // delay next wave
+          if (this.waveDelay <= this.WaveMaxInterval) {
+            this.waveDelay++;
+          }
+          else {
+            this.nextEnemyIndex = 0;  
+            this.waveDelay = 0;
+            this.spawnEnemyTimer = this.spawnEnemyInterval;
+          }
+          // move to next wave
+          if (this.currentWaveIndex < this.TotalEnemies.size() - 1 && this.waveDelay == 0) {
+            this.currentWaveIndex++; 
+          }
+          else if (this.waveDelay == 0) {
+            this.currentWaveIndex = 0; 
+            this.currentStage++;
+            this.stageDelay = 0;
+          }
         }
       }
     }
@@ -374,9 +377,6 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
       // eliminate enemy when they're outside screen.
       if (!enemyInsideScreen(enemy)) {
         this.currentEnemies.remove(i);
-        if (this.currentEnemies.isEmpty()) {
-          this.currentWaveIndex++;
-        }
       }
       else {
         this.currentEnemies.set(i, displacedEnemy);  
@@ -446,7 +446,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
       // pattern 2: 5 bullet spread shot.
       else if (enemy.getVariation().equals("monster2")) {
         if (enemy.getFireTimer() == 0) {
-          double angleIncrement = -(0.25)*Math.PI; // starting direction
+          double angleIncrement = -(0.25)*Math.PI;
           for (int j = 0; j < 5; j++) {
             Bullets newBullet = this.getSprite.getNewBullet("ellipseLarge");
             newBullet.setBulletOwner(SpriteType.EnemyBullet);
@@ -532,12 +532,12 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     // enemy bullet hit player
     else if (shiftedBullet.getType().equals(SpriteType.EnemyBullet)) {
       if (shiftedBullet.getPosition().subVect(this.currentPlayer.getPosition()).length() < shiftedBullet.getRadius() + this.currentPlayer.getRadius()) {
-        this.currentPlayer.killPlayer();
         if (!this.currentPlayer.isAlive()) {
-          this.currentPlayer = null; 
-          setGameState(GameState.GAME_OVER);
+          this.gameState = GameState.GAME_OVER;
         }
-        this.currentPlayer = getSprite.getNewPlayer(this.currentPlayer.getVariation()).shiftedToStartPoint(Field);
+        else {
+          this.currentPlayer = this.currentPlayer.respawnPlayer(this.currentPlayer.getLives() - 1).shiftedToStartPoint(Field);
+        }
         return false;
       }
     }

@@ -180,13 +180,14 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
    * one healthbar. if enemy is not alive, return false, otherwise return true;
    * 
    */
-  public void attackEnemy(int damageTaken) {
+  public Enemies attackEnemy(int damageTaken) {
     this.healthPoints -= damageTaken;
     if (this.healthPoints <= 0) {
       this.healthPoints = this.maxHealth;
       this.healthBars--;
       
     }
+    return new Enemies(this.Variation, this.healthPoints, this.healthBars, this.Radius, this.Position, this.Direction, this.Velocity, this.enemyFireTimer, this.enemyFireDelay);
     
   }
   

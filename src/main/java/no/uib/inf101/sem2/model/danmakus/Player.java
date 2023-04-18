@@ -8,7 +8,6 @@ import no.uib.inf101.sem2.grid.Vector;
 
 public final class Player extends Sprite<SpriteType, SpriteState>{
   
-  private Vector accel;
   private Matricies Matrix = new Matricies();
   private static final Vector standStill = new Vector(0, 0, 1);
   private static final Vector startingAim = new Vector(0, -10, 1);
@@ -18,9 +17,10 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
   /**
    * transforming constructor
    */
-  private Player(String playerVar, int Radius, Vector Position, Vector Direction, Vector Velocity) {
+  private Player(String playerVar, int Radius, Vector Position, Vector Direction, Vector Velocity, int Lives) {
     // spriteType is unchangeable, SpriteState can change.
     super(SpriteType.Player, playerVar, SpriteState.aim, Radius, Position, Direction, Velocity);
+    this.Lives = Lives;
   }
 
   /**
@@ -30,6 +30,16 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
     // spriteType is unchangeable, SpriteState can change.
     super(SpriteType.Player, playerVar, SpriteState.aim, Radius, Position, startingAim, standStill);
     // default spawn variables for all players.
+  }
+
+  /**
+   * respawning constructor
+   */
+  private Player(String playerVar, int Radius, Vector Position, int Lives) {
+    // spriteType is unchangeable, SpriteState can change.
+    super(SpriteType.Player, playerVar, SpriteState.aim, Radius, Position, startingAim, standStill);
+    // default spawn variables for all players.
+    this.Lives = Lives;
   }
 
   /**
@@ -45,7 +55,6 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
       default -> throw new IllegalArgumentException("Type '" + newPlayerType + "' does not match one of two playable characters");
     };
     return playableC;
-    
   }
 
   /**
@@ -72,29 +81,13 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
   }
 
   /**
-   * killPlayer removes lifes from player when getting hit. if player has no lives left, stop respawning.
+   * respawnPlayer makes a new player with updated lives
+   * 
    */
-  public void killPlayer() {
-    this.Lives--;
+  public Player respawnPlayer(int newLifeCount) {
+    return new Player(this.Variation, this.Radius, this.Position, newLifeCount);
   }
 
-  /**
-   * update velocity using constant acceleration. Delta is acceleration factor.
-   * dt >= 1 where value 1 means the acceleration is unit length. 
-   * Acceleration stops when oldVel = newVel.
-   */
-  public void accelerate(Vector targetVel, double dt) {
-    boolean TargetlessThanCur = 
-    this.Velocity.length() >= targetVel.length();
-
-    this.accel = targetVel.subVect(this.Velocity).normaliseVect().multiplyScalar(1 / dt);
-    if (!TargetlessThanCur) {
-      this.Velocity = this.Velocity.addVect(accel);
-    }
-
-    System.out.println(this.Velocity);
-    
-  }
 
   /**
    * displaceBy moves the player position vector by velocity vector, where
@@ -107,8 +100,17 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
     Vector[] translate = Matrix.TranslationMatrix(Velocity); // get translation matrix
     Vector displacedPosition = this.Position.transformVect(translate); // displace position
 
-    Player displacedPlayer = new Player(this.Variation, this.Radius, displacedPosition, this.Direction, this.Velocity);
+    Player displacedPlayer = new Player(this.Variation, this.Radius, displacedPosition, this.Direction, this.Velocity, this.Lives);
     return displacedPlayer;
+  }
+
+  /**
+   * setNewPosition sets current position to any Vector. New Vector can be a transformed version of old position
+   * example: Vect(sin(x), sin(y) + center, 1) returns a displacement moving along a sine wave center, where center is a line parallell to 
+   * x-axis.
+   */
+  public Player setNewPosition(Vector displacedPosition) {
+    return new Player(this.Variation, this.Radius, displacedPosition, this.Direction, this.Velocity, this.Lives);
   }
   
   /**
@@ -121,7 +123,7 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
 
     Vector originToSpawn = new Vector(startX, startY, 1);
 
-    return displaceBy(originToSpawn);
+    return setNewPosition(originToSpawn);
   }
   
   

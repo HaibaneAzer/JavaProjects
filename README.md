@@ -67,9 +67,8 @@ Klassen `DanmakuController` skal kunne endre på modellen basert på input fra b
 7. Gi fiender ulike periodiske bevegelser ✓
 8. Få spillerens skudd til å skade og eleminere fiender. ✓
 9. lag stage(s) (begynn med 2) og håndtere game over (Her skal fiender komme med gitte intervaller forskjellig for hver stage). ✓
-10. En timer som bytter fiendens bevegelses type (eksempel: gå i sirkel 3 ganger, deretter gå ned)
-11. Lag en Boss-fiende og timer for angreps faser (normal phase og super attack phase).
-12. Legge til pixel art for spiller, skudd og fiender.
+10. Lag en Boss-fiende og timer for angreps faser (normal phase og super attack phase).
+11. Legge til pixel art for spiller, skudd og fiender.
 (spillet ansees som ferdig etter steg 11, men legger til mer hvis mulig)
 12. lag menu screen hvor du kan velge mellom player 1 og 2
 13. legge til rulende backgrunn (pixel art eller annet) unik for hvert stage.
@@ -78,6 +77,6 @@ Klassen `DanmakuController` skal kunne endre på modellen basert på input fra b
 
 ### Progresjon
 
-9 av 12
+9 av 11
 
 
