@@ -111,6 +111,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     this.currentStage = 1;
     this.currentWaveIndex = 0;
     this.waveDelay = 0;
+    this.stageDelay = 0;
     // player stuff:
     this.currentPlayer = getSprite.getNewPlayer("P1c").shiftedToStartPoint(Field);
     this.playerFireDelay = 0;
@@ -247,15 +248,6 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
 
   @Override
   public void moveEnemiesInWaves() {
-    List<String> movements = new ArrayList<>();
-    movements.add("aim"); // move in direction of aim
-    movements.add("cosine"); 
-    movements.add("horizontal");
-    movements.add("downwards");
-    movements.add("circleTurn");
-    movements.add("reverse"); // repeat any movement backwards
-    movements.add("stop"); // stop current movement path.
-
     // game won when all stages complete
     if (this.currentStage < 3) {
       if (this.stageDelay <= this.stageMaxInterval) {
@@ -293,12 +285,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
         }
       }
     }
-      // basic movement complete.
-      // NB: make method containing a set of different enemy movements. input movement type (string)
-      // for given movement to enemy.
-      moveAllEnemies();
-    
-    
+    moveAllEnemies(); 
   }
 
   /**
@@ -363,15 +350,16 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
       // move in sine wave pattern
       Enemies displacedEnemy;
       Enemies enemy = this.currentEnemies.get(i);
+      System.out.println("health x" + enemy.getHealthPoints());
       if (enemy.getVariation().equals("monster1")) {
-        enemy.setVelocity(new Vector(0, 3, 1));
+        enemy.setVelocity(new Vector(0, 1.5, 1));
         double newY = enemy.getPosition().y() + 0.5*enemy.getVelocity().length();
         double newX = 80*Math.sin(0.01*enemy.getPosition().y()) + 120;
         displacedEnemy = enemy.setNewPosition(new Vector(newX, newY, 1));
       }
       // move downwards
       else {
-        enemy.setVelocity(new Vector(0, 1, 1));
+        enemy.setVelocity(new Vector(0, 0.5, 1));
         displacedEnemy = enemy.displaceBy(enemy.getVelocity());
       }
       // eliminate enemy when they're outside screen.
@@ -381,9 +369,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
       else {
         this.currentEnemies.set(i, displacedEnemy);  
       }
-      
     } 
-
   }
 
   /**
@@ -404,7 +390,6 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
 
   @Override
   public void enemyFire() {
-
     // add if statement that makes bullets appear only when enemy has passed a certain line 
     // (0.95 of field height)
     // determine shooting pattern
@@ -413,8 +398,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     for (Bullets bullet : this.enemyBullets) {
       this.bulletsOnField.add(bullet);
     }
-    this.enemyBullets.clear();
-      
+    this.enemyBullets.clear();  
   }
 
   
@@ -422,48 +406,51 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
 
     for (int i = this.currentEnemies.size() - 1; i >= 0; i--) {
       Enemies enemy = this.currentEnemies.get(i);
-      // pattern 1: bullet aimed.
-      if (enemy.getVariation().equals("monster1")) {
-        if (enemy.getFireTimer() == 0) {
-          Bullets newBullet = this.getSprite.getNewBullet("circleSmall");
-          newBullet.setBulletOwner(SpriteType.EnemyBullet);
-          Vector bulletRadius = new Vector(newBullet.getRadius(), 0, 1);
-          // set bullets default spawnpoint
-          Vector spawnPoint = enemy.getPosition().addVect(enemy.getAimVector());
-          spawnPoint = spawnPoint.addVect(bulletRadius);
-          newBullet = newBullet.displaceBy(spawnPoint);
-          // get enemy aim
-          Vector aimedShot = enemy.getPosition().subVect(this.currentPlayer.getPosition()).normaliseVect();
-          aimedShot = aimedShot.multiplyScalar(-1);
-          // set bullet speed to enemies aim
-          newBullet.updateBulletVelocity(aimedShot);
-          // update bullets direction to it's velocity
-          newBullet.updateBulletDirection(newBullet.getVelocity());
-          this.enemyBullets.add(newBullet);
-        }
-        this.currentEnemies.set(i, enemy.setFireTimer((enemy.getFireTimer() + 1) % enemy.getFireDelay())); // advance unless when delay max is reached.
-      }
-      // pattern 2: 5 bullet spread shot.
-      else if (enemy.getVariation().equals("monster2")) {
-        if (enemy.getFireTimer() == 0) {
-          double angleIncrement = -(0.25)*Math.PI;
-          for (int j = 0; j < 5; j++) {
-            Bullets newBullet = this.getSprite.getNewBullet("ellipseLarge");
+      // shoot only after passing 0.05 from top of screen
+      if (enemy.getPosition().y() > this.Field.getFieldY() + 0.05*this.Field.height()) {
+        // pattern 1: bullet aimed.
+        if (enemy.getVariation().equals("monster1")) {
+          if (enemy.getFireTimer() == 0) {
+            Bullets newBullet = this.getSprite.getNewBullet("circleSmall");
             newBullet.setBulletOwner(SpriteType.EnemyBullet);
             Vector bulletRadius = new Vector(newBullet.getRadius(), 0, 1);
             // set bullets default spawnpoint
-            Vector spawnPoint = enemy.getPosition().addVect(enemy.rotateAxisBy(angleIncrement).getAimVector());
+            Vector spawnPoint = enemy.getPosition().addVect(enemy.getAimVector());
             spawnPoint = spawnPoint.addVect(bulletRadius);
             newBullet = newBullet.displaceBy(spawnPoint);
+            // get enemy aim
+            Vector aimedShot = enemy.getPosition().subVect(this.currentPlayer.getPosition()).normaliseVect();
+            aimedShot = aimedShot.multiplyScalar(-1);
             // set bullet speed to enemies aim
-            newBullet.updateBulletVelocity(enemy.rotateAxisBy(angleIncrement).getAimVector());
+            newBullet.updateBulletVelocity(aimedShot);
             // update bullets direction to it's velocity
             newBullet.updateBulletDirection(newBullet.getVelocity());
             this.enemyBullets.add(newBullet);
-            angleIncrement += 0.125*Math.PI;
           }
+          this.currentEnemies.set(i, enemy.setFireTimer((enemy.getFireTimer() + 1) % enemy.getFireDelay())); // advance unless when delay max is reached.
         }
-        this.currentEnemies.set(i, enemy.setFireTimer((enemy.getFireTimer() + 1) % enemy.getFireDelay()));
+        // pattern 2: 5 bullet spread shot.
+        else if (enemy.getVariation().equals("monster2")) {
+          if (enemy.getFireTimer() == 0) {
+            double angleIncrement = -(0.25)*Math.PI;
+            for (int j = 0; j < 5; j++) {
+              Bullets newBullet = this.getSprite.getNewBullet("ellipseLarge");
+              newBullet.setBulletOwner(SpriteType.EnemyBullet);
+              Vector bulletRadius = new Vector(newBullet.getRadius(), 0, 1);
+              // set bullets default spawnpoint
+              Vector spawnPoint = enemy.getPosition().addVect(enemy.rotateAxisBy(angleIncrement).getAimVector());
+              spawnPoint = spawnPoint.addVect(bulletRadius);
+              newBullet = newBullet.displaceBy(spawnPoint);
+              // set bullet speed to enemies aim
+              newBullet.updateBulletVelocity(enemy.rotateAxisBy(angleIncrement).getAimVector());
+              // update bullets direction to it's velocity
+              newBullet.updateBulletDirection(newBullet.getVelocity());
+              this.enemyBullets.add(newBullet);
+              angleIncrement += 0.125*Math.PI;
+            }
+          }
+          this.currentEnemies.set(i, enemy.setFireTimer((enemy.getFireTimer() + 1) % enemy.getFireDelay()));
+        }
       }
     }
     return this.enemyBullets;
