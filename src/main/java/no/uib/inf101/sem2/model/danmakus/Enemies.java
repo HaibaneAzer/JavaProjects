@@ -10,7 +10,7 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
   private static final Vector standStill = new Vector(0, 0, 1);
   private static final Vector startingAim = new Vector(0, 2, 1); // unit length aim Vector
   private int healthPoints;
-  private int maxHealth;
+  private final int maxHealth;
   private int healthBars;
   private final int enemyFireDelay;
   private int enemyFireTimer;
@@ -18,8 +18,9 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
   /**
    * constructor for transformations
    */
-  public Enemies(String EnemyVar, int healthPoints, int healthBars, int Radius, Vector Position, Vector aimDirection, Vector Velocity, int enemyFireTimer, int enemyFireDelay) {
+  public Enemies(String EnemyVar, int maxHealth, int healthPoints, int healthBars, int Radius, Vector Position, Vector aimDirection, Vector Velocity, int enemyFireTimer, int enemyFireDelay) {
     super(SpriteType.Enemy, EnemyVar, SpriteState.aim, Radius, Position, aimDirection, Velocity);
+    this.maxHealth = maxHealth;
     this.healthPoints = healthPoints;
     this.healthBars = healthBars;
     this.enemyFireDelay = enemyFireDelay;
@@ -31,8 +32,8 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
   */
   public Enemies(String EnemyVar, int healthPoints, int healthBars, int Radius, Vector Position, int enemyFireDelay) {
     super(SpriteType.Enemy, EnemyVar, SpriteState.aim, Radius, Position, startingAim, standStill);
-    this.healthPoints = healthPoints;
     this.maxHealth = healthPoints;
+    this.healthPoints = this.maxHealth;
     this.healthBars = healthBars;
     this.enemyFireDelay = enemyFireDelay;
   }
@@ -48,6 +49,8 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
       new Vector(-8, -8, 1), 90); // want center at (0, 0)
       case "monster2" -> new Enemies(newEnemyVar, 500, 1, 10, 
       new Vector(-10, -10, 1), 110);
+      case "boss1" -> new Enemies(newEnemyVar, 3500, 2, 12, 
+      new Vector(-12,-12,1), 50);
       default -> throw new IllegalArgumentException("Type '" + newEnemyVar + "' does not match one of two playable characters");
     };
     return enemy;
@@ -94,7 +97,7 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
    */
   public Enemies setFireTimer(int advance) {
     this.enemyFireTimer = advance;
-    return new Enemies(this.Variation, this.healthPoints , this.healthBars, this.Radius, this.Position, this.Direction, this.Velocity, this.enemyFireTimer, this.enemyFireDelay);
+    return new Enemies(this.Variation, this.maxHealth, this.healthPoints , this.healthBars, this.Radius, this.Position, this.Direction, this.Velocity, this.enemyFireTimer, this.enemyFireDelay);
   }
 
   /**
@@ -104,27 +107,19 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
     return this.healthBars > 0;
   }
 
-  /**
-   * displaceBy moves the enemy position vector by velocity vector, where
-   * the scalar either represents distance (when used with {@link #shiftedToStartPoint}) 
-   * or speed. 
-   */
+  @Override
   public Enemies displaceBy(Vector displacement) {
     
     Vector[] translate = Matrix.TranslationMatrix(displacement); // get translation matrix
     Vector displacedPosition = this.Position.transformVect(translate); // displace position
 
-    Enemies displacedEnemy = new Enemies(this.Variation, this.healthPoints, this.healthBars, this.Radius, displacedPosition, this.Direction, this.Velocity, this.enemyFireTimer, this.enemyFireDelay);
+    Enemies displacedEnemy = new Enemies(this.Variation, this.maxHealth, this.healthPoints, this.healthBars, this.Radius, displacedPosition, this.Direction, this.Velocity, this.enemyFireTimer, this.enemyFireDelay);
     return displacedEnemy;
   }
 
-  /**
-   * setNewPosition sets current position to any Vector. New Vector can be a transformed version of old position
-   * example: Vect(sin(x), sin(y) + center, 1) returns a displacement moving along a sine wave center, where center is a line parallell to 
-   * x-axis.
-   */
+  @Override
   public Enemies setNewPosition(Vector displacedPosition) {
-    return new Enemies(this.Variation, this.healthPoints, this.healthBars, this.Radius, displacedPosition, this.Direction, this.Velocity, this.enemyFireTimer, this.enemyFireDelay);
+    return new Enemies(this.Variation, this.maxHealth, this.healthPoints, this.healthBars, this.Radius, displacedPosition, this.Direction, this.Velocity, this.enemyFireTimer, this.enemyFireDelay);
   }
 
   /**
@@ -138,7 +133,7 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
     Vector[] rotateAroundPosition = Matrix.RotationMatrix(theta, new Vector(0, 0, 1)); // get rotation matrix, 
     Vector rotatedDirection = this.Direction.transformVect(rotateAroundPosition);
 
-    Enemies rotatedEnemy = new Enemies(this.Variation, this.healthPoints, this.healthBars, this.Radius, this.Position, rotatedDirection, this.Velocity, this.enemyFireTimer, this.enemyFireDelay);
+    Enemies rotatedEnemy = new Enemies(this.Variation, this.maxHealth, this.healthPoints, this.healthBars, this.Radius, this.Position, rotatedDirection, this.Velocity, this.enemyFireTimer, this.enemyFireDelay);
     return rotatedEnemy;
   }
 
@@ -162,9 +157,7 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
     }
   }
 
-  /**
-  * sets enemy default spawn on field. Uses {@link #setNewPosition} to make position change relative to coordinate system.
-  */
+  @Override
   public Enemies shiftedToStartPoint(FieldDimension dimension) {
     int startX = (int) (Math.round(dimension.width()/2) + dimension.getFieldX());
     int startY = (int) (0);
@@ -184,10 +177,10 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
     this.healthPoints -= damageTaken;
     if (this.healthPoints <= 0) {
       this.healthPoints = this.maxHealth;
-      this.healthBars--;
+      this.healthBars -= 1;
       
     }
-    return new Enemies(this.Variation, this.healthPoints, this.healthBars, this.Radius, this.Position, this.Direction, this.Velocity, this.enemyFireTimer, this.enemyFireDelay);
+    return new Enemies(this.Variation, this.maxHealth, this.healthPoints, this.healthBars, this.Radius, this.Position, this.Direction, this.Velocity, this.enemyFireTimer, this.enemyFireDelay);
     
   }
   

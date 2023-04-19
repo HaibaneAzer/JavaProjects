@@ -56,6 +56,30 @@ public class TestSprite {
   assertEquals(l1.hashCode(), l2.hashCode());
   assertNotEquals(b1, b3);
   assertNotEquals(b1, l1);
-}
+  }
+
+  @Test
+  public void testSpriteVelocity() {
+    Vector direction = new Vector(5, 0, 1);
+    Sprite<SpriteType, SpriteState> enemy1 = Enemies.newEnemy("monster1");
+    Sprite<SpriteType, SpriteState> enemy2 = Enemies.newEnemy("monster1");
+
+    Vector radius = new Vector(enemy1.Radius, enemy1.Radius, 1);
+    enemy1 = enemy1.displaceBy(radius);
+    enemy2 = enemy2.displaceBy(radius);
+
+    assertEquals(new Vector(0, 0, 1), enemy1.Velocity); 
+    enemy1.setVelocity(direction);
+    // testing velocity setter
+    assertEquals(direction, enemy1.Velocity); 
+    enemy1 = enemy1.displaceBy(enemy1.Velocity);
+    // check if enemy moves by velocity
+    assertEquals(direction, enemy1.Position);
+    enemy1.setVelocity(enemy1.Velocity.multiplyScalar(-1));
+    enemy1 = enemy1.displaceBy(enemy1.Velocity);
+    // check if enemy moved back to original spawn
+    assertEquals(enemy2.Position, enemy1.Position);
+    
+  }
 
 }

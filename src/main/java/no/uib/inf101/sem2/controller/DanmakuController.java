@@ -28,7 +28,7 @@ public class DanmakuController implements ActionListener{
   private int tickIndex;
   private final int maxDeltaSamples = 100;
   private double tick;
-  // list of common sprite movements
+  // boss variables
   // player movement direction
   private static final Vector PlayerMove[] = {
     new Vector(0, -1, 1),

@@ -88,12 +88,7 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
     return new Player(this.Variation, this.Radius, this.Position, newLifeCount);
   }
 
-
-  /**
-   * displaceBy moves the player position vector by velocity vector, where
-   * the scalar either represents distance (when used with {@link #shiftedToStartPoint}) 
-   * or speed. 
-   */
+  @Override
   public Player displaceBy(Vector Velocity) {
     // Math: Matrix((1, 0, 0), (0, 1, 0), delta) x Position = Position + delta, 
     // where Position and delta are Vectors
@@ -104,19 +99,12 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
     return displacedPlayer;
   }
 
-  /**
-   * setNewPosition sets current position to any Vector. New Vector can be a transformed version of old position
-   * example: Vect(sin(x), sin(y) + center, 1) returns a displacement moving along a sine wave center, where center is a line parallell to 
-   * x-axis.
-   */
+  @Override
   public Player setNewPosition(Vector displacedPosition) {
     return new Player(this.Variation, this.Radius, displacedPosition, this.Direction, this.Velocity, this.Lives);
   }
   
-  /**
-  * sets player spawn on field
-  * 
-  */
+  @Override
   public Player shiftedToStartPoint(FieldDimension dimension) {
     int startX = (int) (Math.round(dimension.width()/2) + dimension.getFieldX());
     int startY = (int) (Math.round(0.8*dimension.height()) + dimension.getFieldY());

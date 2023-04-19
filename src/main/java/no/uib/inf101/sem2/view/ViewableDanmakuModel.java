@@ -8,7 +8,6 @@ import no.uib.inf101.sem2.model.danmakus.Player;
 
 public interface ViewableDanmakuModel {
   
-  
   /**
   * getDimension returns an FieldDimension object.
   * @return FieldDimensioon of a model.
@@ -16,18 +15,22 @@ public interface ViewableDanmakuModel {
   FieldDimension getDimension();
   
   /**
-  * 
-  * 
+  * getter for all player-objects on field
   * @return playable character
   */
   Player getPlayer();
 
   /**
-  * 
-  * 
+  * getter for all enemy objects on field
   * @return next enemy
   */
   Iterable<Enemies> getEnemiesOnField();
+
+  /**
+   * getter for all boss enemy-objects on field
+   */
+  Enemies getBossEnemyOnField();
+
 
   /**
    * 

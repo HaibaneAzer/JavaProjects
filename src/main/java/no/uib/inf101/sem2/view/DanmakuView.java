@@ -82,6 +82,10 @@ public class DanmakuView extends JPanel{
       drawPlayer(Canvas, Model.getPlayer(), setColor);
       // draw enemies on field
       drawEnemy(Canvas, Model.getEnemiesOnField(), setColor);
+      // draw bosses on field
+      if (Model.getBossEnemyOnField() != null) {
+        drawBoss(Canvas, Model.getBossEnemyOnField(), setColor);
+      }
       // draw bullets on field
       drawBulletsOnField(Canvas, Model.getBulletsOnField(), setColor);
       // draw statistics like score or boss healthbar...
@@ -143,6 +147,36 @@ public class DanmakuView extends JPanel{
       //System.out.println(aimX + " and " + aimY);
     }
 
+  }
+
+  private static void drawBoss(Graphics2D Canvas, Enemies boss, ColorTheme Color) {
+    double x;
+    double y;
+    Vector aimLength;
+    double aimX;
+    double aimY;
+    double diameter;
+    Ellipse2D enemyBall;
+    Line2D enemyAimArrow;
+    // draw hitbox
+    Vector aimvectStartPoint = boss.getPosition(); // aim vector starts at position.
+    x = boss.getPosition().x() - boss.getRadius();
+    y = boss.getPosition().y() - boss.getRadius();
+    diameter = 2*boss.getRadius();
+    
+    enemyBall = new Ellipse2D.Double(x, y, diameter, diameter);
+    
+    Canvas.setColor(Color.getSpriteColor('r'));
+    Canvas.fill(enemyBall);
+    // draw aim
+    aimX = aimvectStartPoint.x();
+    aimY = aimvectStartPoint.y();
+    aimLength = aimvectStartPoint.addVect(boss.getAimVector());
+    enemyAimArrow = new Line2D.Double(aimX, aimY, aimLength.x(), aimLength.y());
+
+    Canvas.setColor(Color.getSpriteColor('c'));
+    Canvas.setStroke(new BasicStroke(2));
+    Canvas.draw(enemyAimArrow);
   }
 
   private static void drawBulletsOnField(Graphics2D Canvas, Iterable<Bullets> bulletList, ColorTheme Color) {

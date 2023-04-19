@@ -1,5 +1,6 @@
 package no.uib.inf101.sem2.model.danmakus;
 
+import no.uib.inf101.sem2.grid.FieldDimension;
 import no.uib.inf101.sem2.grid.Matricies;
 import no.uib.inf101.sem2.grid.Vector;
 
@@ -59,7 +60,7 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
       case "circleSmall" -> new Bullets(newBulletVar, circleSmallR, circleSmallPos);
       case "ellipseLarge" -> new Bullets(newBulletVar, ellipseLargeR, ellipseLargePos);
       // player bullets
-      case "arrow" -> new Bullets(newBulletVar, arrowR, arrowPos, 9); 
+      case "arrow" -> new Bullets(newBulletVar, arrowR, arrowPos, 16); 
       default -> throw new IllegalArgumentException("Type '" + newBulletVar + "' does not match one of two playable characters");
     };
     return bullet;
@@ -109,10 +110,7 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
     this.Direction = newAim;
   }
 
-  /**
-   * displaceBy moves the bullet position vector by velocity vector, where
-   * the scalar either represents distance or speed. 
-   */
+  @Override
   public Bullets displaceBy(Vector Velocity) {
     // Math: Matrix((1, 0, 0), (0, 1, 0), delta) x Position = Position + delta, 
     // where Position and delta are Vectors
@@ -137,6 +135,18 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
 
     Bullets rotatedEnemy = new Bullets(this.type, this.Variation, this.Radius, this.Position, rotatedDirection, this.Velocity, this.damage);
     return rotatedEnemy;
+  }
+
+  @Override
+  public Sprite<SpriteType, SpriteState> shiftedToStartPoint(FieldDimension dimension) {
+    /* Unused */
+    return null;
+  }
+
+  @Override
+  public Sprite<SpriteType, SpriteState> setNewPosition(Vector displacedPosition) {
+    /* Unused */
+    return null;
   }
 
 
