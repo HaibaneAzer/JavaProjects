@@ -261,8 +261,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
 
   /**
    * checkEnemyCollision is a helper method for {@link #insideField}, which is used to check if player hitbox
-   * overlaps enemy hitbox 
-   * 
+   * overlaps enemy hitbox or boss hitbox.
    */
   private boolean checkEnemyCollision(Player shiftedPlayer) {
     for (int i = this.currentEnemies.size() - 1; i >= 0; i--) {
@@ -277,6 +276,21 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
         }
         // kill enemy
         this.currentEnemies.remove(i);
+        return false;
+      }
+    }
+    if (this.currentBoss != null) {
+      if (shiftedPlayer.getPosition().subVect(this.currentBoss.getPosition()).length() < shiftedPlayer.getRadius() + this.currentBoss.getRadius()) {
+        // kill and respawn player if lives left
+        if (this.currentPlayer.isAlive()) {
+          this.currentPlayer = this.currentPlayer.respawnPlayer(this.currentPlayer.getLives() - 1).shiftedToStartPoint(Field);
+          System.out.println(this.currentPlayer.getLives());
+        }
+        else {
+          this.gameState = GameState.GAME_OVER;
+        }
+        // dmg boss (suicide dmg fixed at 300)
+        this.currentBoss.attackEnemy(300);
         return false;
       }
     }
@@ -737,7 +751,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
       }
     }
     // enemy/boss bullet hit player
-    else if (shiftedBullet.getType().equals(SpriteType.EnemyBullet)) {
+    else if (shiftedBullet.getType().equals(SpriteType.EnemyBullet) || shiftedBullet.getType().equals(SpriteType.BossBullet)) {
       if (shiftedBullet.getPosition().subVect(this.currentPlayer.getPosition()).length() < shiftedBullet.getRadius() + this.currentPlayer.getRadius()) {
         if (!this.currentPlayer.isAlive()) {
           this.gameState = GameState.GAME_OVER;
