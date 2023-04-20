@@ -597,7 +597,6 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     }
     this.enemyBullets.clear();  
   }
-
   
   private List<Bullets> enemyBulletPattern() {
 

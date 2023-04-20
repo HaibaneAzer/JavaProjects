@@ -40,12 +40,12 @@ public class TestDanmakuModel {
   DanmakuModel model = new DanmakuModel(field, factory);
 
   // check spawn point is correct:
-  // xPos = width / 2 - radius
-  // yPos = 0.8 * height - radius
+  // xPos = width / 2
+  // yPos = 0.8 * height
   int radius = model.getPlayer().getRadius();
   Vector checkSpawn = new Vector(
-    Math.round(width / 2) - radius, 
-    Math.round(0.8*height) - radius,
+    Math.round(width / 2), 
+    Math.round(0.8*height),
     1
   );  
   assertEquals(checkSpawn, model.getPlayer().getPosition());
