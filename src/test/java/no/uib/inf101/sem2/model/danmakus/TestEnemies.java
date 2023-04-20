@@ -15,12 +15,12 @@ public class TestEnemies {
   Vector direction = new Vector(1, 0, 1);
   Vector zeroVector = new Vector(0, 0, 1);
 
-  Enemies t1 = Enemies.newEnemy("monster1");
-  Enemies t2 = Enemies.newEnemy("monster1");
-  Enemies t3 = Enemies.newEnemy("monster1").displaceBy(direction);
-  Enemies s1 = Enemies.newEnemy("monster2");
+  Enemies t1 = Enemies.newEnemy(SpriteVariations.yokai1);
+  Enemies t2 = Enemies.newEnemy(SpriteVariations.yokai1);
+  Enemies t3 = Enemies.newEnemy(SpriteVariations.yokai1).displaceBy(direction);
+  Enemies s1 = Enemies.newEnemy(SpriteVariations.yokai2);
   // displacing with the zero-vector should not move player
-  Enemies s2 = Enemies.newEnemy("monster2").displaceBy(zeroVector); 
+  Enemies s2 = Enemies.newEnemy(SpriteVariations.yokai2).displaceBy(zeroVector); 
   assertEquals(t1, t2);
   assertEquals(s1, s2);
   assertEquals(t1.hashCode(), t2.hashCode());
@@ -35,7 +35,7 @@ public class TestEnemies {
     //
     Vector displace = new Vector(0, 10, 1);
 
-    Enemies monster1 = Enemies.newEnemy("monster1");
+    Enemies monster1 = Enemies.newEnemy(SpriteVariations.yokai1);
     monster1 = monster1.displaceBy(displace);
     monster1 = monster1.displaceBy(displace);
 

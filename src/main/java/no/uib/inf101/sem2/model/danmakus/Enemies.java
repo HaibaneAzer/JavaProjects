@@ -18,7 +18,7 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
   /**
    * constructor for transformations
    */
-  public Enemies(String EnemyVar, int maxHealth, int healthPoints, int healthBars, int Radius, Vector Position, Vector aimDirection, Vector Velocity, int enemyFireTimer, int enemyFireDelay) {
+  public Enemies(SpriteVariations EnemyVar, int maxHealth, int healthPoints, int healthBars, int Radius, Vector Position, Vector aimDirection, Vector Velocity, int enemyFireTimer, int enemyFireDelay) {
     super(SpriteType.Enemy, EnemyVar, SpriteState.aim, Radius, Position, aimDirection, Velocity);
     this.maxHealth = maxHealth;
     this.healthPoints = healthPoints;
@@ -30,7 +30,7 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
  /** 
   * constructor for spawning
   */
-  public Enemies(String EnemyVar, int healthPoints, int healthBars, int Radius, Vector Position, int enemyFireDelay) {
+  public Enemies(SpriteVariations EnemyVar, int healthPoints, int healthBars, int Radius, Vector Position, int enemyFireDelay) {
     super(SpriteType.Enemy, EnemyVar, SpriteState.aim, Radius, Position, startingAim, standStill);
     this.maxHealth = healthPoints;
     this.healthPoints = this.maxHealth;
@@ -43,13 +43,13 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
   * playable: Circular hitbox: "P1c" and "P2c", rectangular hitbox: "P1r" and "P2r".
   * 
   */
-  static Enemies newEnemy(String newEnemyVar) {
+  static Enemies newEnemy(SpriteVariations newEnemyVar) {
     Enemies enemy = switch(newEnemyVar) {
-      case "monster1" -> new Enemies(newEnemyVar, 300, 1, 8, 
+      case yokai1 -> new Enemies(newEnemyVar, 300, 1, 8, 
       new Vector(-8, -8, 1), 90); // want center at (0, 0)
-      case "monster2" -> new Enemies(newEnemyVar, 500, 1, 10, 
+      case yokai2 -> new Enemies(newEnemyVar, 500, 1, 10, 
       new Vector(-10, -10, 1), 110);
-      case "boss1" -> new Enemies(newEnemyVar, 3500, 2, 12, 
+      case boss4 -> new Enemies(newEnemyVar, 3500, 2, 12, 
       new Vector(-12,-12,1), 50);
       default -> throw new IllegalArgumentException("Type '" + newEnemyVar + "' does not match one of two playable characters");
     };

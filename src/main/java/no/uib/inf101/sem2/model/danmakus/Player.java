@@ -17,7 +17,7 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
   /**
    * transforming constructor
    */
-  private Player(String playerVar, int Radius, Vector Position, Vector Direction, Vector Velocity, int Lives) {
+  private Player(SpriteVariations playerVar, int Radius, Vector Position, Vector Direction, Vector Velocity, int Lives) {
     // spriteType is unchangeable, SpriteState can change.
     super(SpriteType.Player, playerVar, SpriteState.aim, Radius, Position, Direction, Velocity);
     this.Lives = Lives;
@@ -26,7 +26,7 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
   /**
    * spawning constructor
    */
-  private Player(String playerVar, int Radius, Vector Position) {
+  private Player(SpriteVariations playerVar, int Radius, Vector Position) {
     // spriteType is unchangeable, SpriteState can change.
     super(SpriteType.Player, playerVar, SpriteState.aim, Radius, Position, startingAim, standStill);
     // default spawn variables for all players.
@@ -35,7 +35,7 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
   /**
    * respawning constructor
    */
-  private Player(String playerVar, int Radius, Vector Position, int Lives) {
+  private Player(SpriteVariations playerVar, int Radius, Vector Position, int Lives) {
     // spriteType is unchangeable, SpriteState can change.
     super(SpriteType.Player, playerVar, SpriteState.aim, Radius, Position, startingAim, standStill);
     // default spawn variables for all players.
@@ -47,11 +47,11 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
   * playable: Circular hitbox: "P1c" and "P2c".
   * 
   */
-  static Player newPlayer(String newPlayerType) {
+  static Player newPlayer(SpriteVariations newPlayerType) {
 
     Player playableC = switch(newPlayerType) {
-      case "P1c" -> new Player(newPlayerType, 8, new Vector(-8, -8, 1)); // want center at (0, 0)
-      case "P2c" -> new Player(newPlayerType, 10, new Vector(-10, -10, 1));
+      case player1 -> new Player(newPlayerType, 8, new Vector(-8, -8, 1)); // want center at (0, 0)
+      case player2 -> new Player(newPlayerType, 10, new Vector(-10, -10, 1));
       default -> throw new IllegalArgumentException("Type '" + newPlayerType + "' does not match one of two playable characters");
     };
     return playableC;

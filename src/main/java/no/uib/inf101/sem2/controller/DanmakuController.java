@@ -93,6 +93,11 @@ public class DanmakuController implements ActionListener{
       }
     }
     else if (controllModel.getGameState().equals(GameState.ACTIVE_GAME)) {
+      // set movement to zero when none of arrow keys are pressed.
+      if (!(this.keyBoard.keyDown(KeyEvent.VK_UP) || this.keyBoard.keyDown(KeyEvent.VK_DOWN) 
+         || this.keyBoard.keyDown(KeyEvent.VK_RIGHT) || this.keyBoard.keyDown(KeyEvent.VK_LEFT))) {
+        this.controllModel.movePlayer(PlayerMove[4]);
+      }
       if (this.keyBoard.keyDown(KeyEvent.VK_UP)) { 
         this.controllModel.movePlayer(PlayerMove[0].multiplyScalar(this.playerSpeed));
       }

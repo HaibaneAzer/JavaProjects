@@ -6,6 +6,7 @@ public enum SpriteType {
   Enemy,
   Bullet,
   PlayerBullet,
-  EnemyBullet;
+  EnemyBullet,
+  BossBullet;
 
 }

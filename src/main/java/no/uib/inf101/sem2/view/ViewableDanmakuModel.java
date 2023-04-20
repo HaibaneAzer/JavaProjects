@@ -31,6 +31,10 @@ public interface ViewableDanmakuModel {
    */
   Enemies getBossEnemyOnField();
 
+  /**
+   * getter for boss attack type
+   */
+  boolean getBossAttackType();
 
   /**
    * 

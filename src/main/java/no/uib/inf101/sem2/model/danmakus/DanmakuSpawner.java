@@ -5,38 +5,38 @@ import java.util.List;
 
 public class DanmakuSpawner implements DanmakuFactory{
 
-  private final String[][][] enemySpawnList = {
+  private final SpriteVariations[][][] enemySpawnList = {
     // stage 1
     {
-    {"monster1", "monster1", "monster1"}, // wave 1
-    {"monster2"},
-    {"monster1", "monster1", "monster1"},
-    {"monster2", "monster2"}
+    {SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1}, // wave 1
+    {SpriteVariations.yokai2},
+    {SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1},
+    {SpriteVariations.yokai2, SpriteVariations.yokai2}
     },
     // stage 2
     {
-    {"monster1", "monster1", "monster1"},
-    {"monster1", "monster1"},
-    {"monster1", "monster2", "monster1", "monster1"},
-    {"monster2", "monster1", "monster1"}
+    {SpriteVariations.yokai1, SpriteVariations.yokai1},
+    {SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1},
+    {SpriteVariations.yokai1, SpriteVariations.yokai2},
+    {SpriteVariations.yokai2, SpriteVariations.yokai1, SpriteVariations.yokai1}
     }
     
   };
   
   @Override
-  public Player getNewPlayer(String C) {
+  public Player getNewPlayer(SpriteVariations C) {
     Player playableC = Player.newPlayer(C);
     return playableC;
   }
 
   @Override
-  public Enemies getNewEnemy(String C) {
+  public Enemies getNewEnemy(SpriteVariations C) {
     Enemies newEnemy = Enemies.newEnemy(C);
     return newEnemy;
   }
 
   @Override
-  public Bullets getNewBullet(String C) {
+  public Bullets getNewBullet(SpriteVariations C) {
     Bullets newBullet = Bullets.newBullet(C);
     return newBullet;
   }

@@ -6,9 +6,12 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
@@ -17,6 +20,7 @@ import no.uib.inf101.sem2.model.GameState;
 import no.uib.inf101.sem2.model.danmakus.Bullets;
 import no.uib.inf101.sem2.model.danmakus.Enemies;
 import no.uib.inf101.sem2.model.danmakus.Player;
+import no.uib.inf101.sem2.model.danmakus.SpriteVariations;
 
 public class DanmakuView extends JPanel{
   
@@ -84,7 +88,7 @@ public class DanmakuView extends JPanel{
       drawEnemy(Canvas, Model.getEnemiesOnField(), setColor);
       // draw bosses on field
       if (Model.getBossEnemyOnField() != null) {
-        drawBoss(Canvas, Model.getBossEnemyOnField(), setColor);
+        drawBoss(Canvas, Model.getBossEnemyOnField(), Model.getBossAttackType(), setColor);
       }
       // draw bullets on field
       drawBulletsOnField(Canvas, Model.getBulletsOnField(), setColor);
@@ -99,16 +103,53 @@ public class DanmakuView extends JPanel{
   
   private static void drawPlayer(Graphics2D Canvas, Player player, ColorTheme Color) {
     double x;
+    double imgWidth;
     double y;
+    double imgHeight;
     double diameter;
+    double scaleFactor;
     Ellipse2D playerBall;
+    BufferedImage playerImg;
+
+    // player2
+    // update image given player state
+    playerImg = Inf101Graphics.loadImageFromResources("/player2.png");
+    if (player.getVelocity().x() > 0) {
+      playerImg = Inf101Graphics.loadImageFromResources("/player2Right.png");
+    }
+    else if (player.getVelocity().x() < 0) {
+      playerImg = Inf101Graphics.loadImageFromResources("/player2Left.png");
+    }
+    // player1
+    if (player.getVariation().equals(SpriteVariations.player1)) {
+      // update image given player state
+      playerImg = Inf101Graphics.loadImageFromResources("/player1.png");
+      if (player.getVelocity().x() > 0) {
+        playerImg = Inf101Graphics.loadImageFromResources("/player1Right.png");
+      }
+      else if (player.getVelocity().x() < 0) {
+        playerImg = Inf101Graphics.loadImageFromResources("/player1Left.png");
+      }
+    }
     
-    x = player.getPosition().x() - player.getRadius();
-    y = player.getPosition().y() - player.getRadius();
+    // initialize variables
+    imgWidth = playerImg.getWidth();
+    imgHeight = playerImg.getHeight();
+    x = player.getPosition().x();
+    y = player.getPosition().y();
     diameter = 2*player.getRadius();
+
+    // scale by smallest image length.
+    scaleFactor = 2*(diameter/imgHeight);
+    if (imgWidth < imgHeight) {
+      scaleFactor = 2*(diameter/imgWidth);
+    }
     
+    // draw player
+    Inf101Graphics.drawCenteredImage(Canvas, playerImg, x, y, scaleFactor);
+    x -= player.getRadius();
+    y -= player.getRadius();
     playerBall = new Ellipse2D.Double(x, y, diameter, diameter);
-    
     Canvas.setColor(Color.getSpriteColor('r'));
     Canvas.fill(playerBall);
     
@@ -116,100 +157,189 @@ public class DanmakuView extends JPanel{
 
   private static void drawEnemy(Graphics2D Canvas, Iterable<Enemies> enemies, ColorTheme Color) {
     double x;
+    double imgWidth;
     double y;
-    Vector aimLength;
-    double aimX;
-    double aimY;
+    double imgHeight;
     double diameter;
+    double scaleFactor;
     Ellipse2D enemyBall;
-    Line2D enemyAimArrow;
+    BufferedImage enemyImg;
+
 
     for (Enemies enemy : enemies) {
-      Vector aimvectStartPoint = enemy.getPosition(); // aim vector starts at position.
-    
-      x = enemy.getPosition().x() - enemy.getRadius();
-      y = enemy.getPosition().y() - enemy.getRadius();
+      // get image for corrosponding enemy variation
+      enemyImg = Inf101Graphics.loadImageFromResources("/Yokai2.png");
+      if (enemy.getVariation().equals(SpriteVariations.yokai1)) {
+        enemyImg = Inf101Graphics.loadImageFromResources("/Yokai1.png");
+      }
+      
+      // initialize variables
+      imgWidth = enemyImg.getWidth();
+      imgHeight = enemyImg.getHeight();
+      x = enemy.getPosition().x();
+      y = enemy.getPosition().y();
       diameter = 2*enemy.getRadius();
-    
+
+      // scale by smallest image length.
+      scaleFactor = 2*(diameter/imgHeight);
+      if (imgWidth < imgHeight) {
+        scaleFactor = 2*(diameter/imgWidth);
+      }
+      
+      // draw enemy
+      Inf101Graphics.drawCenteredImage(Canvas, enemyImg, x, y, scaleFactor);
+      // draw hitbox
+      /* x -= enemy.getRadius();
+      y -= enemy.getRadius();
       enemyBall = new Ellipse2D.Double(x, y, diameter, diameter);
-    
       Canvas.setColor(Color.getSpriteColor('b'));
-      Canvas.fill(enemyBall);
+      Canvas.fill(enemyBall); */
 
-      aimX = aimvectStartPoint.x();
-      aimY = aimvectStartPoint.y();
-      aimLength = aimvectStartPoint.addVect(enemy.getAimVector());
-      enemyAimArrow = new Line2D.Double(aimX, aimY, aimLength.x(), aimLength.y());
-
-      Canvas.setColor(Color.getSpriteColor('c'));
-      Canvas.setStroke(new BasicStroke(2));
-      Canvas.draw(enemyAimArrow);
-      //System.out.println(aimX + " and " + aimY);
     }
-
   }
 
-  private static void drawBoss(Graphics2D Canvas, Enemies boss, ColorTheme Color) {
+  private static void drawBoss(Graphics2D Canvas, Enemies boss, boolean activateSuper, ColorTheme Color) {
     double x;
+    double imgWidth;
     double y;
-    Vector aimLength;
-    double aimX;
-    double aimY;
+    double imgHeight;
     double diameter;
+    double scaleFactor;
     Ellipse2D enemyBall;
-    Line2D enemyAimArrow;
+    BufferedImage bossImg;
+    // variables for image manipulations
+    AffineTransform tx;
+    AffineTransformOp op;
+
+    // get image for corrosponding boss variation
+    // boss 5
+    bossImg = Inf101Graphics.loadImageFromResources("/MoFBoss5.png");
+    if (boss.getVelocity().x() > 0) {
+      bossImg = Inf101Graphics.loadImageFromResources("/MoFBoss5Right.png");
+    }
+    else if (boss.getVelocity().x() < 0) {
+      bossImg = Inf101Graphics.loadImageFromResources("/MoFBoss5Right.png");
+      // flip image horisontally
+      tx = AffineTransform.getScaleInstance(-1, 1);
+      tx.translate(-bossImg.getWidth(null), 0);
+      op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+      bossImg = op.filter(bossImg, null);
+    }
+    // using super?
+    if (activateSuper) {
+      bossImg = Inf101Graphics.loadImageFromResources("/MoFBoss5Super.png");
+    }
+    // boss 4
+    if (boss.getVariation().equals(SpriteVariations.boss4)) {
+      bossImg = Inf101Graphics.loadImageFromResources("/MoFBoss4.png");
+      if (boss.getVelocity().x() < 0) {
+        bossImg = Inf101Graphics.loadImageFromResources("/MoFBoss4Left.png");
+      }
+      else if (boss.getVelocity().x() > 0) {
+        bossImg = Inf101Graphics.loadImageFromResources("/MoFBoss4Left.png");
+        // flip image horisontally
+        tx = AffineTransform.getScaleInstance(-1, 1);
+        tx.translate(-bossImg.getWidth(null), 0);
+        op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+        bossImg = op.filter(bossImg, null);
+      }
+      // using super?
+      if (activateSuper) {
+        bossImg = Inf101Graphics.loadImageFromResources("/MoFBoss4Super.png");
+      }
+    }
+    
+    // initialize variables
+    imgWidth = bossImg.getWidth();
+    imgHeight = bossImg.getHeight();
+    x = boss.getPosition().x();
+    y = boss.getPosition().y();
+    diameter = 2*boss.getRadius();
+
+    // scale by smallest image length.
+    scaleFactor = 2*(diameter/imgHeight);
+    if (imgWidth < imgHeight) {
+      scaleFactor = 2*(diameter/imgWidth);
+    }
+    
+    // draw enemy
+    Inf101Graphics.drawCenteredImage(Canvas, bossImg, x, y, scaleFactor);
+
     // draw hitbox
-    Vector aimvectStartPoint = boss.getPosition(); // aim vector starts at position.
-    x = boss.getPosition().x() - boss.getRadius();
+    /* x = boss.getPosition().x() - boss.getRadius();
     y = boss.getPosition().y() - boss.getRadius();
     diameter = 2*boss.getRadius();
     
     enemyBall = new Ellipse2D.Double(x, y, diameter, diameter);
     
     Canvas.setColor(Color.getSpriteColor('r'));
-    Canvas.fill(enemyBall);
-    // draw aim
-    aimX = aimvectStartPoint.x();
-    aimY = aimvectStartPoint.y();
-    aimLength = aimvectStartPoint.addVect(boss.getAimVector());
-    enemyAimArrow = new Line2D.Double(aimX, aimY, aimLength.x(), aimLength.y());
-
-    Canvas.setColor(Color.getSpriteColor('c'));
-    Canvas.setStroke(new BasicStroke(2));
-    Canvas.draw(enemyAimArrow);
+    Canvas.fill(enemyBall); */
+  
   }
 
   private static void drawBulletsOnField(Graphics2D Canvas, Iterable<Bullets> bulletList, ColorTheme Color) {
     double x;
+    double imgWidth;
     double y;
-    Vector aimVectStart;
-    Vector aimLength;
-    double aimX;
-    double aimY;
+    double imgHeight;
     double diameter;
+    double scaleFactor;
     Ellipse2D bulletHitbox;
-    Line2D bulletTrajectory;
+    BufferedImage bulletImg;
     
     for (Bullets bullet : bulletList) {
-
-      x = bullet.getPosition().x() - bullet.getRadius();
-      y = bullet.getPosition().y() - bullet.getRadius();
+      // get image for corrosponding bullet variation.
+      // also depends on bullet owners variation to determine color.
+      bulletImg = Inf101Graphics.loadImageFromResources("/playerBullet.png");
+      if (bullet.getVariation().equals(SpriteVariations.arrow)) {
+        bulletImg = Inf101Graphics.loadImageFromResources("/arrowMagenta.png");
+      }
+      else if (bullet.getVariation().equals(SpriteVariations.circleSmall)) {
+        if (bullet.getBulletOwner().equals(SpriteVariations.yokai1)) {
+          bulletImg = Inf101Graphics.loadImageFromResources("/circleSmallBlue.png");
+        }
+        else if (bullet.getBulletOwner().equals(SpriteVariations.boss4)) {
+          bulletImg = Inf101Graphics.loadImageFromResources("/circleSmallRed.png");
+        }
+        else if (bullet.getBulletOwner().equals(SpriteVariations.boss5)) {
+          bulletImg = Inf101Graphics.loadImageFromResources("/circleSmallRed.png");
+        }
+      }
+      else if (bullet.getVariation().equals(SpriteVariations.ellipseLarge)) {
+        bulletImg = Inf101Graphics.loadImageFromResources("/Yokai1.png");
+        if (bullet.getBulletOwner().equals(SpriteVariations.yokai2)) {
+          bulletImg = Inf101Graphics.loadImageFromResources("/ellipseLargeRed.png");
+        }
+        else if (bullet.getBulletOwner().equals(SpriteVariations.boss4)) {
+          bulletImg = Inf101Graphics.loadImageFromResources("/ellipseLargeCyan.png");
+        }
+        else if (bullet.getBulletOwner().equals(SpriteVariations.boss5)) {
+          bulletImg = Inf101Graphics.loadImageFromResources("/ellipseLargeCyan.png");
+        }
+      }
+      
+      // initialize variables
+      imgWidth = bulletImg.getWidth();
+      imgHeight = bulletImg.getHeight();
+      x = bullet.getPosition().x();
+      y = bullet.getPosition().y();
       diameter = 2*bullet.getRadius();
 
-      bulletHitbox = new Ellipse2D.Double(x, y, diameter, diameter);
+      // scale by smallest image length.
+      scaleFactor = 2*(diameter/imgHeight);
+      if (imgWidth < imgHeight) {
+        scaleFactor = 2*(diameter/imgWidth);
+      }
+      
+      // draw bullet
+      Inf101Graphics.drawCenteredImage(Canvas, bulletImg, x, y, scaleFactor);
 
+      // draw hitbox
+      x -= bullet.getRadius();
+      y -= bullet.getRadius();
+      bulletHitbox = new Ellipse2D.Double(x, y, diameter, diameter);
       Canvas.setColor(Color.getSpriteColor('g'));
       Canvas.fill(bulletHitbox);
-
-      aimVectStart = bullet.getPosition();
-      aimX = aimVectStart.x();
-      aimY = aimVectStart.y();
-      aimLength = aimVectStart.addVect(bullet.getAimVector());
-      bulletTrajectory = new Line2D.Double(aimX, aimY, aimLength.x(), aimLength.y());
-
-      Canvas.setColor(Color.getSpriteColor('y'));
-      Canvas.setStroke(new BasicStroke(1));
-      Canvas.draw(bulletTrajectory);
 
     }
 

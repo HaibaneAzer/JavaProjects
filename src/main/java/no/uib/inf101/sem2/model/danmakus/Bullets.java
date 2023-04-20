@@ -8,6 +8,7 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
 
   private int damage;
   private int bulletLifeTime = 0; // time left until the bullet vanishes
+  private SpriteVariations bulletOwner;
   private Matricies Matrix = new Matricies();
   private static final Vector spawnAim = new Vector(0, 0, 1);
   private static final Vector standStill = new Vector(0, 0, 1);
@@ -16,9 +17,10 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
    * Constructor for bullet movement.
    * 
    */
-  public Bullets(SpriteType type, String bulletVar, int Radius, Vector Position, Vector bulletAim, Vector Velocity, int damage) {
+  public Bullets(SpriteType type, SpriteVariations bulletVar, SpriteVariations bulletOwner, int Radius, Vector Position, Vector bulletAim, Vector Velocity, int damage) {
     super(type, bulletVar, SpriteState.relative, Radius, Position, bulletAim, Velocity);
     this.damage = damage;
+    this.bulletOwner = bulletOwner;
 
   }
 
@@ -26,7 +28,7 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
    * constructor for spawning bullet Player.
    * damage depends on player power and bullet type
    */
-  public Bullets(String bulletVar, int Radius, Vector Position, int damage) {
+  public Bullets(SpriteVariations bulletVar, int Radius, Vector Position, int damage) {
     super(SpriteType.Bullet, bulletVar, SpriteState.relative, Radius, Position, spawnAim, standStill);
     this.damage = damage;
 
@@ -36,7 +38,7 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
    * constructor for spawning bullet Enemy.
    * collision with player removes 1 life.
    */
-  public Bullets(String bulletVar, int Radius, Vector Position) {
+  public Bullets(SpriteVariations bulletVar, int Radius, Vector Position) {
     super(SpriteType.Bullet, bulletVar, SpriteState.relative, Radius, Position, spawnAim, standStill);
 
   }
@@ -46,7 +48,7 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
   * playable: enemy bullets: "circleSmall" and "ellipseLarge", player bullets: "arrow".
   * 
   */
-  static Bullets newBullet(String newBulletVar) {
+  static Bullets newBullet(SpriteVariations newBulletVar) {
     // hitbox variables. Using circular hitboxes for all to make collision calculation easier.
     int circleSmallR = 4;
     Vector circleSmallPos = new Vector(-circleSmallR, -circleSmallR, 1);
@@ -57,10 +59,10 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
 
     Bullets bullet = switch(newBulletVar) {
       // enemy bullets
-      case "circleSmall" -> new Bullets(newBulletVar, circleSmallR, circleSmallPos);
-      case "ellipseLarge" -> new Bullets(newBulletVar, ellipseLargeR, ellipseLargePos);
+      case circleSmall -> new Bullets(newBulletVar, circleSmallR, circleSmallPos);
+      case ellipseLarge -> new Bullets(newBulletVar, ellipseLargeR, ellipseLargePos);
       // player bullets
-      case "arrow" -> new Bullets(newBulletVar, arrowR, arrowPos, 16); 
+      case arrow -> new Bullets(newBulletVar, arrowR, arrowPos, 16); 
       default -> throw new IllegalArgumentException("Type '" + newBulletVar + "' does not match one of two playable characters");
     };
     return bullet;
@@ -84,12 +86,28 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
   }
 
   /**
+   * getter for bullet owner (sprite variation that shoots the bullet).
+   */
+  public SpriteVariations getBulletOwner() {
+    return this.bulletOwner;
+  }
+
+  /**
    * setBulletOwner changes spriteType to either PlayerBullet or EnemyBullet.
    * Used to determine collision action.
    * 
    */
-  public void setBulletOwner(SpriteType newOwner) {
-    this.type = newOwner;
+  public void setBulletType(SpriteType newType) {
+    this.type = newType;
+  }
+
+  /**
+   * setBulletOwner changes spriteType to either PlayerBullet or EnemyBullet.
+   * Used to determine collision action.
+   * 
+   */
+  public void setBulletOwner(SpriteVariations newOwner) {
+    this.bulletOwner = newOwner;
   }
 
   /**
@@ -117,7 +135,7 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
     Vector[] translate = Matrix.TranslationMatrix(Velocity); // get translation matrix
     Vector displacedPosition = this.Position.transformVect(translate); // displace position
 
-    Bullets displacedBullet = new Bullets(this.type, this.Variation, this.Radius, displacedPosition, this.Direction, this.Velocity, this.damage);
+    Bullets displacedBullet = new Bullets(this.type, this.Variation, this.bulletOwner, this.Radius, displacedPosition, this.Direction, this.Velocity, this.damage);
     return displacedBullet;
   }
 
@@ -133,7 +151,7 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
   
     Vector rotatedDirection = this.Direction.transformVect(rotateAroundPosition);
 
-    Bullets rotatedEnemy = new Bullets(this.type, this.Variation, this.Radius, this.Position, rotatedDirection, this.Velocity, this.damage);
+    Bullets rotatedEnemy = new Bullets(this.type, this.Variation, this.bulletOwner, this.Radius, this.Position, rotatedDirection, this.Velocity, this.damage);
     return rotatedEnemy;
   }
 

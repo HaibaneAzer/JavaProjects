@@ -16,12 +16,12 @@ public class TestSprite {
   Vector zeroVector = new Vector(0, 0, 1);
   
   // testing for Player
-  Sprite<SpriteType, SpriteState> p1 = Player.newPlayer("P1c");
-  Sprite<SpriteType, SpriteState> p2 = Player.newPlayer("P1c");
-  Sprite<SpriteType, SpriteState> p3 = Player.newPlayer("P1c").displaceBy(direction);
-  Sprite<SpriteType, SpriteState> q1 = Player.newPlayer("P2c");
+  Sprite<SpriteType, SpriteState> p1 = Player.newPlayer(SpriteVariations.player1);
+  Sprite<SpriteType, SpriteState> p2 = Player.newPlayer(SpriteVariations.player1);
+  Sprite<SpriteType, SpriteState> p3 = Player.newPlayer(SpriteVariations.player1).displaceBy(direction);
+  Sprite<SpriteType, SpriteState> q1 = Player.newPlayer(SpriteVariations.player2);
   // displacing with the zero-vector should not move player
-  Sprite<SpriteType, SpriteState> q2 = Player.newPlayer("P2c").displaceBy(zeroVector); 
+  Sprite<SpriteType, SpriteState> q2 = Player.newPlayer(SpriteVariations.player2).displaceBy(zeroVector); 
   assertEquals(p1, p2);
   assertEquals(q1, q2);
   assertEquals(p1.hashCode(), p2.hashCode());
@@ -30,12 +30,12 @@ public class TestSprite {
   assertNotEquals(p1, q1);
 
   // testing for Enemies
-  Sprite<SpriteType, SpriteState> t1 = Enemies.newEnemy("monster1");
-  Sprite<SpriteType, SpriteState> t2 = Enemies.newEnemy("monster1");
-  Sprite<SpriteType, SpriteState> t3 = Enemies.newEnemy("monster1").displaceBy(direction);
-  Sprite<SpriteType, SpriteState> s1 = Enemies.newEnemy("monster2");
+  Sprite<SpriteType, SpriteState> t1 = Enemies.newEnemy(SpriteVariations.yokai1);
+  Sprite<SpriteType, SpriteState> t2 = Enemies.newEnemy(SpriteVariations.yokai1);
+  Sprite<SpriteType, SpriteState> t3 = Enemies.newEnemy(SpriteVariations.yokai1).displaceBy(direction);
+  Sprite<SpriteType, SpriteState> s1 = Enemies.newEnemy(SpriteVariations.yokai2);
   // displacing with the zero-vector should not move player
-  Sprite<SpriteType, SpriteState> s2 = Enemies.newEnemy("monster2").displaceBy(zeroVector); 
+  Sprite<SpriteType, SpriteState> s2 = Enemies.newEnemy(SpriteVariations.yokai2).displaceBy(zeroVector); 
   assertEquals(t1, t2);
   assertEquals(s1, s2);
   assertEquals(t1.hashCode(), t2.hashCode());
@@ -44,12 +44,12 @@ public class TestSprite {
   assertNotEquals(t1, s1);
 
   // testing for Bullets
-  Sprite<SpriteType, SpriteState> b1 = Bullets.newBullet("arrow");
-  Sprite<SpriteType, SpriteState> b2 = Bullets.newBullet("arrow");
-  Sprite<SpriteType, SpriteState> b3 = Bullets.newBullet("arrow").displaceBy(direction);
-  Sprite<SpriteType, SpriteState> l1 = Bullets.newBullet("circleSmall");
+  Sprite<SpriteType, SpriteState> b1 = Bullets.newBullet(SpriteVariations.arrow);
+  Sprite<SpriteType, SpriteState> b2 = Bullets.newBullet(SpriteVariations.arrow);
+  Sprite<SpriteType, SpriteState> b3 = Bullets.newBullet(SpriteVariations.arrow).displaceBy(direction);
+  Sprite<SpriteType, SpriteState> l1 = Bullets.newBullet(SpriteVariations.circleSmall);
   // displacing with the zero-vector should not move player
-  Sprite<SpriteType, SpriteState> l2 = Bullets.newBullet("circleSmall").displaceBy(zeroVector); 
+  Sprite<SpriteType, SpriteState> l2 = Bullets.newBullet(SpriteVariations.circleSmall).displaceBy(zeroVector); 
   assertEquals(b1, b2);
   assertEquals(l1, l2);
   assertEquals(b1.hashCode(), b2.hashCode());
@@ -61,8 +61,8 @@ public class TestSprite {
   @Test
   public void testSpriteVelocity() {
     Vector direction = new Vector(5, 0, 1);
-    Sprite<SpriteType, SpriteState> enemy1 = Enemies.newEnemy("monster1");
-    Sprite<SpriteType, SpriteState> enemy2 = Enemies.newEnemy("monster1");
+    Sprite<SpriteType, SpriteState> enemy1 = Enemies.newEnemy(SpriteVariations.yokai1);
+    Sprite<SpriteType, SpriteState> enemy2 = Enemies.newEnemy(SpriteVariations.yokai1);
 
     Vector radius = new Vector(enemy1.Radius, enemy1.Radius, 1);
     enemy1 = enemy1.displaceBy(radius);

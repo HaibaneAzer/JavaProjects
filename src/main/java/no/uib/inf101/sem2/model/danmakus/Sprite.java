@@ -7,7 +7,7 @@ public abstract class Sprite<E, T> {
   
   protected T directionState; // determine bullet and enemy pointing direction
   protected E type; // Player, Enemy or Bullet
-  protected String Variation; // player1, player2, enemy1, enemy2, ball, arrow, etc...
+  protected SpriteVariations Variation; // player1, player2, enemy1, enemy2, ball, arrow, etc...
   protected int Radius;
   protected Vector Position;
   protected Vector Direction;
@@ -22,7 +22,7 @@ public abstract class Sprite<E, T> {
    * Example: "aim" makes target move in the same direction as it faces (Direction vector) and
    * sequence makes the sprite move in the same direction as a different sprite-object that spawned before it.
    */
-  public Sprite(E type, String Variation, T directionState, int Radius, Vector Position, Vector Direction, Vector Velocity) {
+  public Sprite(E type, SpriteVariations Variation, T directionState, int Radius, Vector Position, Vector Direction, Vector Velocity) {
     this.type = type;
     this.Variation = Variation;
     this.directionState = directionState;
@@ -49,7 +49,7 @@ public abstract class Sprite<E, T> {
   /**
    * getter for variation
    */
-  public String getVariation() {
+  public SpriteVariations getVariation() {
     return this.Variation;
   }
   /**

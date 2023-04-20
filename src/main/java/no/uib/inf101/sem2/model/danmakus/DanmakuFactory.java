@@ -9,13 +9,13 @@ public interface DanmakuFactory {
   * getNewPlayer returns a new Player-object
   * @return new Player-object. Replace old before new object.
   */
-  Player getNewPlayer(String C);
+  Player getNewPlayer(SpriteVariations C);
 
   /**
   * getNewEnemy returns a new Enemies-object
   * @return next Enemies-object
   */
-  Enemies getNewEnemy(String C);
+  Enemies getNewEnemy(SpriteVariations C);
 
   /**
    * getTotalEnemies returns a 2d list where every list inside represents each wave
@@ -27,6 +27,6 @@ public interface DanmakuFactory {
   * getNewBullet returns a new Bullets-object
   * @return next Bullets-object
   */
-  Bullets getNewBullet(String C);
+  Bullets getNewBullet(SpriteVariations C);
   
 }
