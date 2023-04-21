@@ -79,4 +79,8 @@ Klassen `DanmakuController` skal kunne endre på modellen basert på input fra b
 
 11 av 11 (alt gjort)
 
+# Video
+
+Link: https://youtu.be/VHMyTmT0L-Y.
+
 
