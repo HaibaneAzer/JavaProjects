@@ -51,7 +51,7 @@ public interface ControllableDanmakuModel {
 
   /**
    * set FPS value. Used with a fps calculator.
-   * updates every 2 seconds.
+   * updates every second.
    */
   void setFPSValue(double newFPS);
 
