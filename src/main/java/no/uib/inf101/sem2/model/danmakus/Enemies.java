@@ -122,15 +122,9 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
     return new Enemies(this.Variation, this.maxHealth, this.healthPoints, this.healthBars, this.Radius, displacedPosition, this.Direction, this.Velocity, this.enemyFireTimer, this.enemyFireDelay);
   }
 
-  /**
-   * rotateAxisBy rotates the enemy around its own axis, where 
-   * the angle theta either depends on time or fixed rotations.
-   * Rotation can be done at any point on field, but note that the vector being rotated must be position.vect + direction.Vect. 
-   * example: rotate direction vector(5, 0, 1) to vector(0, 5, 1) "- 90 degrees" at position vector(25, 25, 1). Then, 
-   * (direction + pos) * rotationMatrix(- pi / 2, pos) = vector(25, 30, 1), since (direction + pos) = vector(30, 25, 1).
-   */
+  @Override
   public Enemies rotateAxisBy(double theta) {
-    Vector[] rotateAroundPosition = Matrix.RotationMatrix(theta, new Vector(0, 0, 1)); // get rotation matrix, 
+    Vector[] rotateAroundPosition = Matrix.RotationMatrix(theta, new Vector(0, 0, 1));
     Vector rotatedDirection = this.Direction.transformVect(rotateAroundPosition);
 
     Enemies rotatedEnemy = new Enemies(this.Variation, this.maxHealth, this.healthPoints, this.healthBars, this.Radius, this.Position, rotatedDirection, this.Velocity, this.enemyFireTimer, this.enemyFireDelay);

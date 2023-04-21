@@ -9,8 +9,9 @@ import no.uib.inf101.sem2.model.danmakus.Player;
 public interface ViewableDanmakuModel {
   
   /**
-  * getDimension returns an FieldDimension object.
-  * @return FieldDimensioon of a model.
+  * getDimension is getter for FieldDimension object. 
+  * Gets field where sprites can move and shoot in.
+  * @return FieldDimension of a model.
   */
   FieldDimension getDimension();
   
@@ -26,35 +27,24 @@ public interface ViewableDanmakuModel {
   */
   Iterable<Enemies> getEnemiesOnField();
 
-  /**
-   * getter for all boss enemy-objects on field
-   */
+  /** Getter for all boss enemy-objects on field */
   Enemies getBossEnemyOnField();
 
-  /**
-   * getter for boss attack type
-   */
+  /** Getter for boss attack type */
   boolean getBossAttackType();
 
   /**
-   * 
-   * @return list of bullets existing on field
+   * Getter for all bullets-objects on field.
+   * @return list of bullets
    */
   Iterable<Bullets> getBulletsOnField();
 
-  /**
-   * getter for stages
-   */
+  /** Getter for stages */
   int getCurrentStage();
 
-  /**
-   * getter for gameState
-   */
+  /** Getter for gameState */
   GameState getGameState();
 
-  /**
-   * getter for FPS value calculated in controller.
-   * 
-   */
+  /** Getter for FPS value calculated in controller */
   double getFPSValue();
 }

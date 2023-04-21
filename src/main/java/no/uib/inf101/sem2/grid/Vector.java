@@ -32,7 +32,8 @@ public record Vector(double x, double y, int constant) {
   /**
    * scalarTimesVector performs scalar multiplication
    * Math: t * Vect(x, y) = Vect(x*t, y*t)
-   * @param scalar is the 
+   * @param scalar is the scaling factor
+   * @return scaled vector
    */
   public Vector multiplyScalar(double scalar) {
     return new Vector(this.x*scalar, this.y*scalar, 1);
@@ -40,8 +41,10 @@ public record Vector(double x, double y, int constant) {
 
   /**
    * rotateVect rotates the vector around origin with theta as angle.
+   * @param theta is angle in radians.
+   * @return rotated vector
    */
-  public Vector rotateVect(double Theta, Vector Pos) {
+  public Vector rotateVect(double Theta) {
     double rotX = this.x*Math.cos(Theta) - this.y*Math.sin(Theta);
     double rotY = this.y*Math.cos(Theta) + this.x*Math.sin(Theta);
     Vector rotatedVect = new Vector(rotX, rotY, 1);
@@ -64,9 +67,7 @@ public record Vector(double x, double y, int constant) {
     return new Vector(newX, newY, 1);
   }
 
-  /**
-   * 
-   */
+  /** Getter for vector length */
   public double length() {
     return Math.sqrt(x*x + y*y);
   }
@@ -91,7 +92,6 @@ public record Vector(double x, double y, int constant) {
    * M((a, b, 0), (c, d, 0), (u, v, 1)) x (x, y) = (a*x + c*y + u, b*x + d*y + v, 1).
    * @param matrix3x3 is the transformation matrix. 
    * Example matrix's: M((1, 0, 0),(0, 1, 0),(tx, ty, 1)) is for translation 
-   * 
    */
   public Vector transformVect(Vector[] matrix3x3) {
      

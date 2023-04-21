@@ -52,12 +52,13 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   private List<Bullets> enemyBullets = new ArrayList<Bullets>();
   private List<Bullets> bossBullets = new ArrayList<Bullets>(); 
   private List<Bullets> bulletsOnField = new ArrayList<Bullets>(); // total bullets from both player and enemies.
-  private double FPSCounter = 60.0;
+  private double FPSCounter;
   
   public DanmakuModel(DanmakuField Field, DanmakuFactory getSprite) {
     this.Field = Field;
     this.getSprite = getSprite;
     this.gameState = GameState.GAME_MENU;
+    this.FPSCounter = 0.0;
     // handle waves and stages
     this.currentStage = 1;
     this.currentWaveIndex = 0;
@@ -490,7 +491,6 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
             this.waveDelay = 0;
             this.spawnEnemyTimer = this.spawnEnemyInterval;
             // move to next wave
-            System.out.println("wave num: " + (this.currentWaveIndex + 1));
             if (this.currentWaveIndex < this.TotalEnemies.size() - 1 && this.waveDelay == 0) {
               this.currentWaveIndex++; 
             }

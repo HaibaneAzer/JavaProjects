@@ -9,8 +9,8 @@ import no.uib.inf101.sem2.grid.Vector;
 
 public class TestPlayer {
     
-@Test
-public void testHashCodeAndEquals() {
+  @Test
+  public void testHashCodeAndEquals() {
 
   Vector direction = new Vector(1, 0, 1);
   Vector zeroVector = new Vector(0, 0, 1);
@@ -28,6 +28,6 @@ public void testHashCodeAndEquals() {
   assertNotEquals(t1, t3);
   assertNotEquals(t1, s1);
 
-}
+  }
 
 }

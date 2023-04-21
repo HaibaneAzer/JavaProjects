@@ -17,7 +17,6 @@ public class Matricies {
   /**
    * the Matricies class is used to make sprite movement more customizable 
    * and produce interesting movement patterns for bullets
-   * 
    */
   public Matricies() {
     
@@ -27,9 +26,6 @@ public class Matricies {
    * choose between custom transformations. 
    * Theory: matrix is based on a Vector field, where the matrix transforms 
    * a vector into the velocity vector at a given position on the Vector field.
-   * 
-   * 
-   * 
    */
   static void transformPath() {
 
@@ -38,6 +34,8 @@ public class Matricies {
   /**
    * create a translation matrix, that moves a vector.
    * Used for changing position in direction of velocity vector.
+   * @param velocity translation.
+   * @return a matrix-object.
    */
   public Vector[] TranslationMatrix(Vector velocity) {
     this.transform[0] = new Vector(1, 0, 0);
@@ -50,6 +48,7 @@ public class Matricies {
    * create a scaling matrix, that scales a vector.
    * Used for changing speed in any direction
    * @param scalar is scaling factor.
+   * @return a matrix-object.
    */
   public Vector[] ScaleMatrix(double scalar) {
     this.transform[0] = new Vector(scalar, 0, 0);
@@ -90,7 +89,8 @@ public class Matricies {
   }
 
   /**
-   * getter for transformation matrix. NB: call this after peforming
+   * getter for transformation matrix. 
+   * NB: call this after peforming
    * a transformation.
    */
   public Vector[] getTransform() {
@@ -98,7 +98,6 @@ public class Matricies {
   }
 
   // equals for matricies
-
   public boolean equals(Object obj) {
     if (this == obj) {
       return true;
@@ -111,7 +110,5 @@ public class Matricies {
     transform[1].equals(matrix.transform[1]) &&
     transform[2].equals(matrix.transform[2]);
   }
-
-  
 
 }

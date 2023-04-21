@@ -7,14 +7,9 @@ public class Grid implements IGrid {
   private final int y;
   private int width;
   private int height;
-  // idea: make gridcells that stores player, enemy and bullet positions when their
-  // centers overlap a given gridcell. 
-  // might make collision checking easier (on memory) by:
-  // only checking all neighbouring cells around player/enemy (+ initial cell) for bullets and then
-  // calculate overlap of bullet and player/enemy hitboxes.
+
   /**
-  * constructor for Field
-  * 
+  * constructor for Field construction
   */
   public Grid(int x, int y, int width, int height) {
     this.x = x;

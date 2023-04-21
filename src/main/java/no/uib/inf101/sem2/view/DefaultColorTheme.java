@@ -53,7 +53,7 @@ public class DefaultColorTheme implements ColorTheme {
   public Color getMenuScreenColor(String C) {
     Color color = switch(C) {
       case "back" -> Color.BLACK.brighter();
-      case "title" -> Color.WHITE.darker();
+      case "title" -> Color.WHITE;
       case "key" -> Color.WHITE.darker();
       default -> throw new IllegalArgumentException("No available color for '" + C + "'\nTry 'back', 'title' or 'key'.");
     };
@@ -80,6 +80,16 @@ public class DefaultColorTheme implements ColorTheme {
       default -> throw new IllegalArgumentException("No available color for '" + C + "'\nTry 'curscore', 'hiscore' or 'stage'.");
     };
     return color;
+  }
+
+  @Override
+  public Color getFrameColor() {
+    return Color.BLACK;
+  }
+
+  @Override
+  public Color getFieldBackgroundColor() {
+    return Color.GREEN.brighter();
   }
   
   

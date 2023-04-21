@@ -88,6 +88,15 @@ public abstract class Sprite<E, T> {
   }
 
   /**
+   * rotateAxisBy rotates the enemy around its own axis, where 
+   * the angle theta either depends on time or fixed rotations.
+   * Rotation can be done at any point on field, but note that the vector being rotated must be position.vect + direction.Vect. 
+   * example: rotate direction vector(5, 0, 1) to vector(0, 5, 1) "- 90 degrees" at position vector(25, 25, 1). Then, 
+   * (direction + pos) * rotationMatrix(- pi / 2, pos) = vector(25, 30, 1), since (direction + pos) = vector(30, 25, 1).
+   */
+  public abstract Sprite<E, T> rotateAxisBy(double theta);
+
+  /**
    * displaceBy moves the sprite position vector by velocity vector (or other Vector), where
    * the scalar either represents distance. 
    * or speed. 
@@ -105,7 +114,7 @@ public abstract class Sprite<E, T> {
    * x-axis. Is used by {@link #shiftedToStartPoint}).
    */
   public abstract Sprite<E, T> setNewPosition(Vector displacedPosition);
-  
+
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -139,10 +148,7 @@ public abstract class Sprite<E, T> {
         return false;
     } else if (!type.equals(other.type))
       return false;
-    if (Variation == null) {
-      if (other.Variation != null)
-        return false;
-    } else if (!Variation.equals(other.Variation))
+    if (Variation != other.Variation)
       return false;
     if (Radius != other.Radius)
       return false;
@@ -163,6 +169,8 @@ public abstract class Sprite<E, T> {
       return false;
     return true;
   }
+  
+  
   
 
 }

@@ -1,6 +1,6 @@
 package no.uib.inf101.sem2.model;
   
-  import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -12,6 +12,7 @@ import no.uib.inf101.sem2.model.danmakus.DanmakuSpawner;
 
 public class TestDanmakuModel {
 
+  // used for all tests
   private static final int x = 0;
   private static final int y = 0;
   private static final int width = 100;
@@ -20,47 +21,49 @@ public class TestDanmakuModel {
   @Test
   public void testSuccessfulPlayerMovement() {
 
-  DanmakuField field = new DanmakuField(x, y, width, height);
-  DanmakuFactory factory = new DanmakuSpawner();
-  DanmakuModel model = new DanmakuModel(field, factory);
+    DanmakuField field = new DanmakuField(x, y, width, height);
+    DanmakuFactory factory = new DanmakuSpawner();
+    DanmakuModel model = new DanmakuModel(field, factory);
 
-  Vector direction = new Vector(0, -1, 1); // move up
-  double distance = 5;
+    Vector direction = new Vector(0, -1, 1); // move up
+    double distance = 5;
   
-  // move up by 5 pixels should return true when player is at spawn.
-  assertTrue(model.movePlayer(direction.multiplyScalar(distance)));
+    // move up by 5 pixels should return true when player is at spawn.
+    assertTrue(model.movePlayer(direction.multiplyScalar(distance)));
     
   }
 
   @Test
   public void testFailedPlayerMovement() {
 
-  DanmakuField field = new DanmakuField(x, y, width, height);
-  DanmakuFactory factory = new DanmakuSpawner();
-  DanmakuModel model = new DanmakuModel(field, factory);
+    DanmakuField field = new DanmakuField(x, y, width, height);
+    DanmakuFactory factory = new DanmakuSpawner();
+    DanmakuModel model = new DanmakuModel(field, factory);
 
-  // check spawn point is correct:
-  // xPos = width / 2
-  // yPos = 0.8 * height
-  int radius = model.getPlayer().getRadius();
-  Vector checkSpawn = new Vector(
-    Math.round(width / 2), 
-    Math.round(0.8*height),
-    1
-  );  
-  assertEquals(checkSpawn, model.getPlayer().getPosition());
+    // check spawn point is correct:
+    // xPos = width / 2
+    // yPos = 0.8 * height
+    int radius = model.getPlayer().getRadius();
+    Vector checkSpawn = new Vector(
+      Math.round(width / 2), 
+      Math.round(0.8*height),
+      1
+    );  
+    assertEquals(checkSpawn, model.getPlayer().getPosition());
 
-  Vector direction = new Vector(0, 1, 1);
-  double distance = 1;
-  // move player to field lower bound
-  for (int i = 0; i < 50; i++) {
-    model.movePlayer(direction.multiplyScalar(distance));
-  }
-  // should return false when player can't move past field border
-  assertFalse(model.movePlayer(direction.multiplyScalar(distance)));
+    Vector direction = new Vector(0, 1, 1);
+    double distance = 1;
 
-  // check if player is still on field
-  assertTrue(model.getPlayer().getPosition().y() < height - radius);
+    // move player to field lower bound
+    for (int i = 0; i < 50; i++) {
+      model.movePlayer(direction.multiplyScalar(distance));
+    }
+
+    // should return false when player can't move past field border
+    assertFalse(model.movePlayer(direction.multiplyScalar(distance)));
+
+    // check if player is still on field
+    assertTrue(model.getPlayer().getPosition().y() < height - radius);
   }
 
 }

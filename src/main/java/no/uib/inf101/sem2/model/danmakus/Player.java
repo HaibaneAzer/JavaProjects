@@ -113,6 +113,12 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
 
     return setNewPosition(originToSpawn);
   }
+
+  @Override
+  public Sprite<SpriteType, SpriteState> rotateAxisBy(double theta) {
+    /* Unused */
+    return null;
+  }
   
   
   

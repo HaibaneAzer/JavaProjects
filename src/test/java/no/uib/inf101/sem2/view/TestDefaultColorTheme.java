@@ -17,6 +17,9 @@ public void sanityTestDefaultColorTheme() {
   assertEquals(Color.GREEN, colors.getSpriteColor('g'));
   assertEquals(Color.RED, colors.getSpriteColor('r'));
   assertThrows(IllegalArgumentException.class, () -> colors.getSpriteColor('\n'));
+  assertEquals(Color.GREEN.brighter(), colors.getFieldBackgroundColor());
+  assertEquals(Color.BLACK, colors.getFrameColor());
+
 }
 
 }

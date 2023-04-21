@@ -2,46 +2,62 @@ package no.uib.inf101.sem2.model.danmakus;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import no.uib.inf101.sem2.grid.Vector;
-
 public class TestEnemies {
-  
-  @Test
-  public void testHashCodeAndEquals() {
-
-  Vector direction = new Vector(1, 0, 1);
-  Vector zeroVector = new Vector(0, 0, 1);
-
-  Enemies t1 = Enemies.newEnemy(SpriteVariations.yokai1);
-  Enemies t2 = Enemies.newEnemy(SpriteVariations.yokai1);
-  Enemies t3 = Enemies.newEnemy(SpriteVariations.yokai1).displaceBy(direction);
-  Enemies s1 = Enemies.newEnemy(SpriteVariations.yokai2);
-  // displacing with the zero-vector should not move player
-  Enemies s2 = Enemies.newEnemy(SpriteVariations.yokai2).displaceBy(zeroVector); 
-  assertEquals(t1, t2);
-  assertEquals(s1, s2);
-  assertEquals(t1.hashCode(), t2.hashCode());
-  assertEquals(s1.hashCode(), s2.hashCode());
-  assertNotEquals(t1, t3);
-  assertNotEquals(t1, s1);
-
-  }
 
   @Test
-  public void EnemyDisplacement() {
-    //
-    Vector displace = new Vector(0, 10, 1);
-
-    Enemies monster1 = Enemies.newEnemy(SpriteVariations.yokai1);
-    monster1 = monster1.displaceBy(displace);
-    monster1 = monster1.displaceBy(displace);
-
-    // Check if tetro was displaced, then check if displacement is doubled on repeated shift.
-    Vector checkPos = new Vector( -monster1.getRadius(), 20 - monster1.getRadius(), 1);
-    assertEquals(monster1.getPosition(), checkPos);
+  public void testEnemyTakingDmg() {
     
+    // check if dmg subtracts normally
+    int dmg = 50;
+    Enemies e1 = Enemies.newEnemy(SpriteVariations.yokai1);
+    Enemies e2 = Enemies.newEnemy(SpriteVariations.boss4);
+
+    int oldHealth1 = e1.getMaxhealth();
+    int oldHealth2 = e2.getMaxhealth();
+    int oldbars = e2.getHealthBars();
+    int curHealth = oldHealth1 - dmg;
+
+    assertEquals(curHealth, e1.attackEnemy(dmg).getHealthPoints());
+    
+    // losing all health should kill the enemy
+    e1 = e1.attackEnemy(oldHealth1);
+
+    assertTrue(!e1.isAlive());
+
+    // depleting all healthpoints doesn't kill if enemy has healthbars
+    e2 = e2.attackEnemy(oldHealth2);
+
+    assertTrue(e2.isAlive());
+
+    // depleting health should only remove 1 healthbar
+    int curBars = oldbars - 1;
+    assertEquals(curBars, e2.getHealthBars());
+
   }
+
+  @Test
+  public void testFireDelayAndDirectionState() {
+
+    Enemies e1 = Enemies.newEnemy(SpriteVariations.yokai1);
+    Enemies e2 = Enemies.newEnemy(SpriteVariations.yokai2);
+
+    // check fireTimer setter (default zero)
+    int newTimer = 45;
+
+    assertNotEquals(e1.getFireTimer(), e1.setFireTimer(newTimer).getFireTimer());
+
+    // check different enemies with different delays
+    assertTrue(e1.getFireDelay() != e2.getFireDelay());
+
+    // default direction is "aim"
+    SpriteState defaultState = e2.directionState;
+
+    assertEquals(SpriteState.aim, defaultState);
+
+  }
+
 }

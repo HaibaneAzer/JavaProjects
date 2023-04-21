@@ -7,14 +7,21 @@ public interface ColorTheme {
   
   /**
   * getBackgroundColor gets colors used for background behind the field. 
-  * NB: Change later to images. 
-  * 
   */
   Color getBackgroundColor();
+
+  /**
+   * getFrameColor gets colors for window frame around field.
+   */
+  Color getFrameColor();
+
+  /**
+   * getFieldBackgroundColor gets the color behind background images to indicate boundaries.
+   */
+  Color getFieldBackgroundColor();
   
   /**
   * getFieldColor gets colors used for Field.
-  * 
   */
   Color getFieldColor();
   
@@ -29,7 +36,7 @@ public interface ColorTheme {
   * getScoreBoardColor has parameter of type string and returns values of type Color.
   * valid inputs are "back"; corrosponds to color dark gray, and "score"; corrosponds to
   * color white.
-  * @param C is of type string
+  * @param C is of type string. can be 'back' or 'score'.
   */
   Color getScoreBoardColor(String C);
 
