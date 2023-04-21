@@ -475,48 +475,50 @@ public class DanmakuView extends JPanel{
 
     Canvas.setColor(Color.getSpriteColor('r'));
     Canvas.fill(fieldRect);
+    // only draw available stages.
+    if (model.getCurrentStage() < 3) {
+      // update background
+      fieldBackImg = getFieldImage(model.getCurrentStage(), "stage");
+      if (model.getBossEnemyOnField() != null) {
+        fieldBackImg = getFieldImage(model.getCurrentStage(), "back");
+        fieldForeImg = getFieldImage(model.getCurrentStage(), "fore");
 
-    // update background
-    fieldBackImg = getFieldImage(model.getCurrentStage(), "stage");
-    if (model.getBossEnemyOnField() != null) {
-      fieldBackImg = getFieldImage(model.getCurrentStage(), "back");
-      fieldForeImg = getFieldImage(model.getCurrentStage(), "fore");
+        imgForeHeight = fieldForeImg.getHeight();
+      }
+      imgBackHeight = fieldBackImg.getHeight();
 
-      imgForeHeight = fieldForeImg.getHeight();
-    }
-    imgBackHeight = fieldBackImg.getHeight();
-
-    // scale image to field size
-    scaleFactor = (imgBackHeight / width);
-    if (height < imgBackHeight) {
-      scaleFactor = (height / imgBackHeight);
-    }
-    foreScaleFactor = (imgBackHeight / imgForeHeight);
-    if (imgBackHeight < imgForeHeight) {
-      foreScaleFactor = (imgForeHeight / imgBackHeight);
-    }
-    // scrolling variable
-    double scrollDown = scrollY - (imgBackHeight*scaleFactor);
-    double scrollDown2 = scrollY;
-    // draw stage background
-    Inf101Graphics.drawImage(Canvas, fieldBackImg, x, scrollDown, scaleFactor);
-    Inf101Graphics.drawImage(Canvas, fieldBackImg, x, scrollDown2, scaleFactor);
-    // extra backgrounds (prevent bakcground scrolling off)
-    Inf101Graphics.drawImage(Canvas, fieldBackImg, x, scrollDown2 - 2*(imgBackHeight*scaleFactor), scaleFactor);
-    Inf101Graphics.drawImage(Canvas, fieldBackImg, x, scrollDown2 + (imgBackHeight*scaleFactor), scaleFactor);
-    // if boss fight, stop scrolling
-    if (model.getBossEnemyOnField() != null) {
-      scrollDown = y;
-      scrollDown2 = y;
-      // draw boss background
+      // scale image to field size
+      scaleFactor = (imgBackHeight / width);
+      if (height < imgBackHeight) {
+        scaleFactor = (height / imgBackHeight);
+      }
+      foreScaleFactor = (imgBackHeight / imgForeHeight);
+      if (imgBackHeight < imgForeHeight) {
+        foreScaleFactor = (imgForeHeight / imgBackHeight);
+      }
+      // scrolling variable
+      double scrollDown = scrollY - (imgBackHeight*scaleFactor);
+      double scrollDown2 = scrollY;
+      // draw stage background
       Inf101Graphics.drawImage(Canvas, fieldBackImg, x, scrollDown, scaleFactor);
-      Inf101Graphics.drawImage(Canvas, fieldForeImg, x, scrollDown2, foreScaleFactor);
+      Inf101Graphics.drawImage(Canvas, fieldBackImg, x, scrollDown2, scaleFactor);
+      // extra backgrounds (prevent bakcground scrolling off)
+      Inf101Graphics.drawImage(Canvas, fieldBackImg, x, scrollDown2 - 2*(imgBackHeight*scaleFactor), scaleFactor);
+      Inf101Graphics.drawImage(Canvas, fieldBackImg, x, scrollDown2 + (imgBackHeight*scaleFactor), scaleFactor);
+      // if boss fight, stop scrolling
+      if (model.getBossEnemyOnField() != null) {
+        scrollDown = y;
+        scrollDown2 = y;
+        // draw boss background
+        Inf101Graphics.drawImage(Canvas, fieldBackImg, x, scrollDown, scaleFactor);
+        Inf101Graphics.drawImage(Canvas, fieldForeImg, x, scrollDown2, foreScaleFactor);
+      }
     }
     // draw line of collection
     Canvas.setColor(Color.getSpriteColor('r'));
     Line2D collectionLine = new Line2D.Double(x, y + (height*(0.28)), (double) fieldRect.getX() + width, y + (height*(0.28)));
     Canvas.draw(collectionLine);
-    
+  
   }
 
   private static void drawFieldFrame(Graphics2D Canvas, Rectangle2D fieldRect, ColorTheme color) {

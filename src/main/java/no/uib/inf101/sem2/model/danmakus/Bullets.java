@@ -62,7 +62,7 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
       case circleSmall -> new Bullets(newBulletVar, circleSmallR, circleSmallPos);
       case ellipseLarge -> new Bullets(newBulletVar, ellipseLargeR, ellipseLargePos);
       // player bullets
-      case arrow -> new Bullets(newBulletVar, arrowR, arrowPos, 16); 
+      case arrow -> new Bullets(newBulletVar, arrowR, arrowPos, 36); 
       default -> throw new IllegalArgumentException("Type '" + newBulletVar + "' does not match one of two playable characters");
     };
     return bullet;
