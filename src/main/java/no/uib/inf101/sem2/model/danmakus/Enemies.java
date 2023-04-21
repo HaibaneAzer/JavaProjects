@@ -51,7 +51,8 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
       new Vector(-10, -10, 1), 110);
       case boss4 -> new Enemies(newEnemyVar, 3500, 2, 12, 
       new Vector(-12,-12,1), 50);
-      default -> throw new IllegalArgumentException("Type '" + newEnemyVar + "' does not match one of two playable characters");
+      default -> throw new IllegalArgumentException(
+        "Type '" + newEnemyVar + "' does not match one of two playable characters");
     };
     return enemy;
     
@@ -97,7 +98,17 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
    */
   public Enemies setFireTimer(int advance) {
     this.enemyFireTimer = advance;
-    return new Enemies(this.Variation, this.maxHealth, this.healthPoints , this.healthBars, this.Radius, this.Position, this.Direction, this.Velocity, this.enemyFireTimer, this.enemyFireDelay);
+    return new Enemies(
+      this.Variation, 
+      this.maxHealth, 
+      this.healthPoints, 
+      this.healthBars, 
+      this.Radius, 
+      this.Position, 
+      this.Direction, 
+      this.Velocity, 
+      this.enemyFireTimer,
+      this.enemyFireDelay);
   }
 
   /**
@@ -113,13 +124,27 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
     Vector[] translate = Matrix.TranslationMatrix(displacement); // get translation matrix
     Vector displacedPosition = this.Position.transformVect(translate); // displace position
 
-    Enemies displacedEnemy = new Enemies(this.Variation, this.maxHealth, this.healthPoints, this.healthBars, this.Radius, displacedPosition, this.Direction, this.Velocity, this.enemyFireTimer, this.enemyFireDelay);
+    Enemies displacedEnemy = new Enemies(
+      this.Variation, 
+      this.maxHealth, 
+      this.healthPoints, 
+      this.healthBars, 
+      this.Radius, 
+      displacedPosition, 
+      this.Direction, 
+      this.Velocity, 
+      this.enemyFireTimer, 
+      this.enemyFireDelay);
     return displacedEnemy;
   }
 
   @Override
   public Enemies setNewPosition(Vector displacedPosition) {
-    return new Enemies(this.Variation, this.maxHealth, this.healthPoints, this.healthBars, this.Radius, displacedPosition, this.Direction, this.Velocity, this.enemyFireTimer, this.enemyFireDelay);
+    return new Enemies(
+      this.Variation, 
+      this.maxHealth, 
+      this.healthPoints, 
+      this.healthBars, this.Radius, displacedPosition, this.Direction, this.Velocity, this.enemyFireTimer, this.enemyFireDelay);
   }
 
   @Override
@@ -127,7 +152,17 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
     Vector[] rotateAroundPosition = Matrix.RotationMatrix(theta, new Vector(0, 0, 1));
     Vector rotatedDirection = this.Direction.transformVect(rotateAroundPosition);
 
-    Enemies rotatedEnemy = new Enemies(this.Variation, this.maxHealth, this.healthPoints, this.healthBars, this.Radius, this.Position, rotatedDirection, this.Velocity, this.enemyFireTimer, this.enemyFireDelay);
+    Enemies rotatedEnemy = new Enemies(
+      this.Variation, 
+      this.maxHealth, 
+      this.healthPoints, 
+      this.healthBars, 
+      this.Radius, 
+      this.Position, 
+      rotatedDirection, 
+      this.Velocity, 
+      this.enemyFireTimer, 
+      this.enemyFireDelay);
     return rotatedEnemy;
   }
 
@@ -174,7 +209,17 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
       this.healthBars -= 1;
       
     }
-    return new Enemies(this.Variation, this.maxHealth, this.healthPoints, this.healthBars, this.Radius, this.Position, this.Direction, this.Velocity, this.enemyFireTimer, this.enemyFireDelay);
+    return new Enemies(
+      this.Variation, 
+      this.maxHealth, 
+      this.healthPoints, 
+      this.healthBars, 
+      this.Radius, 
+      this.Position, 
+      this.Direction, 
+      this.Velocity, 
+      this.enemyFireTimer, 
+      this.enemyFireDelay);
     
   }
   

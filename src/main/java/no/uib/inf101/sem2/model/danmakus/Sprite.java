@@ -110,8 +110,8 @@ public abstract class Sprite<E, T> {
 
   /**
    * setNewPosition sets current position to any Vector point on field. New Vector can be a transformed version of old position
-   * example: Vect(sin(x), sin(y) + center, 1) returns a displacement moving along a sine wave center, where center is a line parallell to 
-   * x-axis. Is used by {@link #shiftedToStartPoint}).
+   * example: Vect(sin(x), sin(y) + center, 1) returns a displacement moving along a sine wave center, 
+   * where center is a line parallell to x-axis. Is used by {@link #shiftedToStartPoint}).
    */
   public abstract Sprite<E, T> setNewPosition(Vector displacedPosition);
 

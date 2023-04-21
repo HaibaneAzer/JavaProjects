@@ -26,8 +26,8 @@ public interface ControllableDanmakuModel {
   void playerFire(int fireRate, boolean holdingShift);
 
   /**
-   * enemyFire makes all enemies on field shoot bullets. bullet pattern, velocity, firerate and spawn position depends
-   * is controlled by several helper methods, which depends on enemy variation.
+   * enemyFire makes all enemies on field shoot bullets. bullet pattern, velocity, firerate and spawn position 
+   * depends is controlled by several helper methods, which depends on enemy variation.
    */
   void enemyFire();
 
@@ -42,8 +42,9 @@ public interface ControllableDanmakuModel {
 
   /**
    * moveEnemiesInWaves spawns a set number of enemies per wave per stage and gives them a custom path to move in. 
-   * Movement for a wave is considered finished when all enemies has moved out of screen (wether or not player kills them doesn't affect completion time).
-   * time interval per wave is fixed, but short enough for each wave to overlap, making it necessary for the player to eliminate the enemies
+   * Movement for a wave is considered finished when all enemies has moved out of screen (wether or not player kills 
+   * them doesn't affect completion time). time interval per wave is fixed, but short enough for each wave to overlap, 
+   * making it necessary for the player to eliminate the enemies
    * as fast as possible before more spawns. 
    */
   void moveEnemiesInWaves();

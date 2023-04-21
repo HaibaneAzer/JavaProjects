@@ -185,7 +185,8 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   /**
    * playerShootingPatterns is a helper method for {@link #playerFire} which contains all patterns that the player can shoot with. 
    * each pattern also changes whenever shift-key is held (turning default spread shot to focused shot).
-   * number of bullets returned depends on pattern type (given by player variation), player power and wether shots are focused or not.
+   * number of bullets returned depends on pattern type (given by player variation), 
+   * player power and wether shots are focused or not.
    * @param variation is a spesific character. Used to determine shooting pattern.
    * @return number of bullets being shot at the same time.
    */

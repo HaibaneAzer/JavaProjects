@@ -135,7 +135,15 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
     Vector[] translate = Matrix.TranslationMatrix(Velocity); // get translation matrix
     Vector displacedPosition = this.Position.transformVect(translate); // displace position
 
-    Bullets displacedBullet = new Bullets(this.type, this.Variation, this.bulletOwner, this.Radius, displacedPosition, this.Direction, this.Velocity, this.damage);
+    Bullets displacedBullet = new Bullets(
+      this.type, 
+      this.Variation, 
+      this.bulletOwner, 
+      this.Radius, 
+      displacedPosition, 
+      this.Direction, 
+      this.Velocity, 
+      this.damage);
     return displacedBullet;
   }
 
@@ -144,7 +152,15 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
     Vector[] rotateAroundPosition = Matrix.RotationMatrix(theta, new Vector(0, 0, 1));
     Vector rotatedDirection = this.Direction.transformVect(rotateAroundPosition);
 
-    Bullets rotatedEnemy = new Bullets(this.type, this.Variation, this.bulletOwner, this.Radius, this.Position, rotatedDirection, this.Velocity, this.damage);
+    Bullets rotatedEnemy = new Bullets(
+      this.type, 
+      this.Variation, 
+      this.bulletOwner, 
+      this.Radius, 
+      this.Position, 
+      rotatedDirection, 
+      this.Velocity, 
+      this.damage);
     return rotatedEnemy;
   }
 
