@@ -1,6 +1,5 @@
 package no.uib.inf101.sem2.view;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -43,7 +42,7 @@ public class DanmakuView extends JPanel{
     int y = this.Model.getDimension().getFieldY();
     int Width = this.Model.getDimension().width();
     int Height = this.Model.getDimension().height();
-    this.scrollY = 2*y;
+    this.scrollY = 0;
     // prefered scoreboard dimension
     this.SCOREBOARDWIDTH = WFactor*(Width);
     this.SCOREBOARDHEIGHT = Height + 2*y;
@@ -77,10 +76,10 @@ public class DanmakuView extends JPanel{
   private static Map<SpriteVariations, BufferedImage> bulletImages = new HashMap<>();
   /**
    * loadBulletImages loads the image of a certain bullet,
-   * depending on bullet variation and bullets owner
+   * depending on bullet variation and bullets owner.
+   * Bullets format (bullet variation, sprite owner).
    */
   private static void loadBulletImages() {
-    /* Bullets format (bullet variation, sprite owner) */
     // arrow
     bulletImages.put(SpriteVariations.player1, 
     Inf101Graphics.loadImageFromResources("/arrowMagenta.png"));
@@ -123,7 +122,8 @@ public class DanmakuView extends JPanel{
   /**
    * loadCharacterImages loads the image of players, enemies and bosses.
    * images with movements depends on sprite velocity (only checking x-axis movement by strings "right", "left" or "still"
-   * or for actions like super attacks by bosses using "super")
+   * or for actions like super attacks by bosses using "super").
+   * Character format (Sprite variation, velocity String).
    */
   private static void loadCharacterImages() {
     AffineTransform tx;
@@ -143,7 +143,6 @@ public class DanmakuView extends JPanel{
       image = op.filter(image, null);
       flipImages.set(i, image);
     }
-    /* character format (Sprite variation, velocity double) */
     // player1
     CharacterImages.put("still", Inf101Graphics.loadImageFromResources("/player1.png"));
     CharacterImages.put("left", Inf101Graphics.loadImageFromResources("/player1Left.png"));
@@ -192,9 +191,9 @@ public class DanmakuView extends JPanel{
   /**
    * loadFieldImages loads the image of backgrounds and foregrounds.
    * int value is stage number and String determines stage background or boss background and foreground.
+   * background format (stage int, boss/stage String)
    */
   private static void loadFieldImages() {
-    /* background format (stage int, boss/stage String) */
     // stage 1
     FieldImages.put("stage", Inf101Graphics.loadImageFromResources("/MoFStage4background.PNG"));
     // stage boss 1
@@ -225,6 +224,14 @@ public class DanmakuView extends JPanel{
     double heightField = this.getHeight() - 2*yField;
     
     Rectangle2D fieldRect = new Rectangle2D.Double(xField, yField, widthField, heightField);
+    
+    // backgroundSize
+    double xBackground = 0.0;
+    double yBackground = 0.0;
+    double widthBackground = (this.getWidth() - this.SCOREBOARDWIDTH);
+    double heightBackground = this.getHeight();
+
+    Rectangle2D backgroundRect = new Rectangle2D.Double(xBackground, yBackground, widthBackground, heightBackground);
 
     // statistics
     double xStat = Model.getDimension().getFieldX();
@@ -240,7 +247,7 @@ public class DanmakuView extends JPanel{
     drawMenuScreen(Canvas, drawScreenRect, setColor, Model.getGameState());
     if (!Model.getGameState().equals(GameState.GAME_MENU)) {
       // draw bullet field
-      drawField(Canvas, fieldRect, this.scrollY, Model, setColor);
+      drawField(Canvas, fieldRect, backgroundRect, this.scrollY, Model, setColor);
       // draw player on field
       drawPlayer(Canvas, Model.getPlayer(), setColor, false);
       // draw enemies on field
@@ -255,8 +262,8 @@ public class DanmakuView extends JPanel{
       if (!(Model.getGameState().equals(GameState.PAUSE_GAME) || Model.getGameState().equals(GameState.GAME_OVER))) {
         // stop scrolling when game is pause or over.
         this.scrollY += 0.8; // scroll speed
-        if (this.scrollY > fieldRect.getHeight()) {
-          this.scrollY = 2*fieldRect.getY();
+        if (this.scrollY > fieldRect.getHeight() + 2*fieldRect.getY()) {
+          this.scrollY = 0;
         }
       }
       drawFieldFrame(Canvas, fieldRect, setColor);
@@ -461,9 +468,11 @@ public class DanmakuView extends JPanel{
 
   }
   
-  private static void drawField(Graphics2D Canvas, Rectangle2D fieldRect, double scrollY, ViewableDanmakuModel model, ColorTheme Color) {
+  private static void drawField(Graphics2D Canvas, Rectangle2D fieldRect, Rectangle2D backgroundRect, double scrollY, ViewableDanmakuModel model, ColorTheme Color) {
     double x = (double) fieldRect.getX();
     double y = (double) fieldRect.getY();
+    double bgX = backgroundRect.getX();
+    double bgHeight = backgroundRect.getHeight();
     double imgBackHeight;
     double imgForeHeight = 1;
     double width = fieldRect.getWidth();
@@ -487,11 +496,12 @@ public class DanmakuView extends JPanel{
       }
       imgBackHeight = fieldBackImg.getHeight();
 
-      // scale image to field size
-      scaleFactor = (imgBackHeight / width);
-      if (height < imgBackHeight) {
-        scaleFactor = (height / imgBackHeight);
+      // scale background to screen size
+      scaleFactor = (bgHeight / imgBackHeight);
+      if (bgHeight < imgBackHeight) {
+        scaleFactor = (imgBackHeight / bgHeight);
       }
+      // scale foreground to background
       foreScaleFactor = (imgBackHeight / imgForeHeight);
       if (imgBackHeight < imgForeHeight) {
         foreScaleFactor = (imgForeHeight / imgBackHeight);
@@ -500,11 +510,8 @@ public class DanmakuView extends JPanel{
       double scrollDown = scrollY - (imgBackHeight*scaleFactor);
       double scrollDown2 = scrollY;
       // draw stage background
-      Inf101Graphics.drawImage(Canvas, fieldBackImg, x, scrollDown, scaleFactor);
-      Inf101Graphics.drawImage(Canvas, fieldBackImg, x, scrollDown2, scaleFactor);
-      // extra backgrounds (prevent bakcground scrolling off)
-      Inf101Graphics.drawImage(Canvas, fieldBackImg, x, scrollDown2 - 2*(imgBackHeight*scaleFactor), scaleFactor);
-      Inf101Graphics.drawImage(Canvas, fieldBackImg, x, scrollDown2 + (imgBackHeight*scaleFactor), scaleFactor);
+      Inf101Graphics.drawImage(Canvas, fieldBackImg, bgX, scrollDown, scaleFactor);
+      Inf101Graphics.drawImage(Canvas, fieldBackImg, bgX, scrollDown2, scaleFactor);
       // if boss fight, stop scrolling
       if (model.getBossEnemyOnField() != null) {
         scrollDown = y;
@@ -516,7 +523,7 @@ public class DanmakuView extends JPanel{
     }
     // draw line of collection
     Canvas.setColor(Color.getSpriteColor('r'));
-    Line2D collectionLine = new Line2D.Double(x, y + (height*(0.28)), (double) fieldRect.getX() + width, y + (height*(0.28)));
+    Line2D collectionLine = new Line2D.Double(x, y + (height*(0.28)), x + width, y + (height*(0.28)));
     Canvas.draw(collectionLine);
   
   }
@@ -562,7 +569,7 @@ public class DanmakuView extends JPanel{
     double screenWidth = statRect.getWidth() - 1.5*x;
     double screenHeight = statRect.getHeight();
     
-    Canvas.setColor(Color.RED);
+    Canvas.setColor(color.getFieldBackgroundColor());
     Canvas.setFont(new Font("Arial", Font.BOLD, 18));
     Inf101Graphics.drawCenteredString(Canvas, "fps: " + model.getFPSValue(), 2*screenWidth, screenHeight - 2*y, 50, 50);
     
@@ -572,7 +579,7 @@ public class DanmakuView extends JPanel{
     double Width = statRect.getWidth();
     double HeightStageBoard = statRect.getHeight()*0.2;
 
-    Canvas.setColor(Color.DARK_GRAY);
+    Canvas.setColor(color.getStatisticsColor("curscore"));
     Canvas.setFont(new Font("Arial", Font.BOLD, 25));
     Inf101Graphics.drawCenteredString(Canvas, "Stage: " + model.getCurrentStage(), x, y, Width, HeightStageBoard);
     

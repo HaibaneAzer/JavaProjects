@@ -74,7 +74,7 @@ public class DefaultColorTheme implements ColorTheme {
   @Override
   public Color getStatisticsColor(String C) {
     Color color = switch(C) {
-      case "curscore" -> Color.GRAY;
+      case "curscore" -> Color.GRAY.darker().darker();
       case "hiscore" -> Color.GRAY;
       case "stage" -> Color.GRAY;
       default -> throw new IllegalArgumentException("No available color for '" + C + "'\nTry 'curscore', 'hiscore' or 'stage'.");

@@ -19,8 +19,8 @@ public class Main {
   public static void main(String[] args) {
 
     DanmakuField Field = new DanmakuField(x, y, Width, Height);
-    DanmakuFactory playableC = new DanmakuSpawner();
-    DanmakuModel Model = new DanmakuModel(Field, playableC);
+    DanmakuFactory SpriteSpawner = new DanmakuSpawner();
+    DanmakuModel Model = new DanmakuModel(Field, SpriteSpawner);
     DanmakuView view = new DanmakuView(Model);
 
     new DanmakuController(Model, view);
