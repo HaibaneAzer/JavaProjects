@@ -72,12 +72,13 @@ Klassen `DanmakuController` skal kunne endre på modellen basert på input fra b
 (spillet ansees som ferdig etter steg 11, men legger til mer hvis mulig) ✓
 12. lag menu screen hvor du kan velge mellom player 1 og 2
 13. legge til rulende backgrunn (pixel art eller annet) unik for hvert stage. ✓
-14. tegne scoreboard ved siden av banen.
+14. tegne scoreboard ved siden av banen. ✓
 15. implementer mer komplekse skudd mønstre for fiender og boss (kan stort sett lages med trigonometriske funksjoner)
+16. legg til music i backgrunnen som endrer seg etter steg og boss battle. ✓
 
 ### Progresjon
 
-11 av 11 (alt gjort)
+14 av 11 (alt gjort)
 
 # Video
 
