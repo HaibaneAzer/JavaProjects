@@ -626,11 +626,9 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
 
   @Override
   public void enemyFire() {
-    // add if statement that makes bullets appear only when enemy has passed a certain line 
-    // (0.95 of field height)
     // determine shooting pattern
     enemyBulletPattern();
-    // add current bullet to bullet list.
+    // add current bullet to bullet list. 
     for (Bullets bullet : this.enemyBullets) {
       this.bulletsOnField.add(bullet);
     }
