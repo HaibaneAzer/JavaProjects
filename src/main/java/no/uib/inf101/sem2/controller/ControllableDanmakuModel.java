@@ -3,6 +3,7 @@ package no.uib.inf101.sem2.controller;
 import no.uib.inf101.sem2.grid.Vector;
 import no.uib.inf101.sem2.model.GameState;
 import no.uib.inf101.sem2.model.danmakus.Bullets;
+import no.uib.inf101.sem2.model.danmakus.Enemies;
 
 public interface ControllableDanmakuModel {
     
@@ -63,5 +64,11 @@ public interface ControllableDanmakuModel {
 
   /** resetField resets all sprite-objects on field and statistics to start value */
   void resetField();
+
+  /** Getter for stages */
+  int getCurrentStage();
+
+  /** Getter for all boss enemy-objects on field */
+  Enemies getBossEnemyOnField();
 
 }

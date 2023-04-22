@@ -1,7 +1,10 @@
 package no.uib.inf101.sem2.controller;
 
 import no.uib.inf101.sem2.grid.Vector;
+import no.uib.inf101.sem2.midi.DanmakuSong;
 import no.uib.inf101.sem2.model.GameState;
+import no.uib.inf101.sem2.model.danmakus.Enemies;
+import no.uib.inf101.sem2.model.danmakus.SpriteVariations;
 import no.uib.inf101.sem2.view.DanmakuView;
 
 import java.awt.event.ActionEvent;
@@ -19,7 +22,7 @@ public class DanmakuController implements ActionListener{
   private static final int playerFireRate = 9; // about 13 shots per second
   // gameTick and adaptable frameRate
   private Timer Timer;
-  private final int updateTick = 1000 / 120; // 60 frames per second
+  private final int updateTick = 1000 / 90; // 90 frames per second
   // variables for fps calculation
   private double oldTime;
   private double newTime;
@@ -28,7 +31,10 @@ public class DanmakuController implements ActionListener{
   private int tickIndex;
   private final int maxDeltaSamples = 100;
   private double tick;
-  // boss variables
+  // music
+  private DanmakuSong music;
+  private int currentStage;
+  private SpriteVariations currentBoss;
   // player movement direction
   private static final Vector PlayerMove[] = {
     new Vector(0, -1, 1),
@@ -61,13 +67,17 @@ public class DanmakuController implements ActionListener{
     this.keyBoard = new KeyInputPoller();
     this.danView.setFocusable(true);
     this.danView.addKeyListener(this.keyBoard);
+    // music
+    this.music = new DanmakuSong("01_a_shadow_in_the_blue_sky.mid");
+    this.music.run();
+    this.currentStage = 0;
+    this.currentBoss = null;
 
   }
   
   /**
    * updateModel is the main method that processes all input from both the player and 
    * the ingame envoirment. 
-   * NB: try using an ActionEvent method and Timer for ingame inputs.
    */
   public void updateModel(ActionEvent arg0) {
     // enemy movement and spawning
@@ -78,18 +88,50 @@ public class DanmakuController implements ActionListener{
     if (this.controllModel.getBulletsOnField().iterator().hasNext()) {
       this.controllModel.moveAllBullets();
     }
+    updateActiveGameMusic(this.controllModel.getCurrentStage(), this.controllModel.getBossEnemyOnField());
     
   }
 
+  private void updateActiveGameMusic(int stage, Enemies boss) {
+    if (boss != null) {
+      if (this.currentBoss != boss.getVariation()) {
+        this.currentBoss = boss.getVariation();
+  
+        this.music.doStopMidiSounds();
+        if (stage == 1) {
+          this.music = new DanmakuSong("youkai_mountain_mysterious_mountain.mid");
+        }
+        else if (stage == 2) {
+          this.music = new DanmakuSong("faith_is_for_the_transient_people_s_af6ee.mid");
+        }
+        this.music.run();
+      }
+    }
+    else if (this.currentStage != stage) {
+      this.currentStage = stage; // update stage to prevent multiple resets
+
+      this.music.doStopMidiSounds();
+      if (stage == 1) {
+        this.music = new DanmakuSong("fall_of_fall_autumnal_waterfall_has.mid");
+      }
+      else if (stage == 2) {
+        this.music = new DanmakuSong("faith_is_for_the_transient_people_s_af6ee.mid");
+      }
+      else if (stage == 3) {
+        this.music = new DanmakuSong("lullaby_of_deserted_hell_sagittariu.mid");
+      }
+      this.music.run();
+
+    }
+  }
+
   /**
-   * 
-   * 
+   * keyBoardInput uses KeyInputPoller to handle input and their corrosponding actions.
    */
   protected void keyboardInput() {
     if (controllModel.getGameState().equals(GameState.GAME_MENU)) {
       if (this.keyBoard.keyDownOnce(KeyEvent.VK_ENTER)) {
         this.controllModel.setGameState(GameState.ACTIVE_GAME);
-        
       }
     }
     else if (controllModel.getGameState().equals(GameState.ACTIVE_GAME)) {
@@ -122,29 +164,44 @@ public class DanmakuController implements ActionListener{
       // pause menu
       if (this.keyBoard.keyDownOnce(KeyEvent.VK_ESCAPE)) {
         this.controllModel.setGameState(GameState.PAUSE_GAME);
+        this.music.doPauseMidiSounds();
+        
       }
     }
     else if (controllModel.getGameState().equals(GameState.PAUSE_GAME)) {
       if (this.keyBoard.keyDownOnce(KeyEvent.VK_ENTER)) {
         // reset field and set game active
-
         controllModel.setGameState(GameState.ACTIVE_GAME);
+        this.music.doUnpauseMidiSounds();
       }
       else if (this.keyBoard.keyDownOnce(KeyEvent.VK_BACK_SPACE)) {
         // reset field and set game menu
         this.controllModel.resetField();
+        this.currentStage = 0;
+        this.currentBoss = null;
+        this.music.doStopMidiSounds();
+        this.music = new DanmakuSong("Pokemon - Farewell, Pikachu!.mid");
+        this.music.run();
         controllModel.setGameState(GameState.GAME_MENU);
       }    
     }
     else if (controllModel.getGameState().equals(GameState.GAME_OVER)) {
       if (this.keyBoard.keyDownOnce(KeyEvent.VK_ENTER)) {
         // reset field and set game active
+        this.music.doStopMidiSounds();
+        this.music = new DanmakuSong("touhou_-_player_s_score(1).mid");
+        this.music.run();
         this.controllModel.resetField();
         controllModel.setGameState(GameState.ACTIVE_GAME);
       }
       else if (this.keyBoard.keyDownOnce(KeyEvent.VK_BACK_SPACE)) {
         // reset field and set game menu
         this.controllModel.resetField();
+        this.currentStage = 0;
+        this.currentBoss = null;
+        this.music.doStopMidiSounds();
+        this.music = new DanmakuSong("Pokemon - Farewell, Pikachu!.mid");
+        this.music.run();
         controllModel.setGameState(GameState.GAME_MENU);
       }    
     }

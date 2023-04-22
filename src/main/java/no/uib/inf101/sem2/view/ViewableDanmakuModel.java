@@ -47,4 +47,7 @@ public interface ViewableDanmakuModel {
 
   /** Getter for FPS value calculated in controller */
   double getFPSValue();
+
+  /** Getter for current score calculated in model */
+  int getCurrentScore();
 }

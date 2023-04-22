@@ -53,6 +53,9 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   private List<Bullets> bossBullets = new ArrayList<Bullets>(); 
   private List<Bullets> bulletsOnField = new ArrayList<Bullets>(); // total bullets from both player and enemies.
   private double FPSCounter;
+  // score
+  private int score;
+
   
   public DanmakuModel(DanmakuField Field, DanmakuFactory getSprite) {
     this.Field = Field;
@@ -79,6 +82,9 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     this.bossWaitTimer = 0;
     this.bossAttackTimer = 0;
     this.bossAttackReloader = 0;
+    // score
+    this.score = 0;
+
     
   }
   
@@ -137,6 +143,11 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     return this.attackType;
   }
 
+  @Override
+  public int getCurrentScore() {
+    return this.score;
+  }
+
   @Override 
   public void resetField() {
     this.currentEnemies.clear();
@@ -161,6 +172,8 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     this.bossWaitTimer = 0;
     this.bossAttackTimer = 0;
     this.bossAttackReloader = 0;
+    // score
+    this.score = 0;
   }
 
   /* ################################################ */
@@ -734,6 +747,9 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
           this.currentBoss = boss;
           if (!boss.isAlive()) {
             this.currentBoss = null;
+            // calculate score
+            this.score += 10000;
+            
           }
           return false;
         }
@@ -745,6 +761,13 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
           enemy.attackEnemy(shiftedBullet.getDamage());
           this.currentEnemies.set(i, enemy);
           if (!enemy.isAlive()) {
+            // calculate score
+            if (enemy.getVariation().equals(SpriteVariations.yokai1)) {
+              this.score += 300;
+            }
+            else if (enemy.getVariation().equals(SpriteVariations.yokai2)) {
+              this.score += 500;
+            }
             this.currentEnemies.remove(i);
           }
           return false;

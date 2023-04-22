@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.swing.JPanel;
 
@@ -32,6 +33,8 @@ public class DanmakuView extends JPanel{
   private static final double WFactor = 0.7;
   private double SCOREBOARDHEIGHT;
   private double scrollY;
+  // number incrementer
+  private static final Pattern NUMBER = Pattern.compile("\\d+");
   
   public DanmakuView(ViewableDanmakuModel Model) {
     this.setFocusable(true);
@@ -537,7 +540,7 @@ public class DanmakuView extends JPanel{
     // right side
     double rightX = fieldRect.getX() - 1 + fieldRect.getWidth();
     double rightY = 0;
-    double rightWidth = 7*leftWidth;
+    double rightWidth = 14*leftWidth;
     double rightHeight = leftHeight;
     // top
     double topX = leftWidth;
@@ -566,7 +569,7 @@ public class DanmakuView extends JPanel{
     // fps counter
     double x = statRect.getX();
     double y = statRect.getY();
-    double screenWidth = statRect.getWidth() - 1.5*x;
+    double screenWidth = statRect.getWidth() + 2*x;
     double screenHeight = statRect.getHeight();
     
     Canvas.setColor(color.getFieldBackgroundColor());
@@ -574,15 +577,30 @@ public class DanmakuView extends JPanel{
     Inf101Graphics.drawCenteredString(Canvas, "fps: " + model.getFPSValue(), 2*screenWidth, screenHeight - 2*y, 50, 50);
     
     // current stage
-    x = 4*model.getDimension().getFieldX() + model.getDimension().width();
+    x = model.getDimension().getFieldX() + model.getDimension().width();
     y = model.getDimension().getFieldY();
     double Width = statRect.getWidth();
     double HeightStageBoard = statRect.getHeight()*0.2;
 
-    Canvas.setColor(color.getStatisticsColor("curscore"));
-    Canvas.setFont(new Font("Arial", Font.BOLD, 25));
+    Canvas.setColor(color.getStatisticsColor("stage"));
+    Canvas.setFont(new Font("Arial", Font.BOLD, 45));
     Inf101Graphics.drawCenteredString(Canvas, "Stage: " + model.getCurrentStage(), x, y, Width, HeightStageBoard);
+
+    // current score
+    y = 4*model.getDimension().getFieldY();
+
+    Canvas.setColor(color.getStatisticsColor("curscore"));
+    Canvas.setFont(new Font("Arial", Font.BOLD, 35));
+    Inf101Graphics.drawCenteredString(Canvas, "Score  " + ScoreToLeadingZeroString("00000000", model.getCurrentScore()), x, y, Width, HeightStageBoard);
     
+  }
+
+  // source: thanks to user4910279 on stackoverflow.
+  // link: https://stackoverflow.com/questions/68978147/java-how-to-increment-a-string-of-an-integer-with-leading-zeros.
+  private static String ScoreToLeadingZeroString(String input, int score) {
+    return NUMBER.matcher(input).replaceFirst(
+      s -> String.format("%0" + s.group().length() + "d", 
+      Integer.parseInt(s.group()) + score));
   }
 
   private static void drawMenuScreen(Graphics2D Canvas, Rectangle2D MenuBackground, ColorTheme color, GameState gameStatus) {
