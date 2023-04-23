@@ -19,6 +19,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   private DanmakuField Field;
   private final DanmakuFactory getSprite;
   private GameState gameState;
+  private final BulletPattern patterns;
   // player variables
   private Player currentPlayer;
   private List<Bullets> playerBullets = new ArrayList<Bullets>(); // number of bullets player shoots at the same time.
@@ -36,8 +37,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   private int bossAttackTimer;
   private final int maxAttackInterval = 225; // time before switching attack type.
   private int bossAttackReloader;
-  private final int maxReloadInterval = 75; // time between each attack barrage.
-  private double bossAngleIncrement = -(0.25)*Math.PI;
+  private final int maxReloadInterval = 150; // time between each attack barrage.
   // handle waves and stages
   private int currentStage;
   private final int stageMaxInterval = 450; // time between each stage
@@ -60,6 +60,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   public DanmakuModel(DanmakuField Field, DanmakuFactory getSprite) {
     this.Field = Field;
     this.getSprite = getSprite;
+    this.patterns = new BulletPattern(this.getSprite);
     this.gameState = GameState.GAME_MENU;
     this.FPSCounter = 0.0;
     // handle waves and stages
@@ -206,32 +207,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   private List<Bullets> playerShootingPatterns(SpriteVariations variation, boolean holdingShift) {
     // triple shot:
     if (variation.equals(SpriteVariations.player1)) {
-      int spacedBy = 30; // distance between bullets spawn points
-      // check for focused mode
-      if (holdingShift) {
-        spacedBy = 15;
-      }
-      Vector displaceFromDefaultSpawn = new Vector(-spacedBy, 0, 1); 
-      // add 3 + N bullets per shot, where N is determined by player power
-      // power >= 2 -> N = 1, power >= 3 -> N = 2, power >= 4 -> N = 3
-      for (int i = 0; i < 3; i++) {
-        Bullets newBullet = this.getSprite.getNewBullet(SpriteVariations.arrow);
-        newBullet.setBulletType(SpriteType.PlayerBullet);
-        newBullet.setBulletOwner(variation);
-        Vector bulletRadius = new Vector(newBullet.getRadius(), 0, 1);
-        // set bullets default spawnpoint
-        Vector spawnPoint = this.currentPlayer.getPosition().addVect(this.currentPlayer.getAimVector()).addVect(displaceFromDefaultSpawn);
-        spawnPoint = spawnPoint.addVect(bulletRadius);
-        newBullet = newBullet.displaceBy(spawnPoint);
-        // set bullet speed to players aim
-        newBullet.updateBulletVelocity(this.currentPlayer.getAimVector());
-        // update bullets direction to it's velocity
-        newBullet.updateBulletDirection(newBullet.getVelocity());
-        this.playerBullets.add(i, newBullet);
-        // set spawnpoint for next bullet
-        displaceFromDefaultSpawn = displaceFromDefaultSpawn.addVect(new Vector(spacedBy, 0, 1));
-      }    
-      
+      this.playerBullets = this.patterns.playerShoot(this.currentPlayer, holdingShift);
     }
     // homing shot
     else if (variation.equals(SpriteVariations.player2)) {
@@ -284,9 +260,8 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
         // kill and respawn player if lives left
         if (this.currentPlayer.isAlive()) {
           this.currentPlayer = this.currentPlayer.respawnPlayer(this.currentPlayer.getLives() - 1).shiftedToStartPoint(Field);
-          System.out.println(this.currentPlayer.getLives());
         }
-        else {
+        if (!this.currentPlayer.isAlive()) {
           this.gameState = GameState.GAME_OVER;
         }
         // kill enemy
@@ -299,9 +274,8 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
         // kill and respawn player if lives left
         if (this.currentPlayer.isAlive()) {
           this.currentPlayer = this.currentPlayer.respawnPlayer(this.currentPlayer.getLives() - 1).shiftedToStartPoint(Field);
-          System.out.println(this.currentPlayer.getLives());
         }
-        else {
+        if (!this.currentPlayer.isAlive()) {
           this.gameState = GameState.GAME_OVER;
         }
         // dmg boss (suicide dmg fixed at 300)
@@ -356,6 +330,8 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
       else {
         this.bossBattle = false;
         this.stillSpawning = true;
+        this.bossAttackTimer = 0;
+        this.bossAttackReloader = 0;
         this.currentStage++;
       }
     }
@@ -387,26 +363,29 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
    * bossFire uses 2 timers to controll when boss is shooting or reloading and when boss uses normal or super attack.
    */
   private void bossFire() {
-    // timer for swapping attack type
-    if (bossAttackTimer < this.maxAttackInterval) {
-      this.attackType = true;
-      this.bossAttackTimer++;
-    }
-    else if (bossAttackTimer < 2*this.maxAttackInterval) {
-      this.attackType = false;
-      this.bossAttackTimer++;
-    }
-    else {
-      this.bossAttackTimer = 0;
-    }
-    // attack + reload timer
+    // reload timer
     if (this.bossAttackReloader < this.maxReloadInterval) {
-      bossAttackPatterns(this.attackType);
-      for (Bullets bullet : this.bossBullets) {
-        this.bulletsOnField.add(bullet);
+      // timer for swapping attack types
+      if (bossAttackTimer < 4*this.maxAttackInterval) {
+        this.attackType = false;
+        this.bossAttackTimer++;
       }
-      this.bossBullets.clear();
-      this.bossAttackReloader++;
+      else if (bossAttackTimer < 6*this.maxAttackInterval) {
+        this.attackType = true;
+        this.bossAttackTimer++;
+      }
+      else {
+        this.bossAttackTimer = 0;
+      }
+      // attack
+      if (this.bossAttackReloader < this.maxReloadInterval) {
+        bossAttackPatterns(this.attackType);
+        for (Bullets bullet : this.bossBullets) {
+          this.bulletsOnField.add(bullet);
+        }
+        this.bossBullets.clear();
+        this.bossAttackReloader++;
+      }
     }
     else if (this.bossAttackReloader < 1.5*this.maxReloadInterval) {
       this.bossAttackReloader++;
@@ -420,53 +399,14 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
    * bossAttackPatterns handles boss normal and super attack with timers.
    */
   private void bossAttackPatterns(boolean unleashSuper) {
+    this.bossBullets = this.patterns.bossShoot(this.currentBoss, unleashSuper);
+    // shorter delay with super
+    this.currentBoss = this.currentBoss.setFireTimer((this.currentBoss.getFireTimer() + 1) % (int) Math.round(this.currentBoss.getFireDelay()));
     if (unleashSuper) {
-      // super attack
-      if (this.currentBoss.getFireTimer() == 0) {
-        for (int j = 0; j < 9; j++) {
-          Bullets newBullet = this.getSprite.getNewBullet(SpriteVariations.circleSmall);
-          newBullet.setBulletType(SpriteType.BossBullet);
-          newBullet.setBulletOwner(this.currentBoss.getVariation());
-          Vector bulletRadius = new Vector(newBullet.getRadius(), 0, 1);
-          // set bullets default spawnpoint
-          Vector spawnPoint = this.currentBoss.getPosition().addVect(this.currentBoss.rotateAxisBy(this.bossAngleIncrement).getAimVector());
-          spawnPoint = spawnPoint.addVect(bulletRadius);
-          newBullet = newBullet.displaceBy(spawnPoint);
-          // set bullet speed to enemies aim
-          newBullet.updateBulletVelocity(this.currentBoss.rotateAxisBy(this.bossAngleIncrement).getAimVector());
-          // update bullets direction to it's velocity
-          newBullet.updateBulletDirection(newBullet.getVelocity());
-          this.bossBullets.add(newBullet);
-          this.bossAngleIncrement += 0.25*Math.PI;
-        }
-        this.bossAngleIncrement += 0.03*Math.PI;
-      }
-      // shorter delay with super
       this.currentBoss = this.currentBoss.setFireTimer((this.currentBoss.getFireTimer() + 1) % (int) Math.round(0.3*this.currentBoss.getFireDelay()));
     }
-    else {
-      // normal attack
-      if (this.currentBoss.getFireTimer() == 0) {
-        double angleIncrement = -(0.45)*Math.PI;
-        for (int j = 0; j < 9; j++) {
-          Bullets newBullet = this.getSprite.getNewBullet(SpriteVariations.ellipseLarge);
-          newBullet.setBulletType(SpriteType.BossBullet);
-          newBullet.setBulletOwner(this.currentBoss.getVariation());
-          Vector bulletRadius = new Vector(newBullet.getRadius(), 0, 1);
-          // set bullets default spawnpoint
-          Vector spawnPoint = this.currentBoss.getPosition().addVect(this.currentBoss.rotateAxisBy(angleIncrement).getAimVector());
-          spawnPoint = spawnPoint.addVect(bulletRadius);
-          newBullet = newBullet.displaceBy(spawnPoint);
-          // set bullet speed to enemies aim
-          newBullet.updateBulletVelocity(this.currentBoss.rotateAxisBy(angleIncrement).getAimVector());
-          // update bullets direction to it's velocity
-          newBullet.updateBulletDirection(newBullet.getVelocity());
-          this.bossBullets.add(newBullet);
-          angleIncrement += 0.1125*Math.PI;
-        }
-      }
-      this.currentBoss = this.currentBoss.setFireTimer((this.currentBoss.getFireTimer() + 1) % this.currentBoss.getFireDelay());
-    }
+    
+    
   }
 
   /* ############################################### */
@@ -635,60 +575,16 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     this.enemyBullets.clear();  
   }
   
-  private List<Bullets> enemyBulletPattern() {
+  private void enemyBulletPattern() {
 
     for (int i = this.currentEnemies.size() - 1; i >= 0; i--) {
       Enemies enemy = this.currentEnemies.get(i);
       // shoot only after passing 0.05 from top of screen
       if (enemy.getPosition().y() > this.Field.getFieldY() + 0.05*this.Field.height()) {
-        // pattern 1: bullet aimed.
-        if (enemy.getVariation().equals(SpriteVariations.yokai1)) {
-          if (enemy.getFireTimer() == 0) {
-            Bullets newBullet = this.getSprite.getNewBullet(SpriteVariations.circleSmall);
-            newBullet.setBulletType(SpriteType.EnemyBullet);
-            newBullet.setBulletOwner(enemy.getVariation());
-            Vector bulletRadius = new Vector(newBullet.getRadius(), 0, 1);
-            // set bullets default spawnpoint
-            Vector spawnPoint = enemy.getPosition().addVect(enemy.getAimVector());
-            spawnPoint = spawnPoint.addVect(bulletRadius);
-            newBullet = newBullet.displaceBy(spawnPoint);
-            // get enemy aim
-            Vector aimedShot = enemy.getPosition().subVect(this.currentPlayer.getPosition()).normaliseVect();
-            aimedShot = aimedShot.multiplyScalar(-1);
-            // set bullet speed to enemies aim
-            newBullet.updateBulletVelocity(aimedShot);
-            // update bullets direction to it's velocity
-            newBullet.updateBulletDirection(newBullet.getVelocity());
-            this.enemyBullets.add(newBullet);
-          }
-          this.currentEnemies.set(i, enemy.setFireTimer((enemy.getFireTimer() + 1) % enemy.getFireDelay())); // advance unless when delay max is reached.
-        }
-        // pattern 2: 5 bullet spread shot.
-        else if (enemy.getVariation().equals(SpriteVariations.yokai2)) {
-          if (enemy.getFireTimer() == 0) {
-            double angleIncrement = -(0.25)*Math.PI;
-            for (int j = 0; j < 5; j++) {
-              Bullets newBullet = this.getSprite.getNewBullet(SpriteVariations.ellipseLarge);
-              newBullet.setBulletType(SpriteType.EnemyBullet);
-              newBullet.setBulletOwner(enemy.getVariation());
-              Vector bulletRadius = new Vector(newBullet.getRadius(), 0, 1);
-              // set bullets default spawnpoint
-              Vector spawnPoint = enemy.getPosition().addVect(enemy.rotateAxisBy(angleIncrement).getAimVector());
-              spawnPoint = spawnPoint.addVect(bulletRadius);
-              newBullet = newBullet.displaceBy(spawnPoint);
-              // set bullet speed to enemies aim
-              newBullet.updateBulletVelocity(enemy.rotateAxisBy(angleIncrement).getAimVector());
-              // update bullets direction to it's velocity
-              newBullet.updateBulletDirection(newBullet.getVelocity());
-              this.enemyBullets.add(newBullet);
-              angleIncrement += 0.125*Math.PI;
-            }
-          }
-          this.currentEnemies.set(i, enemy.setFireTimer((enemy.getFireTimer() + 1) % enemy.getFireDelay()));
-        }
+        this.enemyBullets.addAll(this.patterns.enemyShoot(enemy, this.currentPlayer));
+        this.currentEnemies.set(i, enemy.setFireTimer((enemy.getFireTimer() + 1) % enemy.getFireDelay()));
       }
     }
-    return this.enemyBullets;
   }
 
   /* ############################################### */
@@ -775,11 +671,11 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     // enemy/boss bullet hit player
     else if (shiftedBullet.getType().equals(SpriteType.EnemyBullet) || shiftedBullet.getType().equals(SpriteType.BossBullet)) {
       if (shiftedBullet.getPosition().subVect(this.currentPlayer.getPosition()).length() < shiftedBullet.getRadius() + this.currentPlayer.getRadius()) {
+        if (this.currentPlayer.isAlive()) {
+          this.currentPlayer = this.currentPlayer.respawnPlayer(this.currentPlayer.getLives() - 1).shiftedToStartPoint(Field);
+        }
         if (!this.currentPlayer.isAlive()) {
           this.gameState = GameState.GAME_OVER;
-        }
-        else {
-          this.currentPlayer = this.currentPlayer.respawnPlayer(this.currentPlayer.getLives() - 1).shiftedToStartPoint(Field);
         }
         return false;
       }

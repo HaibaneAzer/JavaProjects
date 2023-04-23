@@ -28,7 +28,7 @@ public class Main {
     JFrame frame = new JFrame();
     frame.setResizable(false);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.setTitle("INF101");
+    frame.setTitle("INF101 - Danmaku");
     frame.setContentPane(view);
     frame.pack();
     frame.setVisible(true);

@@ -12,7 +12,7 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
   private static final Vector standStill = new Vector(0, 0, 1);
   private static final Vector startingAim = new Vector(0, -10, 1);
   private int Lives = 3; // default 3
-  private double Power = 1.0; // dmg multiplier from 0 to 5
+  private double Power = 1.00; // dmg multiplier from 0 to 5
   
   /**
    * transforming constructor

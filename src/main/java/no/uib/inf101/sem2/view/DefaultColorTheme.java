@@ -77,7 +77,8 @@ public class DefaultColorTheme implements ColorTheme {
       case "curscore" -> Color.GRAY;
       case "hiscore" -> Color.GRAY;
       case "stage" -> Color.WHITE.darker();
-      default -> throw new IllegalArgumentException("No available color for '" + C + "'\nTry 'curscore', 'hiscore' or 'stage'.");
+      case "lives" -> Color.CYAN.darker();
+      default -> throw new IllegalArgumentException("No available color for '" + C + "'\nTry 'curscore', 'hiscore', 'lives' or 'stage'.");
     };
     return color;
   }

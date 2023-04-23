@@ -258,6 +258,8 @@ public class DanmakuView extends JPanel{
       // draw bosses on field
       if (Model.getBossEnemyOnField() != null) {
         drawBoss(Canvas, Model.getBossEnemyOnField(), Model.getBossAttackType(), setColor, false);
+        // draw boss health
+        drawBossHealthbar(Canvas, Model.getBossEnemyOnField(), fieldRect, setColor);
       }
       // draw bullets on field
       drawBulletsOnField(Canvas, Model.getBulletsOnField(), setColor, false);
@@ -417,6 +419,46 @@ public class DanmakuView extends JPanel{
       Canvas.fill(enemyBall);
     }
     
+  }
+
+  private static void drawBossHealthbar(Graphics2D Canvas, Enemies boss, Rectangle2D fieldRect, ColorTheme color) {
+    double x;
+    double width;
+    double y;
+    double height;
+    double curHealth;
+    double maxHealth;
+    int healthBars;
+
+    maxHealth = boss.getMaxhealth();
+    curHealth = boss.getHealthPoints();
+    healthBars = boss.getHealthBars();
+    x = 2*fieldRect.getX();
+    y = 2*fieldRect.getY();
+    
+    // maxHealth
+    width = (0.9)*fieldRect.getWidth();
+    height = 0.5*fieldRect.getY();
+
+    Rectangle2D maxHPLength = new Rectangle2D.Double(x, y, width, height);
+    Canvas.setColor(color.getSpriteColor('r'));
+    Canvas.fill(maxHPLength);
+
+    // healthpoints decrease length
+    width = (0.9)*fieldRect.getWidth()*(curHealth/maxHealth);
+
+    Rectangle2D HPLength = new Rectangle2D.Double(x, y, width, height);
+    Canvas.setColor(color.getSpriteColor('g'));
+    Canvas.fill(HPLength);
+
+    // number of healthbars
+    x = 1.3*fieldRect.getX();
+    y = 2.5*fieldRect.getY();
+
+    Canvas.setColor(color.getScoreBoardColor("score"));
+    Canvas.setFont(new Font("Arial", Font.BOLD, 25));
+    Canvas.drawString(String.format("%s", healthBars), Math.round(x), Math.round(y));
+
   }
 
   private static void drawBulletsOnField(Graphics2D Canvas, Iterable<Bullets> bulletList, ColorTheme Color, boolean hasHitbox) {
@@ -587,11 +629,28 @@ public class DanmakuView extends JPanel{
     Inf101Graphics.drawCenteredString(Canvas, "Stage: " + model.getCurrentStage(), x, y, Width, HeightStageBoard);
 
     // current score
-    y = 4*model.getDimension().getFieldY();
+    x = 2*model.getDimension().getFieldX() + model.getDimension().width();
+    y = 6*model.getDimension().getFieldY();
 
     Canvas.setColor(color.getStatisticsColor("curscore"));
     Canvas.setFont(new Font("Arial", Font.BOLD, 35));
-    Inf101Graphics.drawCenteredString(Canvas, "Score  " + ScoreToLeadingZeroString("00000000", model.getCurrentScore()), x, y, Width, HeightStageBoard);
+    Canvas.drawString("Score  " + ScoreToLeadingZeroString("00000000", model.getCurrentScore()), Math.round(x), Math.round(y));
+
+    // player lives
+    y = 8*model.getDimension().getFieldY();
+
+    Canvas.setColor(color.getStatisticsColor("lives"));
+    Canvas.setFont(new Font("Arial Unicode MS", Font.BOLD, 35));
+    String lifes = new String(new char[model.getPlayer().getLives()]).replace("\0", "\u22C6 "); // star for lives.
+    Canvas.drawString("Player  " + lifes, Math.round(x), Math.round(y));
+
+    // player power
+    y = 10*model.getDimension().getFieldY();
+
+    Canvas.setColor(color.getStatisticsColor("lives"));
+    Canvas.setFont(new Font("Arial", Font.BOLD, 35));
+    Canvas.drawString(String.format("Power  %.2f", model.getPlayer().getPower()), Math.round(x), Math.round(y));
+
     
   }
 

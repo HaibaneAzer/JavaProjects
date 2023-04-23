@@ -29,12 +29,13 @@ public class DanmakuController implements ActionListener{
   private double[] tickList;
   private double tickSum;
   private int tickIndex;
-  private final int maxDeltaSamples = 100;
+  private final int maxDeltaSamples = 100; // enough for 2 decimal places.
   private double tick;
   // music
   private DanmakuSong music;
   private int currentStage;
   private SpriteVariations currentBoss;
+  private boolean gameOverExecuted;
   // player movement direction
   private static final Vector PlayerMove[] = {
     new Vector(0, -1, 1),
@@ -72,6 +73,7 @@ public class DanmakuController implements ActionListener{
     this.music.run();
     this.currentStage = 0;
     this.currentBoss = null;
+    this.gameOverExecuted = true;
 
   }
   
@@ -186,12 +188,18 @@ public class DanmakuController implements ActionListener{
       }    
     }
     else if (controllModel.getGameState().equals(GameState.GAME_OVER)) {
+      if (this.gameOverExecuted) {
+        this.gameOverExecuted = false;
+        this.music.doStopMidiSounds();
+        this.music = new DanmakuSong("touhou_-_player_s_score (1).mid");
+        this.music.run();
+      }
       if (this.keyBoard.keyDownOnce(KeyEvent.VK_ENTER)) {
         // reset field and set game active
-        this.music.doStopMidiSounds();
-        this.music = new DanmakuSong("touhou_-_player_s_score(1).mid");
-        this.music.run();
         this.controllModel.resetField();
+        this.gameOverExecuted = true;
+        this.currentStage = 0;
+        this.currentBoss = null;
         controllModel.setGameState(GameState.ACTIVE_GAME);
       }
       else if (this.keyBoard.keyDownOnce(KeyEvent.VK_BACK_SPACE)) {
