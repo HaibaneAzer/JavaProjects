@@ -30,7 +30,6 @@ public class TestDanmakuFactory {
     // default spawn
     assertEquals(-enemy.getRadius(), enemy.getPosition().x());
 
-
   }
 
   @Test
@@ -48,7 +47,6 @@ public class TestDanmakuFactory {
 
     // starting default lives
     assertEquals(3, player.getLives());
-
 
   }
 
@@ -71,7 +69,6 @@ public class TestDanmakuFactory {
     assertEquals(SpriteType.Bullet, bullet.getType());
     bullet.setBulletType(SpriteType.BossBullet);
     assertEquals(SpriteType.BossBullet, bullet.getType());
-
 
   }
 
