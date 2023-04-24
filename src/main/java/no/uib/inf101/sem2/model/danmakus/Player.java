@@ -116,8 +116,10 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
 
   @Override
   public Sprite<SpriteType, SpriteState> rotateAxisBy(double theta) {
-    /* Unused */
-    return null;
+    Vector[] rotateAroundPosition = Matrix.RotationMatrix(theta, new Vector(0, 0, 1));
+    Vector rotatedDirection = this.Direction.transformVect(rotateAroundPosition);
+    
+    return new Player(this.Variation, this.Radius, this.Position, rotatedDirection, this.Velocity, this.Lives);
   }
   
   

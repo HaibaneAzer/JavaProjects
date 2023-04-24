@@ -49,8 +49,10 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
       new Vector(-8, -8, 1), 100); // want center at (0, 0)
       case yokai2 -> new Enemies(newEnemyVar, 500, 1, 10, 
       new Vector(-10, -10, 1), 110);
-      case boss4 -> new Enemies(newEnemyVar, 3500, 2, 12, 
+      case boss4 -> new Enemies(newEnemyVar, 3500, 3, 12, 
       new Vector(-12,-12,1), 45);
+      case boss5 -> new Enemies(newEnemyVar, 4500, 2, 12, 
+      new Vector(-12,-12,1), 50);
       default -> throw new IllegalArgumentException(
         "Type '" + newEnemyVar + "' does not match one of two playable characters");
     };

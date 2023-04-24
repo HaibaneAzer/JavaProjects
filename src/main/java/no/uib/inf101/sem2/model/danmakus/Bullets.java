@@ -18,7 +18,7 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
    * 
    */
   public Bullets(SpriteType type, SpriteVariations bulletVar, SpriteVariations bulletOwner, int Radius, Vector Position, Vector bulletAim, Vector Velocity, int damage) {
-    super(type, bulletVar, SpriteState.relative, Radius, Position, bulletAim, Velocity);
+    super(type, bulletVar, SpriteState.aim, Radius, Position, bulletAim, Velocity);
     this.damage = damage;
     this.bulletOwner = bulletOwner;
 
@@ -29,7 +29,7 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
    * damage depends on player power and bullet type
    */
   public Bullets(SpriteVariations bulletVar, int Radius, Vector Position, int damage) {
-    super(SpriteType.Bullet, bulletVar, SpriteState.relative, Radius, Position, spawnAim, standStill);
+    super(SpriteType.Bullet, bulletVar, SpriteState.aim, Radius, Position, spawnAim, standStill);
     this.damage = damage;
 
   }
@@ -39,7 +39,7 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
    * collision with player removes 1 life.
    */
   public Bullets(SpriteVariations bulletVar, int Radius, Vector Position) {
-    super(SpriteType.Bullet, bulletVar, SpriteState.relative, Radius, Position, spawnAim, standStill);
+    super(SpriteType.Bullet, bulletVar, SpriteState.aim, Radius, Position, spawnAim, standStill);
 
   }
 
@@ -56,6 +56,8 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
     Vector ellipseLargePos = new Vector(-ellipseLargeR, -ellipseLargeR, 1);
     int arrowR = 4;
     Vector arrowPos = new Vector(-arrowR, -arrowR, 1);
+    int ofudaR = 5;
+    Vector ofudaPos = new Vector(-ofudaR, -ofudaR, 1);
 
     Bullets bullet = switch(newBulletVar) {
       // enemy bullets
@@ -63,6 +65,7 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
       case ellipseLarge -> new Bullets(newBulletVar, ellipseLargeR, ellipseLargePos);
       // player bullets
       case arrow -> new Bullets(newBulletVar, arrowR, arrowPos, 36); 
+      case ofuda -> new Bullets(newBulletVar, ofudaR, ofudaPos, 16); 
       default -> throw new IllegalArgumentException("Type '" + newBulletVar + "' does not match one of two playable characters");
     };
     return bullet;
@@ -108,6 +111,14 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
    */
   public void setBulletOwner(SpriteVariations newOwner) {
     this.bulletOwner = newOwner;
+  }
+
+  /**
+   * setBulletState changes spriteState to either aim, relative, absolute or sequence.
+   * Used to determine movement after spawn.
+   */
+  public void setBulletState(SpriteState newState) {
+    this.directionState = newState;
   }
 
   /**

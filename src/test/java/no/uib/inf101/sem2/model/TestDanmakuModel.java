@@ -132,8 +132,8 @@ public class TestDanmakuModel {
     DanmakuFactory factory = new DanmakuSpawner();
     DanmakuModel model = new DanmakuModel(field, factory);
 
-    // get enemies on field (fastforward 500 ticks past game start)
-    for (int i = 0; i < 500; i++) {
+    // get enemies on field (fastforward past stage delay)
+    for (int i = 0; i <= 500; i++) {
       model.moveEnemiesInWaves();
     }
 
@@ -141,6 +141,10 @@ public class TestDanmakuModel {
     Enemies curEnemy = model.getEnemiesOnField().iterator().next();
     assertEquals(SpriteVariations.yokai1, curEnemy.getVariation());
     
+    // move 50 steps until enemy can shoot (past 0.95 line)
+    for (int i = 0; i < 50; i++) {
+      model.moveEnemiesInWaves();
+    }
     // check if enemy can shoot when spawned.
     model.enemyFire();
 
@@ -185,9 +189,8 @@ public class TestDanmakuModel {
     assertEquals(2, count);
 
     // check if next enemy spawns in order
-    for (int i = 0; i < 150; i++) {
-      model.moveEnemiesInWaves();
-    }
+    model.moveEnemiesInWaves();
+    
     List<Enemies> enemies = new ArrayList<>();
     if (model.getEnemiesOnField().iterator().hasNext()) {
       for (Enemies enemy : model.getEnemiesOnField()) {
@@ -224,7 +227,7 @@ public class TestDanmakuModel {
     assertTrue(model.getCurrentStage() == 1);
 
     // kill boss leads to next stage + player bullets can harm boss
-    for (int i = 0; i < 1000; i++) {
+    for (int i = 0; i < 3000; i++) {
       model.playerFire(3, true);
       if (model.getBulletsOnField().iterator().hasNext()) {
         model.moveAllBullets();
@@ -252,7 +255,7 @@ public class TestDanmakuModel {
     Player player = model.getPlayer();
 
     // setup
-    for (int i = 0; i < 600; i++) {
+    for (int i = 0; i < 550; i++) {
       model.moveEnemiesInWaves();
     }
     
@@ -265,9 +268,9 @@ public class TestDanmakuModel {
     // check enemy health 
     assertEquals(enemy.getHealthPoints(), enemy.getMaxhealth());
 
-    // run simulation for 100 ticks
+    // run simulation for 400 ticks
     boolean collision = false;
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i < 400; i++) {
       model.playerFire(1, false);
       model.moveEnemiesInWaves();
       if (model.getBulletsOnField().iterator().hasNext()) {

@@ -104,7 +104,7 @@ public class DanmakuController implements ActionListener{
           this.music = new DanmakuSong("youkai_mountain_mysterious_mountain.mid");
         }
         else if (stage == 2) {
-          this.music = new DanmakuSong("faith_is_for_the_transient_people_s_af6ee.mid");
+          this.music = new DanmakuSong("the_primal_scene_of_japan_the_girl_.mid");
         }
         this.music.run();
       }
@@ -133,6 +133,16 @@ public class DanmakuController implements ActionListener{
   protected void keyboardInput() {
     if (controllModel.getGameState().equals(GameState.GAME_MENU)) {
       if (this.keyBoard.keyDownOnce(KeyEvent.VK_ENTER)) {
+        this.controllModel.setGameState(GameState.SELECT_SCREEN);
+      }
+    }
+    else if (controllModel.getGameState().equals(GameState.SELECT_SCREEN)) {
+      if (this.keyBoard.keyDownOnce(KeyEvent.VK_1)) {
+        this.controllModel.SelectPlayer(SpriteVariations.player1);
+        this.controllModel.setGameState(GameState.ACTIVE_GAME);
+      }
+      else if (this.keyBoard.keyDownOnce(KeyEvent.VK_2)) {
+        this.controllModel.SelectPlayer(SpriteVariations.player2);
         this.controllModel.setGameState(GameState.ACTIVE_GAME);
       }
     }
@@ -161,7 +171,7 @@ public class DanmakuController implements ActionListener{
         this.playerSpeed = 5;
       }
       if (this.keyBoard.keyDown(KeyEvent.VK_Z)) {
-        this.controllModel.playerFire(playerFireRate, this.keyBoard.keyDown(KeyEvent.VK_SHIFT)); // 1 bullets per second
+        this.controllModel.playerFire(playerFireRate, this.keyBoard.keyDown(KeyEvent.VK_SHIFT));
       }
       // pause menu
       if (this.keyBoard.keyDownOnce(KeyEvent.VK_ESCAPE)) {

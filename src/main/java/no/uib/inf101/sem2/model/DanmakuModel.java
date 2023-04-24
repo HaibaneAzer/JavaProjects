@@ -12,6 +12,7 @@ import no.uib.inf101.sem2.model.danmakus.Bullets;
 import no.uib.inf101.sem2.model.danmakus.DanmakuFactory;
 import no.uib.inf101.sem2.model.danmakus.Enemies;
 import no.uib.inf101.sem2.model.danmakus.Player;
+import no.uib.inf101.sem2.model.danmakus.SpriteState;
 import no.uib.inf101.sem2.model.danmakus.SpriteType;
 import no.uib.inf101.sem2.model.danmakus.SpriteVariations;
 import no.uib.inf101.sem2.view.ViewableDanmakuModel;
@@ -48,7 +49,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   private final int WaveMaxInterval = 300; // time between each wave
   private int waveDelay;
   // setSpawnWaveEnemies method: 
-  private final int spawnEnemyInterval = 150; // enemy spawn rate
+  private final int spawnEnemyInterval = 50; // enemy spawn rate
   private int spawnEnemyTimer;
   private int nextEnemyIndex;
   private List<Bullets> enemyBullets = new ArrayList<Bullets>();
@@ -58,7 +59,9 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   // score
   private int score;
 
-  
+  /**
+   * DanmakuModel is main constructor for handling all ingame data and interactions
+   */
   public DanmakuModel(DanmakuField Field, DanmakuFactory getSprite) {
     this.Field = Field;
     this.getSprite = getSprite;
@@ -71,11 +74,12 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     this.waveDelay = 0;
     this.stageDelay = 0;
     // player stuff:
-    this.currentPlayer = getSprite.getNewPlayer(SpriteVariations.player1).shiftedToStartPoint(Field);
+    // default player
+    this.currentPlayer = getSprite.getNewPlayer(SpriteVariations.player2).shiftedToStartPoint(Field);
     this.playerFireDelay = 0;
     // enemies stuff:
     this.TotalEnemies = getSprite.getTotalEnemies(this.currentStage);
-    this.spawnEnemyTimer = spawnEnemyInterval; 
+    this.spawnEnemyTimer = 0; 
     this.nextEnemyIndex = 0;
     // boss stuff:
     this.bossBattle = false;
@@ -89,6 +93,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     this.score = 0;
     // load spawn
     loadEnemySpawnpoints(this.Field, this.TotalEnemies);
+    loadBossList();
     
   }
   
@@ -163,11 +168,11 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     this.waveDelay = 0;
     this.stageDelay = 0;
     // player stuff:
-    this.currentPlayer = getSprite.getNewPlayer(SpriteVariations.player1).shiftedToStartPoint(Field);
+    this.currentPlayer = getSprite.getNewPlayer(this.currentPlayer.getVariation()).shiftedToStartPoint(Field);
     this.playerFireDelay = 0;
     // enemies stuff:
     this.TotalEnemies = getSprite.getTotalEnemies(this.currentStage);
-    this.spawnEnemyTimer = spawnEnemyInterval; 
+    this.spawnEnemyTimer = 0; 
     this.nextEnemyIndex = 0;
     // boss stuff: 
     this.bossBattle = false;
@@ -178,6 +183,11 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     this.bossAttackReloader = 0;
     // score
     this.score = 0;
+  }
+
+  @Override
+  public void SelectPlayer(SpriteVariations variations) {
+    this.currentPlayer = getSprite.getNewPlayer(variations).shiftedToStartPoint(Field);
   }
 
   private static Map<Integer, Map<EnemySpawnPos, Map<Integer, Vector>>> SpawnStage = new HashMap<>();
@@ -262,8 +272,21 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
    * getBulletImage gets image for bullet using variation and ownership to determine 
    * the image.
    */
-  private static Vector getEnemySpawn(Integer Stage, EnemySpawnPos pos, int num) {
+  private static Vector getEnemySpawn(Integer Stage, EnemySpawnPos pos, Integer num) {
     return SpawnStage.get(Stage).get(pos).get(num);
+  }
+
+  private static Map<Integer, SpriteVariations> bossList = new HashMap<>();
+  /**
+   * loadBossList is a list of bosses given their corrosponding stage.
+   */
+  private static void loadBossList() {
+    bossList.put(1, SpriteVariations.boss4);
+    bossList.put(2, SpriteVariations.boss5);
+  }
+
+  private static SpriteVariations getBossList(Integer stage) {
+    return bossList.get(stage);
   }
 
   /* ################################################ */
@@ -300,7 +323,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     }
     // homing shot
     else if (variation.equals(SpriteVariations.player2)) {
-
+      this.playerBullets = this.patterns.playerShoot(this.currentPlayer, holdingShift);
     }
     return this.playerBullets;
   }
@@ -430,9 +453,11 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
    * spawnAndMoveToStart is used at end of each stage when summoning the next boss.
    */
   private void spawnAndMoveToStart() {
+    
     // boss not spawned? spawn and continue to movement
     if (this.currentBoss == null) {
-      this.currentBoss = getSprite.getNewEnemy(SpriteVariations.boss4).shiftedToStartPoint(Field);
+      // boss depends on stage
+      this.currentBoss = getSprite.getNewEnemy(getBossList(this.currentStage)).shiftedToStartPoint(Field);
       this.currentBoss.setVelocity(new Vector(0, 1, 1));
       this.stillSpawning = true;
     }
@@ -508,7 +533,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   public void moveEnemiesInWaves() {
     // game won when all stages complete
     if (this.currentStage < 3) {
-      if (this.stageDelay <= this.stageMaxInterval) {
+      if (this.stageDelay < this.stageMaxInterval) {
         if (this.bossBattle) {
           runBossBattle(); // continues until boss is dead
         }
@@ -517,18 +542,15 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
         }
       }
       else {
-        // get 3 or 1 enemies from total and put them in one wave (extend later to 8 per wave)
+        // wait before next spawn
         this.TotalEnemies = getSprite.getTotalEnemies(this.currentStage);
-        if (this.spawnEnemyTimer >= this.spawnEnemyInterval) {
-          this.currentEnemies.add(this.TotalEnemies.get(this.currentWaveIndex).get(this.nextEnemyIndex));
-          setSpawnWaveEnemies(this.currentWaveIndex);
-          this.nextEnemyIndex++;
-          this.spawnEnemyTimer = 0;
+        if (this.spawnEnemyTimer < this.spawnEnemyInterval) {
+          this.spawnEnemyTimer++; 
         }
         // when all enemies has spawned, update wave.
         else if (this.nextEnemyIndex > this.TotalEnemies.get(this.currentWaveIndex).size() - 1) {  
           // delay next wave
-          if (this.waveDelay <= this.WaveMaxInterval) {
+          if (this.waveDelay < this.WaveMaxInterval) {
             this.waveDelay++;
           }
           else {
@@ -536,20 +558,23 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
             this.waveDelay = 0;
             this.spawnEnemyTimer = this.spawnEnemyInterval;
             // move to next wave
-            if (this.currentWaveIndex < this.TotalEnemies.size() - 1 && this.waveDelay == 0) {
+            if (this.currentWaveIndex < this.TotalEnemies.size() - 1) {
               this.currentWaveIndex++; 
             }
             // if max wave number, start boss battle, then move to next stage
-            else if (this.waveDelay == 0) {
+            else {
               this.currentWaveIndex = 0; 
               this.stageDelay = 0;
               this.bossBattle = true;
             }
           }
         }
-        // if there are still enemies left to spawn, continue spawn timer
+        // spawn new enemy until all are spawned
         else {
-          this.spawnEnemyTimer++; 
+          this.currentEnemies.add(this.TotalEnemies.get(this.currentWaveIndex).get(this.nextEnemyIndex));
+          setSpawnWaveEnemies(this.currentWaveIndex);
+          this.nextEnemyIndex++;
+          this.spawnEnemyTimer = 0; 
         }
       }
     }
@@ -667,6 +692,10 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
         this.bulletsOnField.remove(i);
       }
       else {
+        // check state and update movement
+        if (!bullet.getState().equals(SpriteState.aim)) {
+          bullet = updateBulletMovement(bullet);
+        }
         this.bulletsOnField.set(i, bullet.displaceBy(bullet.getVelocity()));
       }
     }
@@ -692,11 +721,55 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   }
 
   /**
+   * updateBulletMovement is a helper method for {@link #moveAllBullets} which updates bullet movement given it's spriteState.
+   */
+  private Bullets updateBulletMovement(Bullets bullet) {
+    // relative means action given enemies/player on field
+    if (bullet.getState().equals(SpriteState.relative)) {
+      // player change direction to closest bullet
+      double min;
+      Vector newDirection;
+      Vector overShoot;
+      if (bullet.getBulletOwner().equals(SpriteVariations.player1) || bullet.getBulletOwner().equals(SpriteVariations.player2)) {
+        if (!this.currentEnemies.isEmpty()) {
+          min = this.currentEnemies.get(this.currentEnemies.size() - 1).getPosition().subVect(bullet.getPosition()).length();
+          Enemies enemy = null;
+          // reset distance to max
+          for (int j = this.currentEnemies.size() - 1; j >= 0; j--) {
+            enemy = this.currentEnemies.get(j);
+            if (enemy.getPosition().subVect(bullet.getPosition()).length() > min) {
+              min = enemy.getPosition().subVect(bullet.getPosition()).length();
+            }
+          }
+          newDirection = bullet.getAimVector();
+          overShoot = new Vector(0, 0, 1);
+          // find closest enemy
+          for (int i = this.currentEnemies.size() - 1; i >= 0; i--) {
+            enemy = this.currentEnemies.get(i);
+            if (enemy.getPosition().subVect(bullet.getPosition()).length() <= min) {
+              min = enemy.getPosition().subVect(bullet.getPosition()).length();
+              // overshoot to make bullet shoot infront of enemy
+              overShoot = enemy.getVelocity().multiplyScalar(50);
+              newDirection = enemy.getPosition().addVect(overShoot).subVect(bullet.getPosition()).normaliseVect();
+              bullet.updateBulletDirection(newDirection.multiplyScalar(bullet.getAimVector().length()));
+              bullet.updateBulletVelocity(bullet.getAimVector());
+            }
+          }
+        }
+        else if (this.currentBoss != null) {
+          min = this.currentBoss.getPosition().subVect(bullet.getPosition()).length();
+          newDirection = this.currentBoss.getPosition().subVect(bullet.getPosition()).normaliseVect();
+          bullet.updateBulletDirection(newDirection.multiplyScalar(bullet.getAimVector().length()));
+          bullet.updateBulletVelocity(bullet.getAimVector());
+        }
+      }
+    }
+    return bullet;
+  }
+
+  /**
    * checkPlayerBulletCollision is a helper method used by {@link #bulletInsideScreen}.
    * checks if the hitboxes of player/enemy overlap bullets from enemy/player.
-   * Idea: use grid for whole field (cell dimension same size as smallest sprite) where two for loops loop
-   * through the grid until a cell containing atleast one sprite is found, check all neighbouring cells for sprites
-   * and compare these with eachother. might make comparisons faster when number of bullets gets up in the 1000s.
    */
   private boolean checkBulletCollision(Bullets shiftedBullet) {
     // player bullet hit enemy/boss
@@ -708,7 +781,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
           this.currentBoss = boss;
           if (!boss.isAlive()) {
             this.currentBoss = null;
-            // calculate score
+            // calculate score 
             this.score += 10000;
             
           }

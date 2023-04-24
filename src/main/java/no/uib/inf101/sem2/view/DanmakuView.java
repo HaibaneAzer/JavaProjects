@@ -89,7 +89,7 @@ public class DanmakuView extends JPanel{
     bulletMap.put(SpriteVariations.arrow, bulletImages);
     // ofuda
     bulletImages.put(SpriteVariations.player2, 
-    Inf101Graphics.loadImageFromResources("/playerBullet.PNG"));
+    Inf101Graphics.loadImageFromResources("/ofudaP2.PNG"));
     bulletMap.put(SpriteVariations.ofuda, bulletImages);
     // circleSmall
     bulletImages = new HashMap<>();
@@ -150,12 +150,14 @@ public class DanmakuView extends JPanel{
     CharacterImages.put("still", Inf101Graphics.loadImageFromResources("/player1.png"));
     CharacterImages.put("left", Inf101Graphics.loadImageFromResources("/player1Left.png"));
     CharacterImages.put("right", Inf101Graphics.loadImageFromResources("/player1Right.png"));
+    CharacterImages.put("select", Inf101Graphics.loadImageFromResources("/Th175Marisa.png"));
     CharacterMap.put(SpriteVariations.player1, CharacterImages);
     // player2
     CharacterImages = new HashMap<>();
     CharacterImages.put("still", Inf101Graphics.loadImageFromResources("/player2.png"));
     CharacterImages.put("left", Inf101Graphics.loadImageFromResources("/player2Left.png"));
     CharacterImages.put("right", Inf101Graphics.loadImageFromResources("/player2Right.png"));
+    CharacterImages.put("select", Inf101Graphics.loadImageFromResources("/Th175Reimu.png"));
     CharacterMap.put(SpriteVariations.player2, CharacterImages);
     // boss4
     CharacterImages = new HashMap<>();
@@ -248,7 +250,8 @@ public class DanmakuView extends JPanel{
     Rectangle2D drawScreenRect = new Rectangle2D.Double(0, 0, this.getWidth(), this.getHeight());
 
     drawMenuScreen(Canvas, drawScreenRect, setColor, Model.getGameState());
-    if (!Model.getGameState().equals(GameState.GAME_MENU)) {
+    drawPlayerSelectionScreen(Canvas, drawScreenRect, setColor, Model.getGameState());
+    if (!(Model.getGameState().equals(GameState.GAME_MENU) || Model.getGameState().equals(GameState.SELECT_SCREEN))) {
       // draw bullet field
       drawField(Canvas, fieldRect, backgroundRect, this.scrollY, Model, setColor);
       // draw player on field
@@ -716,6 +719,48 @@ public class DanmakuView extends JPanel{
       Inf101Graphics.drawCenteredString(Canvas, "Go back to menu? (backspace)", pressMenu);
     }
   } 
+
+  private static void drawPlayerSelectionScreen(Graphics2D Canvas, Rectangle2D MenuBackground, ColorTheme color, GameState gameStatus) {
+    Rectangle2D player1 = new Rectangle2D.Double(0, 0.1*MenuBackground.getHeight(), 0.5*MenuBackground.getWidth(), 80);
+    Rectangle2D pressKey1 = new Rectangle2D.Double(0, 0.9*MenuBackground.getHeight(), 0.5*MenuBackground.getWidth(), 60);
+    Rectangle2D player2 = new Rectangle2D.Double(0.5*MenuBackground.getWidth(), 0.1*MenuBackground.getHeight(), 0.5*MenuBackground.getWidth(), 80);
+    Rectangle2D pressKey2 = new Rectangle2D.Double(0.5*MenuBackground.getWidth(), 0.9*MenuBackground.getHeight(), 0.5*MenuBackground.getWidth(), 60);
+    double scaleFactor;
+    BufferedImage marisa = getCharacterImage(SpriteVariations.player1, "select");
+    BufferedImage reimu = getCharacterImage(SpriteVariations.player2, "select");
+    if (gameStatus.equals(GameState.SELECT_SCREEN)) {
+      Canvas.setColor(color.getMenuScreenColor("back"));
+      Canvas.fill(MenuBackground);
+      // draw name
+      Canvas.setColor(color.getMenuScreenColor("title"));
+      Canvas.setFont(new Font("Arial", Font.BOLD, 80));
+      Inf101Graphics.drawCenteredString(Canvas, "player1", player1);
+      // draw image
+      scaleFactor = (marisa.getWidth() / ((0.5)*MenuBackground.getWidth()));
+      if (marisa.getWidth() > (0.5)*MenuBackground.getWidth()) {
+        scaleFactor = (((0.5)*MenuBackground.getWidth()) / marisa.getWidth());
+      }
+      Inf101Graphics.drawCenteredImage(Canvas, marisa, 0.25*MenuBackground.getWidth(), 0.55*MenuBackground.getHeight(), scaleFactor);
+
+      Canvas.setColor(color.getMenuScreenColor("key"));
+      Canvas.setFont(new Font("Arial", Font.BOLD, 30));
+      Inf101Graphics.drawCenteredString(Canvas, "Press 1 for Stronger bullets", pressKey1);
+
+      Canvas.setColor(color.getMenuScreenColor("title"));
+      Canvas.setFont(new Font("Arial", Font.BOLD, 80));
+      Inf101Graphics.drawCenteredString(Canvas, "player2", player2);
+
+      scaleFactor = (reimu.getWidth() / ((0.5)*MenuBackground.getWidth()));
+      if (reimu.getWidth() > (0.5)*MenuBackground.getWidth()) {
+        scaleFactor = (((0.5)*MenuBackground.getWidth()) / reimu.getWidth());
+      }
+      Inf101Graphics.drawCenteredImage(Canvas, reimu, 0.75*MenuBackground.getWidth(), 0.575*MenuBackground.getHeight(), scaleFactor);
+
+      Canvas.setColor(color.getMenuScreenColor("key"));
+      Canvas.setFont(new Font("Arial", Font.BOLD, 30));
+      Inf101Graphics.drawCenteredString(Canvas, "Press 2 for Homing bullets", pressKey2);
+    }
+  }
   
   
   

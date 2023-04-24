@@ -4,6 +4,7 @@ import no.uib.inf101.sem2.grid.Vector;
 import no.uib.inf101.sem2.model.GameState;
 import no.uib.inf101.sem2.model.danmakus.Bullets;
 import no.uib.inf101.sem2.model.danmakus.Enemies;
+import no.uib.inf101.sem2.model.danmakus.SpriteVariations;
 
 public interface ControllableDanmakuModel {
     
@@ -70,5 +71,8 @@ public interface ControllableDanmakuModel {
 
   /** Getter for all boss enemy-objects on field */
   Enemies getBossEnemyOnField();
+
+  /** Select which player to use (used in character selection screen) */
+  void SelectPlayer(SpriteVariations variation);
 
 }

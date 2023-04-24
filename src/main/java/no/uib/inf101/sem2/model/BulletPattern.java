@@ -8,6 +8,7 @@ import no.uib.inf101.sem2.model.danmakus.Bullets;
 import no.uib.inf101.sem2.model.danmakus.DanmakuFactory;
 import no.uib.inf101.sem2.model.danmakus.Enemies;
 import no.uib.inf101.sem2.model.danmakus.Player;
+import no.uib.inf101.sem2.model.danmakus.SpriteState;
 import no.uib.inf101.sem2.model.danmakus.SpriteType;
 import no.uib.inf101.sem2.model.danmakus.SpriteVariations;
 
@@ -16,10 +17,13 @@ public class BulletPattern implements IBulletPattern {
   private final DanmakuFactory getSprite;
   // boss variables
   private double bossAngleIncrement;
+  // player variables
+  private double playerAngleIncrement;
 
   public BulletPattern(DanmakuFactory getSprite) {
     this.getSprite = getSprite;
     this.bossAngleIncrement = 0;
+    this.playerAngleIncrement = 0;
   }
 
   @Override
@@ -70,10 +74,10 @@ public class BulletPattern implements IBulletPattern {
     }
     else if (player.getVariation().equals(SpriteVariations.player2)) {
       if (focusedShot) {
-        return shootPlayer1Pattern(player, 15);
+        return shootPlayer2Pattern(player, 15, true);
       }
       else {
-        return shootPlayer1Pattern(player, 30);
+        return shootPlayer2Pattern(player, 30, false);
       }
     }
     else {
@@ -82,7 +86,6 @@ public class BulletPattern implements IBulletPattern {
   }
 
   private List<Bullets> shootAimedPattern(Enemies enemy, Player player) {
-    //
     List<Bullets> enemyBullets = new ArrayList<>();
     if (enemy.getFireTimer() == 0) {
       Bullets newBullet = this.getSprite.getNewBullet(SpriteVariations.circleSmall);
@@ -95,7 +98,7 @@ public class BulletPattern implements IBulletPattern {
       newBullet = newBullet.displaceBy(spawnPoint);
       // get enemy aim
       Vector aimedShot = enemy.getPosition().subVect(player.getPosition()).normaliseVect();
-      aimedShot = aimedShot.multiplyScalar(-1);
+      aimedShot = aimedShot.multiplyScalar(-1*enemy.getAimVector().length());
       // set bullet speed to enemies aim
       newBullet.updateBulletVelocity(aimedShot);
       // update bullets direction to it's velocity
@@ -156,6 +159,54 @@ public class BulletPattern implements IBulletPattern {
       // set spawnpoint for next bullet
       displaceFromDefaultSpawn = displaceFromDefaultSpawn.addVect(new Vector(spread, 0, 1));
     }    
+    return playerBullets;
+  }
+
+  private List<Bullets> shootPlayer2Pattern(Player player, int spread, boolean isFocused) {
+    //
+    List<Bullets> playerBullets = new ArrayList<>();
+    Vector displaceFromDefaultSpawn = new Vector(-spread, 0, 1); 
+    this.playerAngleIncrement = 0;
+    if (!isFocused) {
+      this.playerAngleIncrement = -(0.25)*Math.PI;
+    }
+    // shoot 2 normal spread shots
+    for (int i = 0; i < 2; i++) {
+      Bullets newBullet = this.getSprite.getNewBullet(SpriteVariations.ofuda);
+      newBullet.setBulletType(SpriteType.PlayerBullet);
+      newBullet.setBulletOwner(player.getVariation());
+      Vector bulletRadius = new Vector(newBullet.getRadius(), 0, 1);
+      // set bullets default spawnpoint
+      Vector spawnPoint = player.getPosition().addVect(player.getAimVector()).addVect(displaceFromDefaultSpawn);
+      spawnPoint = spawnPoint.addVect(bulletRadius);
+      newBullet = newBullet.displaceBy(spawnPoint);
+      // set bullet speed to players aim
+      newBullet.updateBulletVelocity(player.rotateAxisBy(this.playerAngleIncrement).getAimVector());
+      // update bullets direction to it's velocity
+      newBullet.updateBulletDirection(newBullet.getVelocity());
+      newBullet.setBulletState(SpriteState.aim);
+      playerBullets.add(i, newBullet);
+      // set spawnpoint for next bullet
+      displaceFromDefaultSpawn = displaceFromDefaultSpawn.addVect(new Vector(2*spread, 0, 1));
+      if (!isFocused) {
+        this.playerAngleIncrement += (0.50)*Math.PI;
+      }
+    }
+    // shoot one homing 
+    Bullets newBullet = this.getSprite.getNewBullet(SpriteVariations.ofuda);
+    newBullet.setBulletType(SpriteType.PlayerBullet);
+    newBullet.setBulletOwner(player.getVariation());
+    Vector bulletRadius = new Vector(newBullet.getRadius(), 0, 1);
+    // set bullet spawn
+    Vector spawnPoint = player.getPosition().addVect(player.getAimVector());
+    spawnPoint = spawnPoint.addVect(bulletRadius);
+    newBullet = newBullet.displaceBy(spawnPoint);
+    // update bullet
+    newBullet.updateBulletVelocity(player.getAimVector());
+    newBullet.updateBulletDirection(newBullet.getVelocity());
+    newBullet.setBulletState(SpriteState.relative);
+    playerBullets.add(newBullet);
+    
     return playerBullets;
   }
 

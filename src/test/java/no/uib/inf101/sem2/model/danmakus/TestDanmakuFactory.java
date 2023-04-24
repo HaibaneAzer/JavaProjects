@@ -58,7 +58,7 @@ public class TestDanmakuFactory {
     assertEquals(SpriteVariations.arrow, bullet.getVariation());
 
     // default state
-    assertEquals(SpriteState.relative, bullet.getState());
+    assertEquals(SpriteState.aim, bullet.getState());
 
     // default spawn
     assertEquals(-bullet.getRadius(), bullet.getPosition().x());
