@@ -32,13 +32,7 @@ public interface ColorTheme {
   */
   Color getSpriteColor(Character C);
 
-  /**
-  * getScoreBoardColor has parameter of type string and returns values of type Color.
-  * valid inputs are "back"; corrosponds to color dark gray, and "score"; corrosponds to
-  * color white.
-  * @param C is of type string. can be 'back' or 'score'.
-  */
-  Color getScoreBoardColor(String C);
+  
 
   /**
   * getGameOverColor gives colors used for game over screen texts.
@@ -60,7 +54,7 @@ public interface ColorTheme {
 
   /**
    * getStatisticsColor gives colors used to text descibing statistics.
-   * @param C can be 'curscore', 'hiscore' or 'stage'.
+   * @param C can be 'curscore', 'hiscore', 'lives', 'fps' or 'stage'.
    */
   Color getStatisticsColor(String C);
   

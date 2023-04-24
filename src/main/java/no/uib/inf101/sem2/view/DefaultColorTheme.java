@@ -29,16 +29,6 @@ public class DefaultColorTheme implements ColorTheme {
   }
 
   @Override
-  public Color getScoreBoardColor(String C) {
-    Color color = switch (C) {
-      case "back" -> Color.DARK_GRAY;
-      case "score" -> Color.WHITE;
-      default -> throw new IllegalArgumentException("No available color for '" + C + "'\nTry 'back' or 'score'.");
-    };
-    return color;
-  }
-
-  @Override
   public Color getGameOverColor(String C) {
     Color color = switch(C) {
       case "back" -> new Color(0, 0, 0, 192);

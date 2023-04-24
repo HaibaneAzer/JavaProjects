@@ -22,6 +22,6 @@ Husk å benytte "focused"-mode mye for å gjøre enda mer skade. Jo mere monstre
 
 ## Video
 
-Link: https://youtu.be/bJ8fzH6PBi8.
+Link: https://youtu.be/aW5oraaTVYw.
 
 

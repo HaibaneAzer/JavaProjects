@@ -27,6 +27,9 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   private Player currentPlayer;
   private List<Bullets> playerBullets = new ArrayList<Bullets>(); // number of bullets player shoots at the same time.
   private int playerFireDelay;
+  private int immunityFrames;
+  private final int maxImmunity = 150; // max Iframes per death
+  private boolean immunityActive;
   // enemy variables
   private List<Enemies> currentEnemies = new ArrayList<Enemies>(); // number of enemies spawned per wave
   private List<List<Enemies>> TotalEnemies = new ArrayList<List<Enemies>>(); // total enemies per stage.
@@ -74,7 +77,8 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     this.waveDelay = 0;
     this.stageDelay = 0;
     // player stuff:
-    // default player
+    this.immunityFrames = this.maxImmunity;
+    this.immunityActive = false;
     this.currentPlayer = getSprite.getNewPlayer(SpriteVariations.player2).shiftedToStartPoint(Field);
     this.playerFireDelay = 0;
     // enemies stuff:
@@ -105,6 +109,11 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   @Override
   public Player getPlayer() {
     return this.currentPlayer;
+  }
+
+  @Override
+  public boolean getIFrames() {
+    return this.immunityActive;
   }
 
   @Override
@@ -170,6 +179,8 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     // player stuff:
     this.currentPlayer = getSprite.getNewPlayer(this.currentPlayer.getVariation()).shiftedToStartPoint(Field);
     this.playerFireDelay = 0;
+    this.immunityFrames = this.maxImmunity;
+    this.immunityActive = false;
     // enemies stuff:
     this.TotalEnemies = getSprite.getTotalEnemies(this.currentStage);
     this.spawnEnemyTimer = 0; 
@@ -370,11 +381,16 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     for (int i = this.currentEnemies.size() - 1; i >= 0; i--) {
       if (shiftedPlayer.getPosition().subVect(this.currentEnemies.get(i).getPosition()).length() < shiftedPlayer.getRadius() + this.currentEnemies.get(i).getRadius()) {
         // kill and respawn player if lives left
-        if (this.currentPlayer.isAlive()) {
-          this.currentPlayer = this.currentPlayer.respawnPlayer(this.currentPlayer.getLives() - 1).shiftedToStartPoint(Field);
-        }
-        if (!this.currentPlayer.isAlive()) {
-          this.gameState = GameState.GAME_OVER;
+        if (!this.immunityActive) {
+          this.immunityActive = true;
+          this.immunityFrames = 0;
+          if (this.currentPlayer.isAlive()) {
+            this.currentPlayer = this.currentPlayer.respawnPlayer(this.currentPlayer.getLives() - 1).shiftedToStartPoint(Field);
+          }
+          if (!this.currentPlayer.isAlive()) {
+            this.gameState = GameState.GAME_OVER;
+          }
+          return false;
         }
         // kill enemy
         this.currentEnemies.remove(i);
@@ -384,15 +400,19 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     if (this.currentBoss != null) {
       if (shiftedPlayer.getPosition().subVect(this.currentBoss.getPosition()).length() < shiftedPlayer.getRadius() + this.currentBoss.getRadius()) {
         // kill and respawn player if lives left
-        if (this.currentPlayer.isAlive()) {
-          this.currentPlayer = this.currentPlayer.respawnPlayer(this.currentPlayer.getLives() - 1).shiftedToStartPoint(Field);
+        if (!this.immunityActive) {
+          this.immunityActive = true;
+          this.immunityFrames = 0;
+          if (this.currentPlayer.isAlive()) {
+            this.currentPlayer = this.currentPlayer.respawnPlayer(this.currentPlayer.getLives() - 1).shiftedToStartPoint(Field);
+          }
+          if (!this.currentPlayer.isAlive()) {
+            this.gameState = GameState.GAME_OVER;
+          }
+          // dmg boss (suicide dmg fixed at 300)
+          this.currentBoss.attackEnemy(300);
+          return false;
         }
-        if (!this.currentPlayer.isAlive()) {
-          this.gameState = GameState.GAME_OVER;
-        }
-        // dmg boss (suicide dmg fixed at 300)
-        this.currentBoss.attackEnemy(300);
-        return false;
       }
     }
     return true;
@@ -531,6 +551,13 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
 
   @Override
   public void moveEnemiesInWaves() {
+    // deactivate immunity after some time
+    if (this.immunityFrames < this.maxImmunity) {
+      this.immunityFrames++;
+    }
+    else if (this.immunityActive) {
+      this.immunityActive = false;
+    }
     // game won when all stages complete
     if (this.currentStage < 3) {
       if (this.stageDelay < this.stageMaxInterval) {
@@ -797,7 +824,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
           if (!enemy.isAlive()) {
             // calculate score
             if (enemy.getVariation().equals(SpriteVariations.yokai1)) {
-              this.score += 300;
+              this.score += 150;
             }
             else if (enemy.getVariation().equals(SpriteVariations.yokai2)) {
               this.score += 500;
@@ -811,13 +838,17 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     // enemy/boss bullet hit player
     else if (shiftedBullet.getType().equals(SpriteType.EnemyBullet) || shiftedBullet.getType().equals(SpriteType.BossBullet)) {
       if (shiftedBullet.getPosition().subVect(this.currentPlayer.getPosition()).length() < shiftedBullet.getRadius() + this.currentPlayer.getRadius()) {
-        if (this.currentPlayer.isAlive()) {
-          this.currentPlayer = this.currentPlayer.respawnPlayer(this.currentPlayer.getLives() - 1).shiftedToStartPoint(Field);
+        if (!this.immunityActive) {
+          this.immunityActive = true;
+          this.immunityFrames = 0;
+          if (this.currentPlayer.isAlive()) {
+            this.currentPlayer = this.currentPlayer.respawnPlayer(this.currentPlayer.getLives() - 1).shiftedToStartPoint(Field);
+          }
+          if (!this.currentPlayer.isAlive()) {
+            this.gameState = GameState.GAME_OVER;
+          }
+          return false;
         }
-        if (!this.currentPlayer.isAlive()) {
-          this.gameState = GameState.GAME_OVER;
-        }
-        return false;
       }
     }
     return true;

@@ -4,7 +4,9 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
@@ -153,6 +155,7 @@ public class DanmakuView extends JPanel{
     CharacterImages.put("still", Inf101Graphics.loadImageFromResources("/player1.png"));
     CharacterImages.put("left", Inf101Graphics.loadImageFromResources("/player1Left.png"));
     CharacterImages.put("right", Inf101Graphics.loadImageFromResources("/player1Right.png"));
+      // select screen image
     CharacterImages.put("select", Inf101Graphics.loadImageFromResources("/Th175Marisa.png"));
     CharacterMap.put(SpriteVariations.player1, CharacterImages);
     // player2
@@ -160,6 +163,7 @@ public class DanmakuView extends JPanel{
     CharacterImages.put("still", Inf101Graphics.loadImageFromResources("/player2.png"));
     CharacterImages.put("left", Inf101Graphics.loadImageFromResources("/player2Left.png"));
     CharacterImages.put("right", Inf101Graphics.loadImageFromResources("/player2Right.png"));
+      // select screen image
     CharacterImages.put("select", Inf101Graphics.loadImageFromResources("/Th175Reimu.png"));
     CharacterMap.put(SpriteVariations.player2, CharacterImages);
     // boss4
@@ -258,7 +262,7 @@ public class DanmakuView extends JPanel{
       // draw bullet field
       drawField(Canvas, fieldRect, backgroundRect, this.scrollY, Model, setColor);
       // draw player on field
-      drawPlayer(Canvas, Model.getPlayer(), setColor, false);
+      drawPlayer(Canvas, Model.getPlayer(), Model.getIFrames(), setColor, false);
       // draw enemies on field
       drawEnemy(Canvas, Model.getEnemiesOnField(), setColor, false);
       // draw bosses on field
@@ -287,7 +291,7 @@ public class DanmakuView extends JPanel{
     }
   }
   
-  private static void drawPlayer(Graphics2D Canvas, Player player, ColorTheme Color, boolean hasHitbox) {
+  private static void drawPlayer(Graphics2D Canvas, Player player, boolean iFramesActive, ColorTheme Color, boolean hasHitbox) {
     double x;
     double imgWidth;
     double y;
@@ -296,13 +300,16 @@ public class DanmakuView extends JPanel{
     double scaleFactor;
     Ellipse2D playerBall;
     BufferedImage playerImg;
+    Ellipse2D outer;
+    Ellipse2D inner;
+    Area hCircle;
 
     // get image for player
     String action = "still";
     if (player.getVelocity().x() > 0) {
       action = "right";
     }
-    else if (player.getVelocity().x() < 0) {
+    if (player.getVelocity().x() < 0) {
       action = "left";
     }
     playerImg = getCharacterImage(player.getVariation(), action);
@@ -319,7 +326,25 @@ public class DanmakuView extends JPanel{
     if (imgWidth < imgHeight) {
       scaleFactor = 2*(diameter/imgWidth);
     }
-    
+
+    // draw immunity ring
+    if (iFramesActive) {
+      outer = new Ellipse2D.Double(
+        x - 3*player.getRadius(), 
+        y - 3*player.getRadius(), 
+        3*diameter, 
+        3*diameter);
+      inner = new Ellipse2D.Double(
+        x - 3*player.getRadius() + 2, 
+        y - 3*player.getRadius() + 2, 
+        3*diameter - 4, 
+        3*diameter - 4);
+      hCircle = new Area(outer);
+      hCircle.subtract(new Area(inner));
+      Canvas.fill((Shape) hCircle);
+      Canvas.setColor(Color.getSpriteColor('r'));
+      Canvas.draw((Shape) hCircle);
+    }
     // draw player
     Inf101Graphics.drawCenteredImage(Canvas, playerImg, x, y, scaleFactor);
     
@@ -328,7 +353,10 @@ public class DanmakuView extends JPanel{
       x -= player.getRadius();
       y -= player.getRadius();
       playerBall = new Ellipse2D.Double(x, y, diameter, diameter);
-      Canvas.setColor(Color.getSpriteColor('r'));
+      Canvas.setColor(Color.getSpriteColor('g'));
+      if (iFramesActive) {
+        Canvas.setColor(Color.getSpriteColor('r'));
+      }
       Canvas.fill(playerBall);
     }
     
@@ -461,7 +489,7 @@ public class DanmakuView extends JPanel{
     x = 1.3*fieldRect.getX();
     y = 2.5*fieldRect.getY();
 
-    Canvas.setColor(color.getScoreBoardColor("score"));
+    Canvas.setColor(color.getStatisticsColor("stage"));
     Canvas.setFont(new Font("Arial", Font.BOLD, 25));
     Canvas.drawString(String.format("%s", healthBars), Math.round(x), Math.round(y));
 
@@ -744,7 +772,7 @@ public class DanmakuView extends JPanel{
         scaleFactor = (((0.5)*MenuBackground.getWidth()) / marisa.getWidth());
       }
       Inf101Graphics.drawCenteredImage(Canvas, marisa, 0.25*MenuBackground.getWidth(), 0.55*MenuBackground.getHeight(), scaleFactor);
-
+      // draw button message
       Canvas.setColor(color.getMenuScreenColor("key"));
       Canvas.setFont(new Font("Arial", Font.BOLD, 30));
       Inf101Graphics.drawCenteredString(Canvas, "Press 1 for Stronger bullets", pressKey1);

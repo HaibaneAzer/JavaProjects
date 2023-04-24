@@ -21,6 +21,9 @@ public interface ViewableDanmakuModel {
   */
   Player getPlayer();
 
+  /** getter for player IFrames */
+  boolean getIFrames();
+
   /**
   * getter for all enemy objects on field
   * @return next enemy

@@ -13,12 +13,17 @@ public class TestDefaultColorTheme {
 public void sanityTestDefaultColorTheme() {
   ColorTheme colors = new DefaultColorTheme();
   assertEquals(null, colors.getBackgroundColor());
-  assertEquals(Color.BLACK, colors.getFieldColor());
+  assertEquals(Color.WHITE, colors.getFieldColor());
   assertEquals(Color.GREEN, colors.getSpriteColor('g'));
   assertEquals(Color.RED, colors.getSpriteColor('r'));
   assertThrows(IllegalArgumentException.class, () -> colors.getSpriteColor('\n'));
-  assertEquals(Color.GREEN.brighter(), colors.getFieldBackgroundColor());
-  assertEquals(Color.BLACK, colors.getFrameColor());
+  assertEquals(Color.GRAY.brighter(), colors.getFieldBackgroundColor());
+  assertEquals(Color.DARK_GRAY.darker(), colors.getFrameColor());
+  assertEquals(Color.decode("#4F0001").brighter().brighter().brighter(), colors.getGameOverColor("gameover"));
+  assertEquals(Color.WHITE, colors.getMenuScreenColor("title"));
+  assertEquals(Color.WHITE.darker(), colors.getPauseScreenColor("paused"));
+  assertEquals(Color.CYAN.darker(), colors.getStatisticsColor("lives"));
+  assertEquals(Color.DARK_GRAY.darker(), colors.getFrameColor());
 
 }
 
