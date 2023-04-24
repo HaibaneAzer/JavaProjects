@@ -8,17 +8,21 @@ public class DanmakuSpawner implements DanmakuFactory{
   private final SpriteVariations[][][] enemySpawnList = {
     // stage 1
     {
-    {SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1}, // wave 1
+    {SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1},
+    {SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1},
+    {SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1},
     {SpriteVariations.yokai2},
-    {SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1},
-    {SpriteVariations.yokai2, SpriteVariations.yokai2}
+    {SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1},
+    {SpriteVariations.yokai2, SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai2}
     },
     // stage 2
     {
-    {SpriteVariations.yokai1, SpriteVariations.yokai1},
-    {SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1},
-    {SpriteVariations.yokai1, SpriteVariations.yokai2},
-    {SpriteVariations.yokai2, SpriteVariations.yokai1, SpriteVariations.yokai1}
+    {SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai2},
+    {SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1},
+    {SpriteVariations.yokai1, SpriteVariations.yokai2, SpriteVariations.yokai1},
+    {SpriteVariations.yokai2, SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1},
+    {SpriteVariations.yokai2, SpriteVariations.yokai2, SpriteVariations.yokai2},
+    {SpriteVariations.yokai2, SpriteVariations.yokai2, SpriteVariations.yokai2}
     }
     
   };

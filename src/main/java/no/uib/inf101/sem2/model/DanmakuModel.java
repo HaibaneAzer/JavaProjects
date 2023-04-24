@@ -1,7 +1,9 @@
 package no.uib.inf101.sem2.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import no.uib.inf101.sem2.controller.ControllableDanmakuModel;
 import no.uib.inf101.sem2.grid.FieldDimension;
@@ -85,7 +87,8 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     this.bossAttackReloader = 0;
     // score
     this.score = 0;
-
+    // load spawn
+    loadEnemySpawnpoints(this.Field, this.TotalEnemies);
     
   }
   
@@ -175,6 +178,92 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     this.bossAttackReloader = 0;
     // score
     this.score = 0;
+  }
+
+  private static Map<Integer, Map<EnemySpawnPos, Map<Integer, Vector>>> SpawnStage = new HashMap<>();
+  private static Map<EnemySpawnPos, Map<Integer, Vector>> SpawnSet = new HashMap<>();
+  private static Map<Integer, Vector> enemiesPerWave = new HashMap<>();
+  /**
+   * loadEnemySpawnpoints loads all possible spawn positions given by a Vector,
+   * depending on wave number and stage.
+   * spawnpoint format (integer stage, integer set, Integer enemies per wave).
+   */
+  private static void loadEnemySpawnpoints(FieldDimension field, List<List<Enemies>> waveEnemies) {
+    int fieldX = field.getFieldX();
+    int fieldWidth = field.width();
+    
+    // stage 1
+    double x = fieldX + fieldWidth*(0.1);
+    // spawn enemies in horisontal line
+    for (int i = 0; i < waveEnemies.get(0).size(); i++) {
+      enemiesPerWave.put(i, new Vector(x, 0, 1));
+      if (x < fieldX + fieldWidth*(0.8)) {
+        x += fieldWidth*(0.1);
+      }
+    }
+    SpawnSet.put(EnemySpawnPos.horisontal, enemiesPerWave);
+
+    // spawn enemies in vertical line
+    // far right
+    enemiesPerWave = new HashMap<>();
+    x = fieldX + fieldWidth*(0.2);
+    for (int i = 0; i < waveEnemies.get(1).size(); i++) {
+      enemiesPerWave.put(i, new Vector(x, 0, 1));
+      
+    }
+    SpawnSet.put(EnemySpawnPos.verticalRight, enemiesPerWave);
+
+    // far left
+    enemiesPerWave = new HashMap<>();
+    x = fieldX + fieldWidth*(0.8);
+    for (int i = 0; i < waveEnemies.get(2).size(); i++) {
+      enemiesPerWave.put(i, new Vector(x, 0, 1));
+    }
+    SpawnSet.put(EnemySpawnPos.verticalLeft, enemiesPerWave);
+    
+    // middle right
+    enemiesPerWave = new HashMap<>();
+    x = fieldX + fieldWidth*(0.4);
+    for (int i = 0; i < waveEnemies.get(2).size(); i++) {
+      enemiesPerWave.put(i, new Vector(x, 0, 1));
+    }
+    SpawnSet.put(EnemySpawnPos.verticalMiddleR, enemiesPerWave);
+    
+    // middle left
+    enemiesPerWave = new HashMap<>();
+    x = fieldX + fieldWidth*(0.6);
+    for (int i = 0; i < waveEnemies.get(2).size(); i++) {
+      enemiesPerWave.put(i, new Vector(x, 0, 1));
+    }
+    SpawnSet.put(EnemySpawnPos.verticalMiddelL, enemiesPerWave);
+
+    // spawn enemies from both sides simultaniously
+    enemiesPerWave = new HashMap<>();
+    x = fieldX + fieldWidth*(0.1);
+    boolean switcher = true;
+    for (int i = 0; i < waveEnemies.get(2).size(); i++) {
+      enemiesPerWave.put(i, new Vector(x, 0, 1));
+      if (switcher) {
+        switcher = false;
+        x = fieldX + fieldWidth*(0.9) - (0.05)*fieldWidth*i;
+      }
+      else {
+        switcher = true;
+        x = fieldX + fieldWidth*(0.1) + (0.05)*fieldWidth*i;
+      }
+
+    }
+    SpawnSet.put(EnemySpawnPos.zigzag, enemiesPerWave);
+    SpawnStage.put(1, SpawnSet);
+
+  }
+
+  /**
+   * getBulletImage gets image for bullet using variation and ownership to determine 
+   * the image.
+   */
+  private static Vector getEnemySpawn(Integer Stage, EnemySpawnPos pos, int num) {
+    return SpawnStage.get(Stage).get(pos).get(num);
   }
 
   /* ################################################ */
@@ -401,9 +490,11 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   private void bossAttackPatterns(boolean unleashSuper) {
     this.bossBullets = this.patterns.bossShoot(this.currentBoss, unleashSuper);
     // shorter delay with super
-    this.currentBoss = this.currentBoss.setFireTimer((this.currentBoss.getFireTimer() + 1) % (int) Math.round(this.currentBoss.getFireDelay()));
     if (unleashSuper) {
       this.currentBoss = this.currentBoss.setFireTimer((this.currentBoss.getFireTimer() + 1) % (int) Math.round(0.3*this.currentBoss.getFireDelay()));
+    }
+    else {
+      this.currentBoss = this.currentBoss.setFireTimer((this.currentBoss.getFireTimer() + 1) % (int) Math.round(this.currentBoss.getFireDelay()));
     }
     
     
@@ -468,52 +559,31 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   /**
    * setSpawnWaveEnemies is a method that contains preset spawns positions for enemies depending on wave number, stage
    * and list of wave enemies.
-   * helper method for moveEnemiesInWaves.
+   * helper method for {@link #moveEnemiesInWaves}.
    */
   private void setSpawnWaveEnemies(int wave) {
     // note: make spawnpoint dependent on enemy variation?
     int nextSpawnIndex = this.currentEnemies.size() - 1;
     // set spawns: 
-    if (wave == 0 && this.currentStage == 1) {
-      // spawn left from top center
-      /* System.out.println("wave 1"); */
-      this.currentEnemies.set(nextSpawnIndex, this.currentEnemies.get(nextSpawnIndex).shiftedToStartPoint(Field).displaceBy(new Vector(1, 30, 1)));
+    EnemySpawnPos setPos = EnemySpawnPos.horisontal;
+    if (wave == 1) {
+      setPos = EnemySpawnPos.verticalRight;
     }
-    else if (wave == 1 && this.currentStage == 1) {
-      // spawn right from top center
-      /* System.out.println("wave 2"); */
-      this.currentEnemies.set(nextSpawnIndex, this.currentEnemies.get(nextSpawnIndex).shiftedToStartPoint(Field).displaceBy(new Vector(50, 0, 1)));
+    else if (wave == 2) {
+      setPos = EnemySpawnPos.verticalLeft;
     }
-    else if (wave == 2 && this.currentStage == 1) {
-      // spawn left from top center
-      /* System.out.println("wave 3"); */
-      this.currentEnemies.set(nextSpawnIndex, this.currentEnemies.get(nextSpawnIndex).shiftedToStartPoint(Field).displaceBy(new Vector(-50, 0, 1)));
+    else if (wave == 3) {
+      setPos = EnemySpawnPos.zigzag;
     }
-    else if (wave == 3 && this.currentStage == 1) {
-      // spawn at top center
-      /* System.out.println("wave 4"); */
-      this.currentEnemies.set(nextSpawnIndex, this.currentEnemies.get(nextSpawnIndex).shiftedToStartPoint(Field));
+    else if (wave == 4) {
+      setPos = EnemySpawnPos.verticalMiddelL;
     }
-    else if (wave == 0 && this.currentStage == 2) {
-      // spawn left from top center
-      /* System.out.println("wave 1"); */
-      this.currentEnemies.set(nextSpawnIndex, this.currentEnemies.get(nextSpawnIndex).shiftedToStartPoint(Field)).displaceBy(new Vector(-100, 0, 1));
+    else if (wave == 5) {
+      setPos = EnemySpawnPos.verticalMiddleR;
     }
-    else if (wave == 1 && this.currentStage == 2) {
-      // spawn left from top center
-      /* System.out.println("wave 2"); */
-      this.currentEnemies.set(nextSpawnIndex, this.currentEnemies.get(nextSpawnIndex).shiftedToStartPoint(Field).displaceBy(new Vector(100, 0, 1)));
-    }
-    else if (wave == 2 && this.currentStage == 2) {
-      // spawn at top center
-      /* System.out.println("wave 3"); */
-      this.currentEnemies.set(nextSpawnIndex, this.currentEnemies.get(nextSpawnIndex).shiftedToStartPoint(Field)).displaceBy(new Vector(-100, 0, 1));
-    }
-    else if (wave == 3 && this.currentStage == 2) {
-      // spawn at top center
-      /* System.out.println("wave 4"); */
-      this.currentEnemies.set(nextSpawnIndex, this.currentEnemies.get(nextSpawnIndex).shiftedToStartPoint(Field)).displaceBy(new Vector(100, 0, 1));;
-    }
+    Enemies enemy = this.currentEnemies.get(nextSpawnIndex);
+    Vector pos = getEnemySpawn(1, setPos, this.nextEnemyIndex);
+    this.currentEnemies.set(nextSpawnIndex, enemy.setNewPosition(pos));
 
   }
 
@@ -522,16 +592,13 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
    * to move all spawned enemies.
    */
   private void moveAllEnemies() {
-    // NB: make "controll pattern by enemy variation" system...
     for (int i = this.currentEnemies.size() - 1; i >= 0; i--) {
-      // move in sine wave pattern
+      // move downwards
       Enemies displacedEnemy;
       Enemies enemy = this.currentEnemies.get(i);
       if (enemy.getVariation().equals(SpriteVariations.yokai1)) {
-        enemy.setVelocity(new Vector(0, 1.5, 1));
-        double newY = enemy.getPosition().y() + 0.5*enemy.getVelocity().length();
-        double newX = 80*Math.sin(0.01*enemy.getPosition().y()) + 120;
-        displacedEnemy = enemy.setNewPosition(new Vector(newX, newY, 1));
+        enemy.setVelocity(new Vector(0, 1, 1));
+        displacedEnemy = enemy.displaceBy(enemy.getVelocity());
       }
       // move downwards
       else {

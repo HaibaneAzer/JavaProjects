@@ -209,7 +209,7 @@ public class TestDanmakuModel {
     // start is at stage 1
     assertTrue(model.getCurrentStage() == 1);
 
-    for (int i = 0; i < 2500; i++) {
+    for (int i = 0; i < 5500; i++) {
       model.moveEnemiesInWaves();
     }
 
@@ -321,7 +321,7 @@ public class TestDanmakuModel {
     model.movePlayer(new Vector(0, -250, 1));
 
     assertEquals(model.getPlayer().getPosition(), checkSpawn.subVect(new Vector(0, 250, 1)));
-    for (int i = 0; i < 300; i++) {
+    for (int i = 0; i < 400; i++) {
       model.enemyFire();
       model.moveAllBullets();
       player = model.getPlayer();

@@ -15,12 +15,13 @@ Husk å benytte "focused"-mode mye for å gjøre enda mer skade. Jo mere monstre
 ## BrukerManual
 
 ------- Keyboard -------
+
 - Flytt spilleren opp, ned, venstre og høyre med pil-tastene.
 - Skyte med Z-tast.
 - Senk fart og skifte til "focused"-mode med leftshift-tast.
 
 ## Video
 
-Link: https://youtu.be/VHMyTmT0L-Y.
+Link: https://youtu.be/bJ8fzH6PBi8.
 
 

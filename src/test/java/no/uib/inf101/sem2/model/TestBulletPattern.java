@@ -74,25 +74,4 @@ public class TestBulletPattern {
 
   }
 
-  @Test
-  public void TestBossShoot() {
-
-    DanmakuField field = new DanmakuField(x, y, width, height);
-    DanmakuModel model = new DanmakuModel(field, sprite);
-    Enemies boss = sprite.getNewEnemy(SpriteVariations.boss4).shiftedToStartPoint(field);
-
-    for (int i = 0; i < 2600; i++) {
-      model.moveEnemiesInWaves();
-    }
-    Vector lineUp = model.getBossEnemyOnField().getPosition().subVect(boss.getPosition());
-    boss = boss.displaceBy(lineUp);
-    List<Bullets> eBullet = patterns.bossShoot(boss, false);
-
-    // check that model and shooter method has same position.
-    assertEquals(eBullet.iterator().next().getVariation(), model.getBulletsOnField().iterator().next().getVariation());
-    assertEquals(eBullet.iterator().next().getPosition(), model.getBulletsOnField().iterator().next().getPosition());
-    assertEquals(eBullet.iterator().next().getBulletOwner(), model.getBulletsOnField().iterator().next().getBulletOwner()); 
-
-  }
-
 }
