@@ -50,7 +50,9 @@ public class DanmakuController implements ActionListener{
     // no movement
   };
 
-  
+  /**
+   * DanmakuController is the main constructor for handling all time based data, music and controll input
+   */
   public DanmakuController(ControllableDanmakuModel controllModel, DanmakuView danView) {
     this.controllModel = controllModel;
     this.danView = danView;

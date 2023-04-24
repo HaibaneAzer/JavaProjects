@@ -36,6 +36,9 @@ public class DanmakuView extends JPanel{
   // number incrementer
   private static final Pattern NUMBER = Pattern.compile("\\d+");
   
+  /**
+   * DanmakuView is the main contructor for handling all data regarding graphics. 
+   */
   public DanmakuView(ViewableDanmakuModel Model) {
     this.setFocusable(true);
     this.Model = Model;
@@ -530,7 +533,7 @@ public class DanmakuView extends JPanel{
     BufferedImage fieldBackImg;
     BufferedImage fieldForeImg = null;
 
-    Canvas.setColor(Color.getSpriteColor('r'));
+    Canvas.setColor(Color.getFieldColor());
     Canvas.fill(fieldRect);
     // only draw available stages.
     if (model.getCurrentStage() < 3) {
@@ -602,7 +605,7 @@ public class DanmakuView extends JPanel{
     Rectangle2D rightSide = new Rectangle2D.Double(rightX, rightY, rightWidth, rightHeight);
     Rectangle2D top = new Rectangle2D.Double(topX, topY, topWidth, topHeight);
     Rectangle2D bottom = new Rectangle2D.Double(bottomX, bottomY, bottomWidth, bottomHeight);
-    Canvas.setColor(color.getFieldColor());
+    Canvas.setColor(color.getFrameColor());
     Canvas.fill(leftSide);
     Canvas.fill(rightSide);
     Canvas.fill(top);
@@ -617,7 +620,7 @@ public class DanmakuView extends JPanel{
     double screenWidth = statRect.getWidth() + 2*x;
     double screenHeight = statRect.getHeight();
     
-    Canvas.setColor(color.getFieldBackgroundColor());
+    Canvas.setColor(color.getStatisticsColor("fps"));
     Canvas.setFont(new Font("Arial", Font.BOLD, 18));
     Inf101Graphics.drawCenteredString(Canvas, "fps: " + model.getFPSValue(), 2*screenWidth, screenHeight - 2*y, 50, 50);
     
@@ -729,7 +732,7 @@ public class DanmakuView extends JPanel{
     BufferedImage marisa = getCharacterImage(SpriteVariations.player1, "select");
     BufferedImage reimu = getCharacterImage(SpriteVariations.player2, "select");
     if (gameStatus.equals(GameState.SELECT_SCREEN)) {
-      Canvas.setColor(color.getMenuScreenColor("back"));
+      Canvas.setColor(color.getBackgroundColor());
       Canvas.fill(MenuBackground);
       // draw name
       Canvas.setColor(color.getMenuScreenColor("title"));
