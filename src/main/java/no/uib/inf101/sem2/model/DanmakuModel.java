@@ -749,7 +749,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
             if (enemy.getPosition().subVect(bullet.getPosition()).length() <= min) {
               min = enemy.getPosition().subVect(bullet.getPosition()).length();
               // overshoot to make bullet shoot infront of enemy
-              overShoot = enemy.getVelocity().multiplyScalar(50);
+              overShoot = enemy.getVelocity().multiplyScalar(35);
               newDirection = enemy.getPosition().addVect(overShoot).subVect(bullet.getPosition()).normaliseVect();
               bullet.updateBulletDirection(newDirection.multiplyScalar(bullet.getAimVector().length()));
               bullet.updateBulletVelocity(bullet.getAimVector());

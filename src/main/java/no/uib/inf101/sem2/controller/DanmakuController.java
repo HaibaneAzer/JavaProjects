@@ -192,7 +192,7 @@ public class DanmakuController implements ActionListener{
         this.currentStage = 0;
         this.currentBoss = null;
         this.music.doStopMidiSounds();
-        this.music = new DanmakuSong("Pokemon - Farewell, Pikachu!.mid");
+        this.music = new DanmakuSong("01_a_shadow_in_the_blue_sky.mid");
         this.music.run();
         controllModel.setGameState(GameState.GAME_MENU);
       }    
