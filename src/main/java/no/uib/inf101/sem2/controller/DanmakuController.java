@@ -217,10 +217,11 @@ public class DanmakuController implements ActionListener{
       else if (this.keyBoard.keyDownOnce(KeyEvent.VK_BACK_SPACE)) {
         // reset field and set game menu
         this.controllModel.resetField();
+        this.gameOverExecuted = true;
         this.currentStage = 0;
         this.currentBoss = null;
         this.music.doStopMidiSounds();
-        this.music = new DanmakuSong("Pokemon - Farewell, Pikachu!.mid");
+        this.music = new DanmakuSong("01_a_shadow_in_the_blue_sky.mid");
         this.music.run();
         controllModel.setGameState(GameState.GAME_MENU);
       }    

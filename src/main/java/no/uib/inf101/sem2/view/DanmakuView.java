@@ -259,6 +259,8 @@ public class DanmakuView extends JPanel{
     drawMenuScreen(Canvas, drawScreenRect, setColor, Model.getGameState());
     drawPlayerSelectionScreen(Canvas, drawScreenRect, setColor, Model.getGameState());
     if (!(Model.getGameState().equals(GameState.GAME_MENU) || Model.getGameState().equals(GameState.SELECT_SCREEN))) {
+      // draw colored background
+      drawBackground(Canvas, drawScreenRect, setColor);
       // draw bullet field
       drawField(Canvas, fieldRect, backgroundRect, this.scrollY, Model, setColor);
       // draw player on field
@@ -550,7 +552,9 @@ public class DanmakuView extends JPanel{
   private static void drawField(Graphics2D Canvas, Rectangle2D fieldRect, Rectangle2D backgroundRect, double scrollY, ViewableDanmakuModel model, ColorTheme Color) {
     double x = (double) fieldRect.getX();
     double y = (double) fieldRect.getY();
-    double bgX = backgroundRect.getX();
+    double centerX = (double) fieldRect.getCenterX();
+    double backImgX;
+    double foreImgX = 0;
     double bgHeight = backgroundRect.getHeight();
     double imgBackHeight;
     double imgForeHeight = 1;
@@ -585,19 +589,24 @@ public class DanmakuView extends JPanel{
       if (imgBackHeight < imgForeHeight) {
         foreScaleFactor = (imgForeHeight / imgBackHeight);
       }
+
+      backImgX = centerX - (fieldBackImg.getWidth()*scaleFactor/2);
+      if (model.getBossEnemyOnField() != null) {
+        foreImgX = centerX - (fieldForeImg.getWidth()*foreScaleFactor/2);
+      }
       // scrolling variable
       double scrollDown = scrollY - (imgBackHeight*scaleFactor);
       double scrollDown2 = scrollY;
       // draw stage background
-      Inf101Graphics.drawImage(Canvas, fieldBackImg, bgX, scrollDown, scaleFactor);
-      Inf101Graphics.drawImage(Canvas, fieldBackImg, bgX, scrollDown2, scaleFactor);
+      Inf101Graphics.drawImage(Canvas, fieldBackImg, backImgX, scrollDown, scaleFactor);
+      Inf101Graphics.drawImage(Canvas, fieldBackImg, backImgX, scrollDown2, scaleFactor);
       // if boss fight, stop scrolling
       if (model.getBossEnemyOnField() != null) {
         scrollDown = y;
         scrollDown2 = y;
         // draw boss background
-        Inf101Graphics.drawImage(Canvas, fieldBackImg, x, scrollDown, scaleFactor);
-        Inf101Graphics.drawImage(Canvas, fieldForeImg, x, scrollDown2, foreScaleFactor);
+        Inf101Graphics.drawImage(Canvas, fieldBackImg, backImgX, scrollDown, scaleFactor);
+        Inf101Graphics.drawImage(Canvas, fieldForeImg, foreImgX, scrollDown2, foreScaleFactor);
       }
     }
     // draw line of collection
@@ -605,6 +614,12 @@ public class DanmakuView extends JPanel{
     Line2D collectionLine = new Line2D.Double(x, y + (height*(0.28)), x + width, y + (height*(0.28)));
     Canvas.draw(collectionLine);
   
+  }
+
+  private static void drawBackground(Graphics2D Canvas, Rectangle2D backroundRect, ColorTheme color) {
+
+    Canvas.setColor(color.getFrameColor());
+    Canvas.fill(backroundRect);
   }
 
   private static void drawFieldFrame(Graphics2D Canvas, Rectangle2D fieldRect, ColorTheme color) {
