@@ -14,5 +14,12 @@ public enum SpriteVariations {
   yokai2,
   boss4,
   boss5,
-  // 
+  // consumables
+  powerSmall,
+  powerMedium,
+  powerLarge,
+  faithSmall,
+  faithMedium,
+  faithLarge,
+  extend,
 }

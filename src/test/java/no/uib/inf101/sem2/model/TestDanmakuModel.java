@@ -93,8 +93,8 @@ public class TestDanmakuModel {
       bulletIt.next();
     }
 
-    // check if player1 shoots 3 bullets
-    assertEquals(3, count);
+    // check if player1 shoots 4 bullets
+    assertEquals(4, count);
 
     // calling playerFire again will not spawn more bullets until firerate limit
     // is reached (number of calls = fireRate, shoots new set of bullets).
@@ -107,7 +107,7 @@ public class TestDanmakuModel {
       bulletIt.next();
     }
 
-    assertEquals(3, count);
+    assertEquals(4, count);
 
     // new bullets spawn after limit is reached
     for (int i = 0; i <= 3; i++) {
@@ -121,7 +121,7 @@ public class TestDanmakuModel {
       bulletIt.next();
     }
 
-    assertEquals(6, count);
+    assertEquals(8, count);
 
   }
 

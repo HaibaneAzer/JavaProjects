@@ -28,5 +28,11 @@ public interface DanmakuFactory {
   * @return next Bullets-object
   */
   Bullets getNewBullet(SpriteVariations C);
+
+  /**
+   * getNewCollectible gets collectible items
+   * @return a new Consumable-object.
+   */
+  Consumables getNewCollectible(SpriteVariations C);
   
 }

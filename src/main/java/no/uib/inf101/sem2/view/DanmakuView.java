@@ -23,8 +23,10 @@ import javax.swing.JPanel;
 import no.uib.inf101.sem2.grid.Vector;
 import no.uib.inf101.sem2.model.GameState;
 import no.uib.inf101.sem2.model.danmakus.Bullets;
+import no.uib.inf101.sem2.model.danmakus.Consumables;
 import no.uib.inf101.sem2.model.danmakus.Enemies;
 import no.uib.inf101.sem2.model.danmakus.Player;
+import no.uib.inf101.sem2.model.danmakus.SpriteType;
 import no.uib.inf101.sem2.model.danmakus.SpriteVariations;
 
 public class DanmakuView extends JPanel{
@@ -66,6 +68,7 @@ public class DanmakuView extends JPanel{
     loadBulletImages();
     loadCharacterImages();
     loadFieldImages();
+    loadCollectibleImages();
   }    
   
   @Override
@@ -123,6 +126,47 @@ public class DanmakuView extends JPanel{
    */
   private static BufferedImage getBulletImage(SpriteVariations bulletVar, SpriteVariations Owner) {
     return bulletMap.get(bulletVar).get(Owner);
+  }
+
+  private static Map<SpriteType, Map<SpriteVariations, BufferedImage>> collectibleMap = new HashMap<>();
+  private static Map<SpriteVariations, BufferedImage> itemImages = new HashMap<>();
+  /**
+   * loadBulletImages loads the image of a certain bullet,
+   * depending on bullet variation and bullets owner.
+   * Bullets format (bullet variation, sprite owner).
+   */
+  private static void loadCollectibleImages() {
+    // power
+    itemImages.put(SpriteVariations.powerSmall, 
+    Inf101Graphics.loadImageFromResources("/powerSmall.png"));
+    itemImages.put(SpriteVariations.powerMedium, 
+    Inf101Graphics.loadImageFromResources("/powerMedium.PNG"));
+    itemImages.put(SpriteVariations.powerLarge, 
+    Inf101Graphics.loadImageFromResources("/PowerLarge.PNG"));
+    collectibleMap.put(SpriteType.Power, itemImages);
+    // faith
+    itemImages = new HashMap<>();
+    itemImages.put(SpriteVariations.faithSmall, 
+    Inf101Graphics.loadImageFromResources("/scoreSmall.png"));
+    itemImages.put(SpriteVariations.faithMedium, 
+    Inf101Graphics.loadImageFromResources("/scoreMedium.png"));
+    itemImages.put(SpriteVariations.faithLarge, 
+    Inf101Graphics.loadImageFromResources("/scoreLarge.png"));
+    collectibleMap.put(SpriteType.Faith, itemImages);
+    // extend
+    itemImages = new HashMap<>();
+    itemImages.put(SpriteVariations.extend, 
+    Inf101Graphics.loadImageFromResources("/extraLife.PNG"));
+    collectibleMap.put(SpriteType.Extend, itemImages);
+
+  }
+
+  /**
+   * getBulletImage gets image for bullet using variation and ownership to determine 
+   * the image.
+   */
+  private static BufferedImage getCollectibleImage(SpriteType type, SpriteVariations variation) {
+    return collectibleMap.get(type).get(variation);
   }
 
   private static Map<SpriteVariations, Map<String, BufferedImage>> CharacterMap = new HashMap<>();
@@ -275,6 +319,8 @@ public class DanmakuView extends JPanel{
       }
       // draw bullets on field
       drawBulletsOnField(Canvas, Model.getBulletsOnField(), setColor, false);
+      // draw collectibles on field
+      drawCollectiblesOnField(Canvas, Model.getCollectiblesOnField(), setColor, true);
       // draw field frame
       if (!(Model.getGameState().equals(GameState.PAUSE_GAME) || Model.getGameState().equals(GameState.GAME_OVER))) {
         // stop scrolling when game is pause or over.
@@ -543,6 +589,53 @@ public class DanmakuView extends JPanel{
         bulletHitbox = new Ellipse2D.Double(x, y, diameter, diameter);
         Canvas.setColor(Color.getSpriteColor('g'));
         Canvas.fill(bulletHitbox);
+      }
+
+    }
+
+  }
+
+  private static void drawCollectiblesOnField(Graphics2D Canvas, Iterable<Consumables> itemList, ColorTheme color, boolean hasHitbox) {
+    double x;
+    double imgWidth;
+    double y;
+    double diameter;
+    double scaleFactor;
+    Ellipse2D itemHitbox;
+    BufferedImage itemImg;
+    
+    for (Consumables item : itemList) {
+      // get image for corrosponding bullet variation.
+      // also depends on bullet owners variation to determine color.
+      itemImg = getCollectibleImage(SpriteType.Extend, SpriteVariations.extend);
+      if (item.getType() != null && item.getVariation() != null) {
+        itemImg = getCollectibleImage(item.getType(), item.getVariation());
+      }
+
+      // initialize variables
+      imgWidth = itemImg.getWidth();
+      x = item.getPosition().x();
+      y = item.getPosition().y();
+      diameter = 2*item.getRadius();
+      /* System.out.println("x: " + x);
+      System.out.println("y: " + y);
+      System.out.println("size: " + diameter); */
+      // scale by smallest image length.
+      scaleFactor = 5*(diameter/imgWidth);
+      if (imgWidth < diameter) {
+        scaleFactor = 5*(imgWidth/diameter);
+      }
+      
+      // draw bullet
+      Inf101Graphics.drawCenteredImage(Canvas, itemImg, x, y, scaleFactor);
+
+      // draw hitbox
+      if (hasHitbox) {
+        x -= item.getRadius();
+        y -= item.getRadius();
+        itemHitbox = new Ellipse2D.Double(x, y, diameter, diameter);
+        Canvas.setColor(color.getSpriteColor('b'));
+        Canvas.fill(itemHitbox);
       }
 
     }

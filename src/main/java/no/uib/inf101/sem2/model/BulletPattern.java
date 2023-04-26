@@ -17,13 +17,10 @@ public class BulletPattern implements IBulletPattern {
   private final DanmakuFactory getSprite;
   // boss variables
   private double bossAngleIncrement;
-  // player variables
-  private double playerAngleIncrement;
 
   public BulletPattern(DanmakuFactory getSprite) {
     this.getSprite = getSprite;
     this.bossAngleIncrement = 0;
-    this.playerAngleIncrement = 0;
   }
 
   @Override
@@ -137,12 +134,27 @@ public class BulletPattern implements IBulletPattern {
   }
 
   private List<Bullets> shootPlayer1Pattern(Player player, int spread) {
-    //
     List<Bullets> playerBullets = new ArrayList<>();
-    Vector displaceFromDefaultSpawn = new Vector(-spread, 0, 1); 
-    // add 3 + N bullets per shot, where N is determined by player power
-    // power >= 2 -> N = 1, power >= 3 -> N = 2, power >= 4 -> N = 3
-    for (int i = 0; i < 3; i++) {
+    Vector displaceFromDefaultSpawn = new Vector(-spread, 0, 1);
+    // add 2 + N bullets per shot, where N is determined by player power
+    int maxShooters = 2;
+    if (player.getPower() >= 4.0) {
+      maxShooters = 6;
+      displaceFromDefaultSpawn = new Vector(-2.5*spread, 0, 1);
+    }
+    else if (player.getPower() >= 3.0) {
+      maxShooters = 5;
+      displaceFromDefaultSpawn = new Vector(-2*spread, 0, 1);
+    }
+    else if (player.getPower() >= 2.0) {
+      maxShooters = 4;
+      displaceFromDefaultSpawn = new Vector(-1.5*spread, 0, 1);
+    }
+    else if (player.getPower() >= 1.0) {
+      maxShooters = 3;
+    }
+    
+    for (int i = 0; i < maxShooters; i++) {
       Bullets newBullet = this.getSprite.getNewBullet(SpriteVariations.arrow);
       newBullet.setBulletType(SpriteType.PlayerBullet);
       newBullet.setBulletOwner(player.getVariation());
@@ -158,20 +170,46 @@ public class BulletPattern implements IBulletPattern {
       playerBullets.add(i, newBullet);
       // set spawnpoint for next bullet
       displaceFromDefaultSpawn = displaceFromDefaultSpawn.addVect(new Vector(spread, 0, 1));
+      if (maxShooters == 2) {
+        displaceFromDefaultSpawn = new Vector(spread, 0, 1);
+      }
     }    
     return playerBullets;
   }
 
   private List<Bullets> shootPlayer2Pattern(Player player, int spread, boolean isFocused) {
-    //
     List<Bullets> playerBullets = new ArrayList<>();
     Vector displaceFromDefaultSpawn = new Vector(-spread, 0, 1); 
-    this.playerAngleIncrement = 0;
+    int maxNormalShooters = 2;
+    int maxHomingShooters = 0;
+    double angleIncrement = 0;
+    final double rad = 0.15*Math.PI; // starting radian
+    if (player.getPower() >= 4.0) {
+      maxNormalShooters = 3;
+      maxHomingShooters = 2;
+    }
+    else if (player.getPower() >= 3.0) {
+      maxNormalShooters = 2;
+      maxHomingShooters = 2;
+    }
+    else if (player.getPower() >= 2.0) {
+      maxNormalShooters = 2;
+      maxHomingShooters = 2;
+    }
+    else if (player.getPower() >= 1.0) {
+      maxNormalShooters = 3;
+      maxHomingShooters = 1;
+    }
+
+    if (maxNormalShooters % 2 == 0) {
+      displaceFromDefaultSpawn = new Vector(-1.5*spread, 0, 1);
+    }
+
     if (!isFocused) {
-      this.playerAngleIncrement = -(0.25)*Math.PI;
+      angleIncrement = -rad;
     }
     // shoot 2 normal spread shots
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < maxNormalShooters; i++) {
       Bullets newBullet = this.getSprite.getNewBullet(SpriteVariations.ofuda);
       newBullet.setBulletType(SpriteType.PlayerBullet);
       newBullet.setBulletOwner(player.getVariation());
@@ -181,31 +219,49 @@ public class BulletPattern implements IBulletPattern {
       spawnPoint = spawnPoint.addVect(bulletRadius);
       newBullet = newBullet.displaceBy(spawnPoint);
       // set bullet speed to players aim
-      newBullet.updateBulletVelocity(player.rotateAxisBy(this.playerAngleIncrement).getAimVector());
+      newBullet.updateBulletVelocity(player.rotateAxisBy(angleIncrement).getAimVector());
       // update bullets direction to it's velocity
       newBullet.updateBulletDirection(newBullet.getVelocity());
       newBullet.setBulletState(SpriteState.aim);
       playerBullets.add(i, newBullet);
       // set spawnpoint for next bullet
-      displaceFromDefaultSpawn = displaceFromDefaultSpawn.addVect(new Vector(2*spread, 0, 1));
-      if (!isFocused) {
-        this.playerAngleIncrement += (0.50)*Math.PI;
+      displaceFromDefaultSpawn = displaceFromDefaultSpawn.addVect(new Vector(spread, 0, 1));
+      if (((i - 1) == (maxNormalShooters / 2) && (maxNormalShooters % 2 == 0)) || maxNormalShooters == 2) {
+        displaceFromDefaultSpawn = displaceFromDefaultSpawn.addVect(new Vector(2*spread, 0, 1));
+        if (!isFocused) {
+          angleIncrement += (rad*2) / (maxNormalShooters/2);
+        }
+      }
+      else if (!isFocused) {
+        angleIncrement += (rad*2)/(maxNormalShooters-1);
       }
     }
-    // shoot one homing 
-    Bullets newBullet = this.getSprite.getNewBullet(SpriteVariations.ofuda);
-    newBullet.setBulletType(SpriteType.PlayerBullet);
-    newBullet.setBulletOwner(player.getVariation());
-    Vector bulletRadius = new Vector(newBullet.getRadius(), 0, 1);
-    // set bullet spawn
-    Vector spawnPoint = player.getPosition().addVect(player.getAimVector());
-    spawnPoint = spawnPoint.addVect(bulletRadius);
-    newBullet = newBullet.displaceBy(spawnPoint);
-    // update bullet
-    newBullet.updateBulletVelocity(player.getAimVector());
-    newBullet.updateBulletDirection(newBullet.getVelocity());
-    newBullet.setBulletState(SpriteState.relative);
-    playerBullets.add(newBullet);
+    // shoot homing
+    if (maxHomingShooters > 0) {
+      Bullets newBullet = this.getSprite.getNewBullet(SpriteVariations.ofuda);
+      newBullet.setBulletType(SpriteType.PlayerBullet);
+      newBullet.setBulletOwner(player.getVariation());
+      Vector bulletRadius = new Vector(newBullet.getRadius(), 0, 1);
+      // set bullet spawn
+      Vector spawnPoint = player.getPosition().addVect(player.getAimVector());
+      spawnPoint = spawnPoint.addVect(bulletRadius);
+      newBullet = newBullet.displaceBy(spawnPoint);
+      if (maxHomingShooters == 2) {
+        displaceFromDefaultSpawn = new Vector(spread, 0, 1);
+        Bullets newBullet2 = newBullet;
+        newBullet = newBullet.displaceBy(displaceFromDefaultSpawn);
+        newBullet2 = newBullet2.displaceBy(displaceFromDefaultSpawn.multiplyScalar(-1));
+        newBullet2.updateBulletVelocity(player.getAimVector());
+        newBullet2.updateBulletDirection(newBullet2.getVelocity());
+        newBullet2.setBulletState(SpriteState.relative);
+        playerBullets.add(newBullet2);
+      }
+      // update bullet
+      newBullet.updateBulletVelocity(player.getAimVector());
+      newBullet.updateBulletDirection(newBullet.getVelocity());
+      newBullet.setBulletState(SpriteState.relative);
+      playerBullets.add(newBullet);
+    } 
     
     return playerBullets;
   }

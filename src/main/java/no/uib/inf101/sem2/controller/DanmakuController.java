@@ -92,6 +92,10 @@ public class DanmakuController implements ActionListener{
     if (this.controllModel.getBulletsOnField().iterator().hasNext()) {
       this.controllModel.moveAllBullets();
     }
+    // update item pos
+    if (this.controllModel.getCollectiblesOnField().iterator().hasNext()) {
+      this.controllModel.moveAllCollectibles();
+    }
     updateActiveGameMusic(this.controllModel.getCurrentStage(), this.controllModel.getBossEnemyOnField());
     
   }

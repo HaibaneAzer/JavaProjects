@@ -18,7 +18,7 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
   /**
    * constructor for transformations
    */
-  public Enemies(SpriteVariations EnemyVar, int maxHealth, int healthPoints, int healthBars, int Radius, Vector Position, Vector aimDirection, Vector Velocity, int enemyFireTimer, int enemyFireDelay) {
+  private Enemies(SpriteVariations EnemyVar, int maxHealth, int healthPoints, int healthBars, int Radius, Vector Position, Vector aimDirection, Vector Velocity, int enemyFireTimer, int enemyFireDelay) {
     super(SpriteType.Enemy, EnemyVar, SpriteState.aim, Radius, Position, aimDirection, Velocity);
     this.maxHealth = maxHealth;
     this.healthPoints = healthPoints;
@@ -30,7 +30,7 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
  /** 
   * constructor for spawning
   */
-  public Enemies(SpriteVariations EnemyVar, int healthPoints, int healthBars, int Radius, Vector Position, int enemyFireDelay) {
+  private Enemies(SpriteVariations EnemyVar, int healthPoints, int healthBars, int Radius, Vector Position, int enemyFireDelay) {
     super(SpriteType.Enemy, EnemyVar, SpriteState.aim, Radius, Position, startingAim, standStill);
     this.maxHealth = healthPoints;
     this.healthPoints = this.maxHealth;

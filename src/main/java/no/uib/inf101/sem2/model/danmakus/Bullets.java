@@ -17,7 +17,7 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
    * Constructor for bullet movement.
    * 
    */
-  public Bullets(SpriteType type, SpriteVariations bulletVar, SpriteVariations bulletOwner, int Radius, Vector Position, Vector bulletAim, Vector Velocity, int damage) {
+  private Bullets(SpriteType type, SpriteVariations bulletVar, SpriteVariations bulletOwner, int Radius, Vector Position, Vector bulletAim, Vector Velocity, int damage) {
     super(type, bulletVar, SpriteState.aim, Radius, Position, bulletAim, Velocity);
     this.damage = damage;
     this.bulletOwner = bulletOwner;
@@ -28,7 +28,7 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
    * constructor for spawning bullet Player.
    * damage depends on player power and bullet type
    */
-  public Bullets(SpriteVariations bulletVar, int Radius, Vector Position, int damage) {
+  private Bullets(SpriteVariations bulletVar, int Radius, Vector Position, int damage) {
     super(SpriteType.Bullet, bulletVar, SpriteState.aim, Radius, Position, spawnAim, standStill);
     this.damage = damage;
 
@@ -38,7 +38,7 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
    * constructor for spawning bullet Enemy.
    * collision with player removes 1 life.
    */
-  public Bullets(SpriteVariations bulletVar, int Radius, Vector Position) {
+  private Bullets(SpriteVariations bulletVar, int Radius, Vector Position) {
     super(SpriteType.Bullet, bulletVar, SpriteState.aim, Radius, Position, spawnAim, standStill);
 
   }

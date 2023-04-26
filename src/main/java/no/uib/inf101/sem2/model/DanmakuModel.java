@@ -9,6 +9,7 @@ import no.uib.inf101.sem2.controller.ControllableDanmakuModel;
 import no.uib.inf101.sem2.grid.FieldDimension;
 import no.uib.inf101.sem2.grid.Vector;
 import no.uib.inf101.sem2.model.danmakus.Bullets;
+import no.uib.inf101.sem2.model.danmakus.Consumables;
 import no.uib.inf101.sem2.model.danmakus.DanmakuFactory;
 import no.uib.inf101.sem2.model.danmakus.Enemies;
 import no.uib.inf101.sem2.model.danmakus.Player;
@@ -59,8 +60,9 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   private List<Bullets> bossBullets = new ArrayList<Bullets>(); 
   private List<Bullets> bulletsOnField = new ArrayList<Bullets>(); // total bullets from both player and enemies.
   private double FPSCounter;
-  // score
+  // score + collectibles
   private int score;
+  private List<Consumables> collectiblesOnField = new ArrayList<>(); // total consumable items on field.
 
   /**
    * DanmakuModel is main constructor for handling all ingame data and interactions
@@ -132,6 +134,11 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   }
 
   @Override
+  public Iterable<Consumables> getCollectiblesOnField() {
+    return this.collectiblesOnField;
+  }
+
+  @Override
   public double getFPSValue() {
     return this.FPSCounter;
   }
@@ -194,6 +201,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     this.bossAttackReloader = 0;
     // score
     this.score = 0;
+    this.collectiblesOnField.clear();
   }
 
   @Override
@@ -807,6 +815,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
           boss.attackEnemy(shiftedBullet.getDamage());
           this.currentBoss = boss;
           if (!boss.isAlive()) {
+            rewardCollectibles(boss);
             this.currentBoss = null;
             // calculate score 
             this.score += 10000;
@@ -822,6 +831,8 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
           enemy.attackEnemy(shiftedBullet.getDamage());
           this.currentEnemies.set(i, enemy);
           if (!enemy.isAlive()) {
+            // get rewards
+            rewardCollectibles(enemy);
             // calculate score
             if (enemy.getVariation().equals(SpriteVariations.yokai1)) {
               this.score += 150;
@@ -852,6 +863,199 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
       }
     }
     return true;
+  }
+
+  /* #################################################### */
+  /* ################### Collectibles ################### */
+  /* #################################################### */
+
+  @Override
+  public void moveAllCollectibles() {
+    for (int i = this.collectiblesOnField.size() - 1; i >= 0; i--) {
+      Consumables item = this.collectiblesOnField.get(i);
+      if (!itemInsideField(item.displaceBy(item.getVelocity()))) {
+        this.collectiblesOnField.remove(i);
+      }
+      else {
+        // player above point of collection
+        if (this.currentPlayer.getPosition().y() < this.Field.getFieldY() + this.Field.height()*(0.28)) {
+          Vector attact = this.currentPlayer.getPosition().subVect(item.getPosition()).normaliseVect();
+          item.setVelocity(attact.multiplyScalar(5));
+        }
+        else {
+          item.setVelocity(new Vector(0, 1, 1));
+        }
+        this.collectiblesOnField.set(i, item.displaceBy(item.getVelocity()));
+      }
+    }
+  }
+
+  private boolean itemInsideField(Consumables shiftedItem) {
+    boolean withinScreen = (
+      shiftedItem.getPosition().x() + 2*shiftedItem.getRadius() >= 0 &&
+      shiftedItem.getPosition().y() + 2*shiftedItem.getRadius() >= 0 &&
+      shiftedItem.getPosition().x() - 2*shiftedItem.getRadius() < 2*this.Field.getFieldX() + this.Field.width() &&
+      shiftedItem.getPosition().y() - 2*shiftedItem.getRadius() < 2*this.Field.getFieldY() + this.Field.height()
+    );
+    if (!withinScreen) {
+      return false;
+    }
+    return checkItemCollision(shiftedItem);
+  }
+
+  private boolean checkItemCollision(Consumables shiftedItem) {
+    if (shiftedItem.getPosition().subVect(this.currentPlayer.getPosition()).length() < shiftedItem.getRadius() + this.currentPlayer.getRadius()) {
+      if (shiftedItem.getVariation().equals(SpriteVariations.powerSmall)) {
+        this.currentPlayer.addPower(0.05);
+      }
+      else if (shiftedItem.getVariation().equals(SpriteVariations.powerMedium)) {
+        this.currentPlayer.addPower(0.25);
+      }
+      else if (shiftedItem.getVariation().equals(SpriteVariations.powerLarge)) {
+        this.currentPlayer.addPower(1.00);
+      }
+      else if (shiftedItem.getVariation().equals(SpriteVariations.faithSmall)) {
+        this.score += 50;
+      }
+      else if (shiftedItem.getVariation().equals(SpriteVariations.faithMedium)) {
+        this.score += 350;
+      }
+      else if (shiftedItem.getVariation().equals(SpriteVariations.faithLarge)) {
+        this.score += 1050;
+      }
+      else if (shiftedItem.getVariation().equals(SpriteVariations.extend)) {
+        this.currentPlayer.lifeExtend();
+      }
+      return false;
+
+    }
+    return true;
+  }
+
+  /**
+   * rewardCollectibles is used when an enemy dies or Boss loses a health bar.
+   */
+  private void rewardCollectibles(Enemies enemy) {
+    // rules:
+    // 1: which and how many items spawns depends on enemy variation
+    // 2: if player is at max power (5.00) replace power with faith items.
+    // 3: spawn position is in a random circle around enemy.
+    double variable = Math.random();
+    double angle = 2 * Math.PI * variable;
+    double length = Math.sqrt(variable)*enemy.getRadius();
+    double cx = enemy.getPosition().x() - enemy.getRadius() + length*Math.cos(angle);
+    double cy = enemy.getPosition().y() - enemy.getRadius() + length*Math.sin(angle);
+    boolean replacePower = false;
+    if (this.currentPlayer.getPower() == 5.00) {
+      replacePower = true;
+    }
+    // yokai1 rewards powerSmall
+    if (enemy.getVariation().equals(SpriteVariations.yokai1)) {
+      if (!replacePower) {
+        Consumables power = getSprite.getNewCollectible(SpriteVariations.powerSmall);
+        power = power.setNewPosition(new Vector(cx, cy, 1));
+        this.collectiblesOnField.add(power);
+        
+      }
+      else {
+        Consumables faith = getSprite.getNewCollectible(SpriteVariations.faithSmall);
+        faith = faith.setNewPosition(new Vector(cx, cy, 1));
+
+        this.collectiblesOnField.add(faith);
+      }
+    }
+    else if (enemy.getVariation().equals(SpriteVariations.yokai2)) {
+      if (!replacePower) {
+        Consumables power = getSprite.getNewCollectible(SpriteVariations.powerMedium);
+        power = power.setNewPosition(new Vector(cx, cy, 1));
+
+        this.collectiblesOnField.add(power);
+        for (int i = 0; i < 2; i++) {
+          variable = Math.random();
+          angle = 2 * Math.PI * variable;
+          length = Math.sqrt(variable)*enemy.getRadius();
+          cx = enemy.getPosition().x() - enemy.getRadius() + length*Math.cos(angle);
+          cy = enemy.getPosition().y() - enemy.getRadius() + length*Math.sin(angle);
+          Consumables faith = getSprite.getNewCollectible(SpriteVariations.faithMedium);
+          faith = faith.setNewPosition(new Vector(cx, cy, 1));
+
+          this.collectiblesOnField.add(faith);
+        }
+      }
+      else {
+        Consumables faith = getSprite.getNewCollectible(SpriteVariations.faithLarge);
+        faith = faith.setNewPosition(new Vector(cx, cy, 1));
+
+        this.collectiblesOnField.add(faith);
+        for (int i = 0; i < 2; i++) {
+          variable = Math.random();
+          angle = 2 * Math.PI * variable;
+          length = Math.sqrt(variable)*enemy.getRadius();
+          cx = enemy.getPosition().x() - enemy.getRadius() + length*Math.cos(angle);
+          cy = enemy.getPosition().y() - enemy.getRadius() + length*Math.sin(angle);
+          faith = getSprite.getNewCollectible(SpriteVariations.faithMedium);
+          faith.setNewPosition(new Vector(cx, cy, 1));
+
+          this.collectiblesOnField.add(faith);
+        }
+      }
+    }
+    else if (this.currentBoss != null) {
+      if (!replacePower) {
+        Consumables power = getSprite.getNewCollectible(SpriteVariations.powerLarge);
+        power = power.setNewPosition(new Vector(cx, cy, 1));
+
+        this.collectiblesOnField.add(power);
+        for (int i = 0; i < 5; i++) {
+          variable = Math.random();
+          angle = 2 * Math.PI * variable;
+          length = Math.sqrt(variable)*enemy.getRadius();
+          cx = enemy.getPosition().x() - enemy.getRadius() + length*Math.cos(angle);
+          cy = enemy.getPosition().y() - enemy.getRadius() + length*Math.sin(angle);
+          Consumables faith = getSprite.getNewCollectible(SpriteVariations.faithMedium);
+          faith = faith.setNewPosition(new Vector(cx, cy, 1));
+
+          this.collectiblesOnField.add(faith);
+        }
+        // 1 extender
+        variable = Math.random();
+        angle = 2 * Math.PI * variable;
+        length = Math.sqrt(variable)*enemy.getRadius();
+        cx = enemy.getPosition().x() - enemy.getRadius() + length*Math.cos(angle);
+        cy = enemy.getPosition().y() - enemy.getRadius() + length*Math.sin(angle);
+        Consumables extend = getSprite.getNewCollectible(SpriteVariations.extend);
+        extend = extend.setNewPosition(new Vector(cx, cy, 1));
+
+        this.collectiblesOnField.add(extend);
+      }
+      else {
+        Consumables faith = getSprite.getNewCollectible(SpriteVariations.faithLarge);
+        faith = faith.setNewPosition(new Vector(cx, cy, 1));
+
+        this.collectiblesOnField.add(faith);
+        for (int i = 0; i < 9; i++) {
+          variable = Math.random();
+          angle = 2 * Math.PI * variable;
+          length = Math.sqrt(variable)*enemy.getRadius();
+          cx = enemy.getPosition().x() - enemy.getRadius() + length*Math.cos(angle);
+          cy = enemy.getPosition().y() - enemy.getRadius() + length*Math.sin(angle);
+          faith = getSprite.getNewCollectible(SpriteVariations.faithMedium);
+          faith.setNewPosition(new Vector(cx, cy, 1));
+
+          this.collectiblesOnField.add(faith);
+        }
+         // 1 extender
+         variable = Math.random();
+         angle = 2 * Math.PI * variable;
+         length = Math.sqrt(variable)*enemy.getRadius();
+         cx = enemy.getPosition().x() - enemy.getRadius() + length*Math.cos(angle);
+         cy = enemy.getPosition().y() - enemy.getRadius() + length*Math.sin(angle);
+         Consumables extend = getSprite.getNewCollectible(SpriteVariations.extend);
+         extend = extend.setNewPosition(new Vector(cx, cy, 1));
+
+         this.collectiblesOnField.add(extend);
+      }
+    }
   }
 
 }

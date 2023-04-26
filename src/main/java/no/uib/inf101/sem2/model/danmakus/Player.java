@@ -17,10 +17,11 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
   /**
    * transforming constructor
    */
-  private Player(SpriteVariations playerVar, int Radius, Vector Position, Vector Direction, Vector Velocity, int Lives) {
+  private Player(SpriteVariations playerVar, int Radius, Vector Position, Vector Direction, Vector Velocity, int Lives, double Power) {
     // spriteType is unchangeable, SpriteState can change.
     super(SpriteType.Player, playerVar, SpriteState.aim, Radius, Position, Direction, Velocity);
     this.Lives = Lives;
+    this.Power = Power;
   }
 
   /**
@@ -35,11 +36,12 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
   /**
    * respawning constructor
    */
-  private Player(SpriteVariations playerVar, int Radius, Vector Position, int Lives) {
+  private Player(SpriteVariations playerVar, int Radius, Vector Position, int Lives, double Power) {
     // spriteType is unchangeable, SpriteState can change.
     super(SpriteType.Player, playerVar, SpriteState.aim, Radius, Position, startingAim, standStill);
     // default spawn variables for all players.
     this.Lives = Lives;
+    this.Power = Power;
   }
 
   /**
@@ -73,6 +75,14 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
     return this.Power;
   }
 
+  /** increase Power */
+  public void addPower(double powerIncrease) {
+    this.Power += powerIncrease;
+    if (this.Power > 5.0) {
+      this.Power = 5.0;
+    }
+  }
+
   /**
    * isAlive checks if player has lives left.
    */
@@ -80,12 +90,21 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
     return this.Lives > 0;
   }
 
+  /** extend your lives by one */
+  public void lifeExtend() {
+    this.Lives++;
+  }
+
   /**
    * respawnPlayer makes a new player with updated lives
    * 
    */
   public Player respawnPlayer(int newLifeCount) {
-    return new Player(this.Variation, this.Radius, this.Position, newLifeCount);
+    this.Power -= 2.0;
+    if (this.Power < 0) {
+      this.Power = 0.0;
+    }
+    return new Player(this.Variation, this.Radius, this.Position, newLifeCount, this.Power);
   }
 
   @Override
@@ -95,13 +114,13 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
     Vector[] translate = Matrix.TranslationMatrix(Velocity); // get translation matrix
     Vector displacedPosition = this.Position.transformVect(translate); // displace position
 
-    Player displacedPlayer = new Player(this.Variation, this.Radius, displacedPosition, this.Direction, this.Velocity, this.Lives);
+    Player displacedPlayer = new Player(this.Variation, this.Radius, displacedPosition, this.Direction, this.Velocity, this.Lives, this.Power);
     return displacedPlayer;
   }
 
   @Override
   public Player setNewPosition(Vector displacedPosition) {
-    return new Player(this.Variation, this.Radius, displacedPosition, this.Direction, this.Velocity, this.Lives);
+    return new Player(this.Variation, this.Radius, displacedPosition, this.Direction, this.Velocity, this.Lives, this.Power);
   }
   
   @Override
@@ -119,7 +138,7 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
     Vector[] rotateAroundPosition = Matrix.RotationMatrix(theta, new Vector(0, 0, 1));
     Vector rotatedDirection = this.Direction.transformVect(rotateAroundPosition);
     
-    return new Player(this.Variation, this.Radius, this.Position, rotatedDirection, this.Velocity, this.Lives);
+    return new Player(this.Variation, this.Radius, this.Position, rotatedDirection, this.Velocity, this.Lives, this.Power);
   }
   
   

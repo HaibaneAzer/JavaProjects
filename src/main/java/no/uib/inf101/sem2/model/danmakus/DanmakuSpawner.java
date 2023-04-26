@@ -46,6 +46,12 @@ public class DanmakuSpawner implements DanmakuFactory{
   }
 
   @Override
+  public Consumables getNewCollectible(SpriteVariations C) {
+    Consumables newCollectible = Consumables.newConsumable(C);
+    return newCollectible;
+  }
+
+  @Override
   public List<List<Enemies>> getTotalEnemies(int StageNumber) {
     List<List<Enemies>> newStageEnemies = new ArrayList<List<Enemies>>();
     int waveNumber = 0;

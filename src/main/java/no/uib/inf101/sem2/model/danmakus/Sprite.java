@@ -8,7 +8,7 @@ public abstract class Sprite<E, T> {
   protected T directionState; // determine bullet and enemy pointing direction
   protected E type; // Player, Enemy or Bullet
   protected SpriteVariations Variation; // player1, player2, enemy1, enemy2, ball, arrow, etc...
-  protected int Radius;
+  protected final int Radius;
   protected Vector Position;
   protected Vector Direction;
   protected Vector Velocity;

@@ -3,6 +3,7 @@ package no.uib.inf101.sem2.controller;
 import no.uib.inf101.sem2.grid.Vector;
 import no.uib.inf101.sem2.model.GameState;
 import no.uib.inf101.sem2.model.danmakus.Bullets;
+import no.uib.inf101.sem2.model.danmakus.Consumables;
 import no.uib.inf101.sem2.model.danmakus.Enemies;
 import no.uib.inf101.sem2.model.danmakus.SpriteVariations;
 
@@ -52,6 +53,14 @@ public interface ControllableDanmakuModel {
   void moveEnemiesInWaves();
 
   /**
+   * moveAllCollectibles moves spawned consumable-objects in 2 set patterns. 
+   * All collectibles moves down towards the bottom of the field by default.
+   * if player is one human length away from a collectible, then move that item towards player.
+   * if player is above line of collection, move all collectibles on field towards player.
+   */
+  void moveAllCollectibles();
+
+  /**
    * set FPS value. Used with a fps calculator.
    * updates every second.
    */
@@ -71,6 +80,9 @@ public interface ControllableDanmakuModel {
 
   /** Getter for all boss enemy-objects on field */
   Enemies getBossEnemyOnField();
+
+  /** Getter for all consumable items on field  */
+  Iterable<Consumables> getCollectiblesOnField();
 
   /** Select which player to use (used in character selection screen) */
   void SelectPlayer(SpriteVariations variation);
