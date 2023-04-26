@@ -47,7 +47,6 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
   /**
   * newPlayer is a method that contains a list of valid playable characters.
   * playable: Circular hitbox: "P1c" and "P2c".
-  * 
   */
   static Player newPlayer(SpriteVariations newPlayerType) {
 

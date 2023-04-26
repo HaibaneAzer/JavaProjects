@@ -66,22 +66,22 @@ public interface ControllableDanmakuModel {
    */
   void setFPSValue(double newFPS);
 
-  /** getter for gameState */
+  /** @return current Game State */
   GameState getGameState();
 
-  /** setter for gameState */
+  /** @param newState is new Game Status */
   void setGameState(GameState newState);
 
   /** resetField resets all sprite-objects on field and statistics to start value */
   void resetField();
 
-  /** Getter for stages */
+  /** @return current stage (int) */
   int getCurrentStage();
 
-  /** Getter for all boss enemy-objects on field */
+  /** @return current boss on field. is null when outside of boss battle. */
   Enemies getBossEnemyOnField();
 
-  /** Getter for all consumable items on field  */
+  /** @return all consumable items on field  */
   Iterable<Consumables> getCollectiblesOnField();
 
   /** Select which player to use (used in character selection screen) */

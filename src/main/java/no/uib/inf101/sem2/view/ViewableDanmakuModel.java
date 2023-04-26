@@ -16,45 +16,36 @@ public interface ViewableDanmakuModel {
   */
   FieldDimension getDimension();
   
-  /**
-  * getter for all player-objects on field
-  * @return playable character
-  */
+  /** @return current active player character. */
   Player getPlayer();
 
-  /** getter for player IFrames */
+  /** @return if player IFrames are active (true). */
   boolean getIFrames();
 
-  /**
-  * getter for all enemy objects on field
-  * @return next enemy
-  */
+  /** @return all enemies alive on field. */
   Iterable<Enemies> getEnemiesOnField();
 
-  /** Getter for all boss enemy-objects on field */
+  /** @return current boss on field. is null when outside of boss battle. */
   Enemies getBossEnemyOnField();
 
-  /** Getter for boss attack type */
+  /** @return true if boss uses super attack */
   boolean getBossAttackType();
 
-  /**
-   * Getter for all bullets-objects on field.
-   * @return list of bullets
-   */
+  /** @return all bullets existing on field. */
   Iterable<Bullets> getBulletsOnField();
 
-  /** Getter for stages */
+  /** @return current stage (int) */
   int getCurrentStage();
 
-  /** Getter for gameState */
+  /** @return current Game State */
   GameState getGameState();
 
-  /** Getter for FPS value calculated in controller */
+  /** @return avg FPS calculated in controller */
   double getFPSValue();
 
-  /** Getter for current score calculated in model */
+  /** @return current score value calculated in model */
   int getCurrentScore();
 
-  /** Getter for all consumable items on field  */
+  /** @return all consumable items on field  */
   Iterable<Consumables> getCollectiblesOnField();
 }

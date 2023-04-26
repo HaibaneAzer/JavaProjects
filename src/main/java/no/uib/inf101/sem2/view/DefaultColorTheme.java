@@ -83,9 +83,5 @@ public class DefaultColorTheme implements ColorTheme {
   public Color getFieldBackgroundColor() {
     return Color.GRAY.brighter();
   }
-  
-  
-  
-  
-  
+   
 }

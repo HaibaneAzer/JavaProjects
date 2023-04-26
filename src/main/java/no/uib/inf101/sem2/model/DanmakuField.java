@@ -11,7 +11,6 @@ public class DanmakuField extends Grid {
    */
   public DanmakuField(int x, int y, int width, int height) {
     super(x, y, width, height);
-    
   }
    
 }

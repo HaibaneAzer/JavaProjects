@@ -1,5 +1,9 @@
 package no.uib.inf101.sem2.model.danmakus;
 
+
+/**
+ * SpriteVariations are sub-category of SpriteTypes.
+ */
 public enum SpriteVariations {
   // players
   player1,

@@ -18,6 +18,9 @@ public class BulletPattern implements IBulletPattern {
   // boss variables
   private double bossAngleIncrement;
 
+  /**
+   * Constructor for different bullet patterns in which enemies and players can shoot with.
+   */
   public BulletPattern(DanmakuFactory getSprite) {
     this.getSprite = getSprite;
     this.bossAngleIncrement = 0;

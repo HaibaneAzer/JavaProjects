@@ -27,7 +27,7 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
     this.enemyFireTimer = enemyFireTimer;
   }
 
- /** 
+  /** 
   * constructor for spawning
   */
   private Enemies(SpriteVariations EnemyVar, int healthPoints, int healthBars, int Radius, Vector Position, int enemyFireDelay) {
@@ -39,9 +39,8 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
   }
   
   /**
-  * newPlayer is a method that contains a list of valid playable characters.
-  * playable: Circular hitbox: "P1c" and "P2c", rectangular hitbox: "P1r" and "P2r".
-  * 
+  * newEnemy is a method that contains a list of valid enemy variations.
+  * Variations: yokai1, yokai2, boss4, boss5, etc....
   */
   static Enemies newEnemy(SpriteVariations newEnemyVar) {
     Enemies enemy = switch(newEnemyVar) {
@@ -60,44 +59,32 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
     
   }
 
-  /**
-   * getter for enemy healthpoints
-   */
+  /** @return current enemy healthpoints. */
   public int getHealthPoints() {
     return this.healthPoints;
   }
 
-  /**
-   * getter for maxhealth of enemy
-   */
+  /** @return max healthpoints of enemy. */
   public int getMaxhealth() {
     return this.maxHealth;
   }
 
-  /**
-   * getter for enemy healthBars
-   */
+  /** @return total bars of healthpoints the enemy have. */
   public int getHealthBars() {
     return this.healthBars;
   }
 
-  /**
-   * getter for enemy bullet fire rate delay
-   */
+  /** @return enemy's fire rate maximum delay time in ticks (int). */
   public int getFireDelay() {
     return this.enemyFireDelay;
   }
 
-  /**
-   * getter for enemy bullet fire rate timer
-   */
+  /** @return current ticks (int) on fire rate timer. Used with {@link #getFireDelay}. */
   public int getFireTimer() {
     return this.enemyFireTimer;
   }
 
-  /**
-   * setter for enemy bullet fire rate timer
-   */
+  /** @return new enemy with updated {@link #getFireTimer}. */
   public Enemies setFireTimer(int advance) {
     this.enemyFireTimer = advance;
     return new Enemies(
@@ -113,9 +100,7 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
       this.enemyFireDelay);
   }
 
-  /**
-   * isAlive checks if enemy still lives. When all healthbars are depleted, return false.
-   */
+  /** @return true if enemy still has health bars left, otherwise return false. */
   public boolean isAlive() {
     return this.healthBars > 0;
   }
@@ -171,9 +156,9 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
   /**
    * updateDirectionState fixes the direction vector to a direction depending on enemy's current SpriteState.
    * call this only when the Sprite's state changes from state set at spawn.
+   * @param state is new behavoir of enemy movement/facing direction.
    */
   public void updateDirectionState(SpriteState state) {
-
     if (this.directionState.equals(SpriteState.aim)) {
       this.Direction = startingAim; // direction is set to enemy aim
     } 
@@ -200,9 +185,10 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
 
   /**
    * attackEnemy removes healthpoints from enemy by players damage. 
-   * if enemy healthpoints is less than or equal to 0, remove
-   * one healthbar. if enemy is not alive, return false, otherwise return true;
-   * 
+   * If enemy healthpoints is less than or equal to 0, remove
+   * one healthbar.
+   * @param damagetaken is flat damage number in int.
+   * @return new enemy with updated {@link #getHealthPoints} and {@link #getHealthBars}.
    */
   public Enemies attackEnemy(int damageTaken) {
     this.healthPoints -= damageTaken;

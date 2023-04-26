@@ -1,5 +1,6 @@
 package no.uib.inf101.sem2.model;
 
+/** All possible spawnpoints enemies can come from. */
 public enum EnemySpawnPos {
   
   horisontal,
@@ -10,6 +11,5 @@ public enum EnemySpawnPos {
   zigzag,
   rightSide,
   leftSide;
-
 
 }

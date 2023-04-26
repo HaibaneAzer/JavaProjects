@@ -83,14 +83,15 @@ public class DanmakuView extends JPanel{
   // sources used: https://www.baeldung.com/java-hashmap
   // and https://stackoverflow.com/questions/49604389/hashmap-with-2-keys. 
   // special thanks to I. Ahmed on stackoverflow
-  private static Map<SpriteVariations, Map<SpriteVariations, BufferedImage>> bulletMap = new HashMap<>();
-  private static Map<SpriteVariations, BufferedImage> bulletImages = new HashMap<>();
+  private Map<SpriteVariations, Map<SpriteVariations, BufferedImage>> bulletMap = new HashMap<>();
+  private Map<SpriteVariations, BufferedImage> bulletImages = new HashMap<>();
+
   /**
    * loadBulletImages loads the image of a certain bullet,
    * depending on bullet variation and bullets owner.
    * Bullets format (bullet variation, sprite owner).
    */
-  private static void loadBulletImages() {
+  private void loadBulletImages() {
     // arrow
     bulletImages.put(SpriteVariations.player1, 
     Inf101Graphics.loadImageFromResources("/arrowMagenta.png"));
@@ -124,18 +125,19 @@ public class DanmakuView extends JPanel{
    * getBulletImage gets image for bullet using variation and ownership to determine 
    * the image.
    */
-  private static BufferedImage getBulletImage(SpriteVariations bulletVar, SpriteVariations Owner) {
+  private BufferedImage getBulletImage(SpriteVariations bulletVar, SpriteVariations Owner) {
     return bulletMap.get(bulletVar).get(Owner);
   }
 
-  private static Map<SpriteType, Map<SpriteVariations, BufferedImage>> collectibleMap = new HashMap<>();
-  private static Map<SpriteVariations, BufferedImage> itemImages = new HashMap<>();
+  private Map<SpriteType, Map<SpriteVariations, BufferedImage>> collectibleMap = new HashMap<>();
+  private Map<SpriteVariations, BufferedImage> itemImages = new HashMap<>();
+
   /**
    * loadBulletImages loads the image of a certain bullet,
    * depending on bullet variation and bullets owner.
    * Bullets format (bullet variation, sprite owner).
    */
-  private static void loadCollectibleImages() {
+  private void loadCollectibleImages() {
     // power
     itemImages.put(SpriteVariations.powerSmall, 
     Inf101Graphics.loadImageFromResources("/powerSmall.png"));
@@ -165,19 +167,20 @@ public class DanmakuView extends JPanel{
    * getBulletImage gets image for bullet using variation and ownership to determine 
    * the image.
    */
-  private static BufferedImage getCollectibleImage(SpriteType type, SpriteVariations variation) {
+  private BufferedImage getCollectibleImage(SpriteType type, SpriteVariations variation) {
     return collectibleMap.get(type).get(variation);
   }
 
-  private static Map<SpriteVariations, Map<String, BufferedImage>> CharacterMap = new HashMap<>();
-  private static Map<String, BufferedImage> CharacterImages = new HashMap<>();
+  private Map<SpriteVariations, Map<String, BufferedImage>> CharacterMap = new HashMap<>();
+  private Map<String, BufferedImage> CharacterImages = new HashMap<>();
+
   /**
    * loadCharacterImages loads the image of players, enemies and bosses.
    * images with movements depends on sprite velocity (only checking x-axis movement by strings "right", "left" or "still"
    * or for actions like super attacks by bosses using "super").
    * Character format (Sprite variation, velocity String).
    */
-  private static void loadCharacterImages() {
+  private void loadCharacterImages() {
     AffineTransform tx;
     AffineTransformOp op;
     List<BufferedImage> flipImages = new ArrayList<>();
@@ -238,18 +241,19 @@ public class DanmakuView extends JPanel{
    * getCharacterImage gets image for bullet using variation and ownership to determine 
    * the image.
    */
-  private static BufferedImage getCharacterImage(SpriteVariations Character, String action) {
+  private BufferedImage getCharacterImage(SpriteVariations Character, String action) {
     return CharacterMap.get(Character).get(action);
   }
 
-  private static Map<Integer, Map<String, BufferedImage>> FieldMap = new HashMap<>();
-  private static Map<String, BufferedImage> FieldImages = new HashMap<>();
+  private Map<Integer, Map<String, BufferedImage>> FieldMap = new HashMap<>();
+  private Map<String, BufferedImage> FieldImages = new HashMap<>();
+
   /**
    * loadFieldImages loads the image of backgrounds and foregrounds.
    * int value is stage number and String determines stage background or boss background and foreground.
    * background format (stage int, boss/stage String)
    */
-  private static void loadFieldImages() {
+  private void loadFieldImages() {
     // stage 1
     FieldImages.put("stage", Inf101Graphics.loadImageFromResources("/MoFStage4background.PNG"));
     // stage boss 1
@@ -268,7 +272,7 @@ public class DanmakuView extends JPanel{
   /**
    * getFieldImage gets image for backgrounds and foregrounds using stage (int) and type (stage or boss)
    */
-  private static BufferedImage getFieldImage(int stage, String stageType) {
+  private BufferedImage getFieldImage(int stage, String stageType) {
     return FieldMap.get(stage).get(stageType);
   }
   
@@ -339,7 +343,7 @@ public class DanmakuView extends JPanel{
     }
   }
   
-  private static void drawPlayer(Graphics2D Canvas, Player player, boolean iFramesActive, ColorTheme Color, boolean hasHitbox) {
+  private void drawPlayer(Graphics2D Canvas, Player player, boolean iFramesActive, ColorTheme Color, boolean hasHitbox) {
     double x;
     double imgWidth;
     double y;
@@ -410,7 +414,7 @@ public class DanmakuView extends JPanel{
     
   }
 
-  private static void drawEnemy(Graphics2D Canvas, Iterable<Enemies> enemies, ColorTheme Color, boolean hasHitbox) {
+  private void drawEnemy(Graphics2D Canvas, Iterable<Enemies> enemies, ColorTheme Color, boolean hasHitbox) {
     double x;
     double imgWidth;
     double y;
@@ -452,7 +456,7 @@ public class DanmakuView extends JPanel{
     }
   }
 
-  private static void drawBoss(Graphics2D Canvas, Enemies boss, boolean activateSuper, ColorTheme Color, boolean hasHitbox) {
+  private void drawBoss(Graphics2D Canvas, Enemies boss, boolean activateSuper, ColorTheme Color, boolean hasHitbox) {
     double x;
     double imgWidth;
     double y;
@@ -503,7 +507,7 @@ public class DanmakuView extends JPanel{
     
   }
 
-  private static void drawBossHealthbar(Graphics2D Canvas, Enemies boss, Rectangle2D fieldRect, ColorTheme color) {
+  private void drawBossHealthbar(Graphics2D Canvas, Enemies boss, Rectangle2D fieldRect, ColorTheme color) {
     double x;
     double width;
     double y;
@@ -543,7 +547,7 @@ public class DanmakuView extends JPanel{
 
   }
 
-  private static void drawBulletsOnField(Graphics2D Canvas, Iterable<Bullets> bulletList, ColorTheme Color, boolean hasHitbox) {
+  private void drawBulletsOnField(Graphics2D Canvas, Iterable<Bullets> bulletList, ColorTheme Color, boolean hasHitbox) {
     double x;
     double imgWidth;
     double y;
@@ -595,7 +599,7 @@ public class DanmakuView extends JPanel{
 
   }
 
-  private static void drawCollectiblesOnField(Graphics2D Canvas, Iterable<Consumables> itemList, ColorTheme color, boolean hasHitbox) {
+  private void drawCollectiblesOnField(Graphics2D Canvas, Iterable<Consumables> itemList, ColorTheme color, boolean hasHitbox) {
     double x;
     double imgWidth;
     double y;
@@ -642,7 +646,7 @@ public class DanmakuView extends JPanel{
 
   }
   
-  private static void drawField(Graphics2D Canvas, Rectangle2D fieldRect, Rectangle2D backgroundRect, double scrollY, ViewableDanmakuModel model, ColorTheme Color) {
+  private void drawField(Graphics2D Canvas, Rectangle2D fieldRect, Rectangle2D backgroundRect, double scrollY, ViewableDanmakuModel model, ColorTheme Color) {
     double x = (double) fieldRect.getX();
     double y = (double) fieldRect.getY();
     double centerX = (double) fieldRect.getCenterX();
@@ -709,13 +713,13 @@ public class DanmakuView extends JPanel{
   
   }
 
-  private static void drawBackground(Graphics2D Canvas, Rectangle2D backroundRect, ColorTheme color) {
+  private void drawBackground(Graphics2D Canvas, Rectangle2D backroundRect, ColorTheme color) {
 
     Canvas.setColor(color.getFrameColor());
     Canvas.fill(backroundRect);
   }
 
-  private static void drawFieldFrame(Graphics2D Canvas, Rectangle2D fieldRect, ColorTheme color) {
+  private void drawFieldFrame(Graphics2D Canvas, Rectangle2D fieldRect, ColorTheme color) {
     // left side
     double leftX = 0;
     double leftY = 0;
@@ -749,7 +753,7 @@ public class DanmakuView extends JPanel{
     
   }
 
-  private static void drawStatistics(Graphics2D Canvas, Rectangle2D statRect, ColorTheme color, ViewableDanmakuModel model) {
+  private void drawStatistics(Graphics2D Canvas, Rectangle2D statRect, ColorTheme color, ViewableDanmakuModel model) {
     // fps counter
     double x = statRect.getX();
     double y = statRect.getY();
@@ -798,13 +802,13 @@ public class DanmakuView extends JPanel{
 
   // source: thanks to user4910279 on stackoverflow.
   // link: https://stackoverflow.com/questions/68978147/java-how-to-increment-a-string-of-an-integer-with-leading-zeros.
-  private static String ScoreToLeadingZeroString(String input, int score) {
+  private String ScoreToLeadingZeroString(String input, int score) {
     return NUMBER.matcher(input).replaceFirst(
       s -> String.format("%0" + s.group().length() + "d", 
       Integer.parseInt(s.group()) + score));
   }
 
-  private static void drawMenuScreen(Graphics2D Canvas, Rectangle2D MenuBackground, ColorTheme color, GameState gameStatus) {
+  private void drawMenuScreen(Graphics2D Canvas, Rectangle2D MenuBackground, ColorTheme color, GameState gameStatus) {
     Rectangle2D title = new Rectangle2D.Double(0, 0.2*MenuBackground.getHeight(), MenuBackground.getWidth(), 100);
     Rectangle2D pressKey = new Rectangle2D.Double(0, 0.6*MenuBackground.getHeight(), MenuBackground.getWidth(), 60);
     if (gameStatus.equals(GameState.GAME_MENU)) {
@@ -821,7 +825,7 @@ public class DanmakuView extends JPanel{
     }
   }
 
-  private static void drawPauseScreen(Graphics2D Canvas, Rectangle2D MenuBackground, ColorTheme color, GameState gameStatus) {
+  private void drawPauseScreen(Graphics2D Canvas, Rectangle2D MenuBackground, ColorTheme color, GameState gameStatus) {
     Rectangle2D title = new Rectangle2D.Double(0, 0.2*MenuBackground.getHeight(), MenuBackground.getWidth(), 100);
     Rectangle2D pressContinue = new Rectangle2D.Double(0, 0.6*MenuBackground.getHeight(), MenuBackground.getWidth(), 60);
     Rectangle2D pressMenu = new Rectangle2D.Double(0, 0.7*MenuBackground.getHeight(), MenuBackground.getWidth(), 60);
@@ -840,7 +844,7 @@ public class DanmakuView extends JPanel{
     }
   }
 
-  private static void drawEndGameScreen(Graphics2D Canvas, Rectangle2D endGameBackground, ColorTheme color, GameState gameStatus) {
+  private void drawEndGameScreen(Graphics2D Canvas, Rectangle2D endGameBackground, ColorTheme color, GameState gameStatus) {
     Rectangle2D pressContinue = new Rectangle2D.Double(0, 0.6*endGameBackground.getHeight(), endGameBackground.getWidth(), 30);
     Rectangle2D pressMenu = new Rectangle2D.Double(0, 0.7*endGameBackground.getHeight(), endGameBackground.getWidth(), 30);
     if (gameStatus.equals(GameState.GAME_OVER)) {
@@ -859,7 +863,7 @@ public class DanmakuView extends JPanel{
     }
   } 
 
-  private static void drawPlayerSelectionScreen(Graphics2D Canvas, Rectangle2D MenuBackground, ColorTheme color, GameState gameStatus) {
+  private void drawPlayerSelectionScreen(Graphics2D Canvas, Rectangle2D MenuBackground, ColorTheme color, GameState gameStatus) {
     Rectangle2D player1 = new Rectangle2D.Double(0, 0.1*MenuBackground.getHeight(), 0.5*MenuBackground.getWidth(), 80);
     Rectangle2D pressKey1 = new Rectangle2D.Double(0, 0.9*MenuBackground.getHeight(), 0.5*MenuBackground.getWidth(), 60);
     Rectangle2D player2 = new Rectangle2D.Double(0.5*MenuBackground.getWidth(), 0.1*MenuBackground.getHeight(), 0.5*MenuBackground.getWidth(), 80);
@@ -900,7 +904,5 @@ public class DanmakuView extends JPanel{
       Inf101Graphics.drawCenteredString(Canvas, "Press 2 for Homing bullets", pressKey2);
     }
   }
-  
-  
   
 }

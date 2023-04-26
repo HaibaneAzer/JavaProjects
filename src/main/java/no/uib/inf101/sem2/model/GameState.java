@@ -1,5 +1,6 @@
 package no.uib.inf101.sem2.model;
 
+/** All game state used to determine game flow. */
 public enum GameState {
   
   ACTIVE_GAME,

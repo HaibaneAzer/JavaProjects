@@ -20,6 +20,7 @@ public interface DanmakuFactory {
   /**
    * getTotalEnemies returns a 2d list where every list inside represents each wave
    * and each list has N amount of enemies. change enemies list by inputing a different stage.
+   * @return a 2d list of pre-determined enemies to spawn.
    */
   List<List<Enemies>> getTotalEnemies(int StageNumber);
 

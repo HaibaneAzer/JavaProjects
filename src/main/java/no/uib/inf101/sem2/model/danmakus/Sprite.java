@@ -32,57 +32,43 @@ public abstract class Sprite<E, T> {
     this.Velocity = Velocity;
   }
 
-  /**
-   * getter for type
-   */
+  /** @return type of sprite. Valid types are Player, Enemy, Bullets and Consumables. */
   public E getType() {
     return this.type;
   }
 
-  /**
-   * getter for state
-   */
+  /** @return state which determines sprite behavoir. */
   public T getState() {
     return this.directionState;
   }
 
-  /**
-   * getter for variation
-   */
+  /** @return variation of the Sprite's type. Example: type Enemy has variations yokai1 or boss4. */
   public SpriteVariations getVariation() {
     return this.Variation;
   }
-  /**
-   * getter for Radius
-   */
+
+  /** @return radius of sprite's circular hitbox. */
   public int getRadius() {
     return this.Radius;
   }
 
-  /**
-   * getter for position vector
-   */
+  /** @return position vector coordinates of sprite. */
   public Vector getPosition() {
     return this.Position;
   }
 
-  /**
-   * getter for Direction vector in which the sprite is facing
-   */
+  /** @return Direction vector in which the sprite is facing. */
   public Vector getAimVector() {
     return this.Direction;
   }
 
-  /**
-   * getter for velocity vector
-   */
+  /** @return velocity vector of sprite. */
   public Vector getVelocity() {
     return this.Velocity;
   }
 
-  /**
-   * setter for velocity vector
-   */
+  /** change velocity vector of sprite.
+   * @param newVel is new velocity that the sprite moves with. */
   public void setVelocity(Vector newVel) {
     this.Velocity = newVel;
   }
@@ -97,15 +83,12 @@ public abstract class Sprite<E, T> {
   public abstract Sprite<E, T> rotateAxisBy(double theta);
 
   /**
-   * displaceBy moves the sprite position vector by velocity vector (or other Vector), where
-   * the scalar either represents distance. 
-   * or speed. 
+   * displaceBy moves the sprite position vector by velocity vector.
+   * @return new Spirte-object displaced by {@link #getVelocity}
    */
   public abstract Sprite<E, T> displaceBy(Vector Velocity);
 
-  /**
-   * sets sprite spawn on field
-   */
+  /** @return new sprite displaced to a fixed spawnpoint on the field. */
   public abstract Sprite<E, T> shiftedToStartPoint(FieldDimension dimension);
 
   /**

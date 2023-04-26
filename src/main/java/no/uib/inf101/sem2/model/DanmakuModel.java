@@ -209,15 +209,16 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     this.currentPlayer = getSprite.getNewPlayer(variations).shiftedToStartPoint(Field);
   }
 
-  private static Map<Integer, Map<EnemySpawnPos, Map<Integer, Vector>>> SpawnStage = new HashMap<>();
-  private static Map<EnemySpawnPos, Map<Integer, Vector>> SpawnSet = new HashMap<>();
-  private static Map<Integer, Vector> enemiesPerWave = new HashMap<>();
+  private Map<Integer, Map<EnemySpawnPos, Map<Integer, Vector>>> SpawnStage = new HashMap<>();
+  private Map<EnemySpawnPos, Map<Integer, Vector>> SpawnSet = new HashMap<>();
+  private Map<Integer, Vector> enemiesPerWave = new HashMap<>();
+  
   /**
    * loadEnemySpawnpoints loads all possible spawn positions given by a Vector,
    * depending on wave number and stage.
    * spawnpoint format (integer stage, integer set, Integer enemies per wave).
    */
-  private static void loadEnemySpawnpoints(FieldDimension field, List<List<Enemies>> waveEnemies) {
+  private void loadEnemySpawnpoints(FieldDimension field, List<List<Enemies>> waveEnemies) {
     int fieldX = field.getFieldX();
     int fieldWidth = field.width();
     
@@ -291,20 +292,21 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
    * getBulletImage gets image for bullet using variation and ownership to determine 
    * the image.
    */
-  private static Vector getEnemySpawn(Integer Stage, EnemySpawnPos pos, Integer num) {
+  private Vector getEnemySpawn(Integer Stage, EnemySpawnPos pos, Integer num) {
     return SpawnStage.get(Stage).get(pos).get(num);
   }
 
-  private static Map<Integer, SpriteVariations> bossList = new HashMap<>();
+  private Map<Integer, SpriteVariations> bossList = new HashMap<>();
+
   /**
    * loadBossList is a list of bosses given their corrosponding stage.
    */
-  private static void loadBossList() {
+  private void loadBossList() {
     bossList.put(1, SpriteVariations.boss4);
     bossList.put(2, SpriteVariations.boss5);
   }
 
-  private static SpriteVariations getBossList(Integer stage) {
+  private SpriteVariations getBossList(Integer stage) {
     return bossList.get(stage);
   }
 

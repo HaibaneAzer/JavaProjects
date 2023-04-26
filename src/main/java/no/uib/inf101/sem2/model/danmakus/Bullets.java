@@ -46,7 +46,6 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
   /**
   * newBullet is a method that contains a list of valid bullet variations.
   * playable: enemy bullets: "circleSmall" and "ellipseLarge", player bullets: "arrow".
-  * 
   */
   static Bullets newBullet(SpriteVariations newBulletVar) {
     // hitbox variables. Using circular hitboxes for all to make collision calculation easier.
@@ -72,42 +71,35 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
     
   }
 
-  /**
-   * getter for damage
-   * 
-   */
+  /** @return damage of bullet (int) */
   public int getDamage() {
     return this.damage;
   }
 
-  /**
-   * getter for bullet life time
-   * 
-   */
+  /** @retrun bullet life time in game ticks (int) */
   public int getBulletLifeTime() {
     return this.bulletLifeTime;
   }
 
-  /**
-   * getter for bullet owner (sprite variation that shoots the bullet).
-   */
+  /** @return the sprite Variation that shot this bullet */
   public SpriteVariations getBulletOwner() {
     return this.bulletOwner;
   }
 
   /**
-   * setBulletOwner changes spriteType to either PlayerBullet or EnemyBullet.
+   * setBulletType changes spriteType to either PlayerBullet or EnemyBullet.
    * Used to determine collision action.
-   * 
+   * @param newType to change bullet to.
    */
   public void setBulletType(SpriteType newType) {
     this.type = newType;
   }
 
   /**
-   * setBulletOwner changes spriteType to either PlayerBullet or EnemyBullet.
+   * setBulletOwner changes spriteVariation of bullet owner to any of the 
+   * sprite variations under types Enemy, player or bullet.
    * Used to determine collision action.
-   * 
+   * @param newOwner to give this bullet.
    */
   public void setBulletOwner(SpriteVariations newOwner) {
     this.bulletOwner = newOwner;
@@ -116,6 +108,7 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
   /**
    * setBulletState changes spriteState to either aim, relative, absolute or sequence.
    * Used to determine movement after spawn.
+   * @param newState to change bullet behavior.
    */
   public void setBulletState(SpriteState newState) {
     this.directionState = newState;
@@ -124,7 +117,7 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
   /**
    * updateBulletVelocity sets a new velocity vector of the bullet-object.
    * How the bullet gets updated should depend on it's bullet state.
-   * 
+   * @param newVel is the new velocity the bullet moves with.
    */
   public void updateBulletVelocity(Vector newVel) {
     this.Velocity = newVel;
@@ -132,8 +125,8 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
 
   /**
    * updateBulletDirection sets a new aim vector of the bullet-object.
-   * How the bullet gets updated should depend on it's bullet state
-   * 
+   * How the bullet gets updated should depend on it's bullet state.
+   * @param newAim is the new pointing direction the bullet should face.
    */
   public void updateBulletDirection(Vector newAim) {
     this.Direction = newAim;
@@ -176,13 +169,13 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
   }
 
   @Override
-  public Sprite<SpriteType, SpriteState> shiftedToStartPoint(FieldDimension dimension) {
+  public Bullets shiftedToStartPoint(FieldDimension dimension) {
     /* Unused */
     return null;
   }
 
   @Override
-  public Sprite<SpriteType, SpriteState> setNewPosition(Vector displacedPosition) {
+  public Bullets setNewPosition(Vector displacedPosition) {
     /* Unused */
     return null;
   }
