@@ -94,11 +94,11 @@ public class DanmakuView extends JPanel{
   private void loadBulletImages() {
     // arrow
     bulletImages.put(SpriteVariations.player1, 
-    Inf101Graphics.loadImageFromResources("/arrowMagenta.png"));
+    Inf101Graphics.loadImageFromResources("/arrowMagenta.PNG"));
     bulletMap.put(SpriteVariations.arrow, bulletImages);
     // ofuda
     bulletImages.put(SpriteVariations.player2, 
-    Inf101Graphics.loadImageFromResources("/ofudaP2.PNG"));
+    Inf101Graphics.loadImageFromResources("/ofudaP2.png"));
     bulletMap.put(SpriteVariations.ofuda, bulletImages);
     // circleSmall
     bulletImages = new HashMap<>();
@@ -207,7 +207,7 @@ public class DanmakuView extends JPanel{
     CharacterMap.put(SpriteVariations.player1, CharacterImages);
     // player2
     CharacterImages = new HashMap<>();
-    CharacterImages.put("still", Inf101Graphics.loadImageFromResources("/player2.png"));
+    CharacterImages.put("still", Inf101Graphics.loadImageFromResources("/player2.PNG"));
     CharacterImages.put("left", Inf101Graphics.loadImageFromResources("/player2Left.png"));
     CharacterImages.put("right", Inf101Graphics.loadImageFromResources("/player2Right.png"));
       // select screen image
@@ -216,24 +216,24 @@ public class DanmakuView extends JPanel{
     // boss4
     CharacterImages = new HashMap<>();
     CharacterImages.put("still", Inf101Graphics.loadImageFromResources("/MoFBoss4.png"));
-    CharacterImages.put("left", Inf101Graphics.loadImageFromResources("/MoFBoss4left.png"));
+    CharacterImages.put("left", Inf101Graphics.loadImageFromResources("/MoFBoss4Left.png"));
     CharacterImages.put("right", flipImages.get(0));
-    CharacterImages.put("super", Inf101Graphics.loadImageFromResources("/MoFBoss4super.png"));
+    CharacterImages.put("super", Inf101Graphics.loadImageFromResources("/MoFBoss4Super.png"));
     CharacterMap.put(SpriteVariations.boss4, CharacterImages);
     // boss5
     CharacterImages = new HashMap<>();
     CharacterImages.put("still", Inf101Graphics.loadImageFromResources("/MoFBoss5.png"));
     CharacterImages.put("left", flipImages.get(1));
     CharacterImages.put("right", Inf101Graphics.loadImageFromResources("/MoFBoss5Right.png"));
-    CharacterImages.put("super", Inf101Graphics.loadImageFromResources("/MoFBoss5super.png"));
+    CharacterImages.put("super", Inf101Graphics.loadImageFromResources("/MoFBoss5Super.png"));
     CharacterMap.put(SpriteVariations.boss5, CharacterImages);
     // yokai1
     CharacterImages = new HashMap<>();
-    CharacterImages.put("still", Inf101Graphics.loadImageFromResources("/Yokai1.png"));
+    CharacterImages.put("still", Inf101Graphics.loadImageFromResources("/yokai1.PNG"));
     CharacterMap.put(SpriteVariations.yokai1, CharacterImages);
     // yokai2
     CharacterImages = new HashMap<>();
-    CharacterImages.put("still", Inf101Graphics.loadImageFromResources("/Yokai2.png"));
+    CharacterImages.put("still", Inf101Graphics.loadImageFromResources("/yokai2.PNG"));
     CharacterMap.put(SpriteVariations.yokai2, CharacterImages);
   }
  

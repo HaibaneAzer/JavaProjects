@@ -8,7 +8,7 @@
     <groupId>no.uib.inf101.sem2</groupId> <!-- must match package of Main class -->
     <artifactId>INF101Sem2</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>INF101 Sem 2</name>
+    <name>INF101 Danmaku</name>
     <packaging>jar</packaging>
 
     <properties>
@@ -18,7 +18,7 @@
 
         <!-- Properties required for packaging application as JAR and installer -->
         <app.main.class>${project.groupId}.Main</app.main.class> <!-- name of main class -->
-        <app.vendor>Torstein Strømme</app.vendor> <!-- replace with your name -->
+        <app.vendor>Marcus mardal</app.vendor> <!-- replace with your name -->
         <app.version>1.0.0</app.version> <!-- version displayed in "about" -->
         <app.installer.macosx.type>dmg</app.installer.macosx.type> <!-- dmg, pkg -->
         <app.installer.windows.type>msi</app.installer.windows.type> <!-- msi, exe -->
