@@ -2,6 +2,7 @@ package no.uib.inf101.sem2.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -209,93 +210,93 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     this.currentPlayer = getSprite.getNewPlayer(variations).shiftedToStartPoint(Field);
   }
 
-  private Map<Integer, Map<EnemySpawnPos, Map<Integer, Vector>>> SpawnStage = new HashMap<>();
-  private Map<EnemySpawnPos, Map<Integer, Vector>> SpawnSet = new HashMap<>();
-  private Map<Integer, Vector> enemiesPerWave = new HashMap<>();
+  // linked hashmap to preserve order (important when calculating posistions per stage)
+  private Map<Integer, Map<EnemySpawnPos, Map<Integer, Vector>>> SpawnStage = new LinkedHashMap<>();
   
   /**
    * loadEnemySpawnpoints loads all possible spawn positions given by a Vector,
    * depending on wave number and stage.
    * spawnpoint format (integer stage, integer set, Integer enemies per wave).
+   * NB!!! Using same key EnemySpawnPos enum value will not create a new key meaning 
+   * SpawnStage will not have same size as totalEnemies. 
+   * idea: maybe use waves as variable in hashmap too??
    */
   private void loadEnemySpawnpoints(FieldDimension field) {
     int fieldX = field.getFieldX();
     int fieldWidth = field.width();
-    List<List<Enemies>> waveEnemies = new ArrayList<>();
-    /* System.out.println("num enemies per wave");
-    for (int numEnemy = 0; numEnemy < waveEnemies.size(); numEnemy++) {
-      System.out.println("size of idx " + numEnemy + ": " + waveEnemies.get(numEnemy).size());
-    } */
+    
     for (int stage = 1; stage <= 6; stage++) {
-      waveEnemies = getSprite.getTotalEnemies(stage);
-    
+      List<List<Enemies>> waveEnemies = this.getSprite.getTotalEnemies(stage);
       // refresh hashmaps
-      SpawnSet = new HashMap<>();
-      enemiesPerWave = new HashMap<>();
+      Map<EnemySpawnPos, Map<Integer, Vector>> SpawnSet = new LinkedHashMap<>();
 
-      double x = fieldX + fieldWidth*(0.1);
-      // spawn enemies in horisontal line
-      for (int i = 0; i < waveEnemies.get(0).size(); i++) {
-        enemiesPerWave.put(i, new Vector(x, 0, 1));
-        if (x < fieldX + fieldWidth*(0.8)) {
-          x += fieldWidth*(0.1);
+      List<EnemySpawnPos> spawnOrder = this.getSprite.getSpawnOrder(stage);
+      int idx = 0;
+      for (EnemySpawnPos pos : spawnOrder) {
+        // decide spawn formation + start
+        double x;
+        if (pos.equals(EnemySpawnPos.horisontal)) {
+          x = fieldX + fieldWidth*(0.1);
         }
-      }
-      SpawnSet.put(EnemySpawnPos.horisontal, enemiesPerWave);
-
-      // spawn enemies in vertical line
-      // far right
-      enemiesPerWave = new HashMap<>();
-      x = fieldX + fieldWidth*(0.2);
-      for (int i = 0; i < waveEnemies.get(1).size(); i++) {
-        enemiesPerWave.put(i, new Vector(x, 0, 1));
-      }
-      SpawnSet.put(EnemySpawnPos.verticalRight, enemiesPerWave);
-
-      // far left
-      enemiesPerWave = new HashMap<>();
-      x = fieldX + fieldWidth*(0.8);
-      for (int i = 0; i < waveEnemies.get(2).size(); i++) {
-        enemiesPerWave.put(i, new Vector(x, 0, 1));
-      }
-      SpawnSet.put(EnemySpawnPos.verticalLeft, enemiesPerWave);
-      
-      // middle right
-      enemiesPerWave = new HashMap<>();
-      x = fieldX + fieldWidth*(0.4);
-      for (int i = 0; i < waveEnemies.get(3).size(); i++) {
-        enemiesPerWave.put(i, new Vector(x, 0, 1));
-      } 
-      SpawnSet.put(EnemySpawnPos.verticalMiddleR, enemiesPerWave);
-    
-      // middle left
-      enemiesPerWave = new HashMap<>();
-      x = fieldX + fieldWidth*(0.6);
-      for (int i = 0; i < waveEnemies.get(4).size(); i++) {
-        enemiesPerWave.put(i, new Vector(x, 0, 1));
-      }
-      SpawnSet.put(EnemySpawnPos.verticalMiddelL, enemiesPerWave);
-
-      // spawn enemies from both sides simultaniously
-      enemiesPerWave = new HashMap<>();
-      x = fieldX + fieldWidth*(0.1);
-      boolean switcher = true;
-      for (int i = 0; i < waveEnemies.get(5).size(); i++) {
-        enemiesPerWave.put(i, new Vector(x, 0, 1));
-        if (switcher) {
-          switcher = false;
-          x = fieldX + fieldWidth*(0.9) - (0.05)*fieldWidth*i;
+        else if (pos.equals(EnemySpawnPos.verticalRight)) {
+          x = fieldX + fieldWidth*(0.2);
+        }
+        else if (pos.equals(EnemySpawnPos.verticalLeft)) {
+          x = fieldX + fieldWidth*(0.8);
+        }
+        else if (pos.equals(EnemySpawnPos.verticalMiddleR)) {
+          x = fieldX + fieldWidth*(0.4);
+        }
+        else if (pos.equals(EnemySpawnPos.verticalMiddelL)) {
+          x = fieldX + fieldWidth*(0.6);
+        }
+        else if (pos.equals(EnemySpawnPos.zigzag)) {
+          x = fieldX + fieldWidth*(0.1);
         }
         else {
-          switcher = true;
-          x = fieldX + fieldWidth*(0.1) + (0.05)*fieldWidth*i;
+          throw new IllegalArgumentException("Invalid spawn position" + pos);
         }
+        // spawn enemies in given formation
+        boolean switcher = true;
+        Map<Integer, Vector> enemiesPerWave = new LinkedHashMap<>();
+        for (int i = 0; i < waveEnemies.get(idx).size(); i++) {
+          enemiesPerWave.put(i, new Vector(x, 0, 1));
+          // update position given formation
+          if (pos.equals(EnemySpawnPos.horisontal) && (x < fieldX + fieldWidth*(0.8))) {
+            x += fieldWidth*(0.1);
+          }
+          else if (pos.equals(EnemySpawnPos.zigzag)) {
+            if (switcher) {
+              switcher = false;
+              x = fieldX + fieldWidth*(0.9) - (0.05)*fieldWidth*i;
+            }
+            else {
+              switcher = true;
+              x = fieldX + fieldWidth*(0.1) + (0.05)*fieldWidth*i;
+            }
+          }
+        }
+        // add spawn formation to wave idx
+        SpawnSet.put(pos, enemiesPerWave);
+        // move to next wave
+        idx++;
       }
-      SpawnSet.put(EnemySpawnPos.zigzag, enemiesPerWave);
       SpawnStage.put(stage, SpawnSet);
       
     }
-    
+    /* for (int i = 1; i <= 6; i++) {
+      System.out.println("stage: " + i + "\n");
+      int idx = 0;
+      for (Map.Entry<EnemySpawnPos, Map<Integer, Vector>> set : SpawnStage.get(i).entrySet()) {
+        System.out.println("  key: " + set.getKey());
+        System.out.println("  values: " + set.getValue().size());
+        System.out.println(" size match?: " + getSprite.getTotalEnemies(i).get(idx).size());
+        System.out.println("  total keys" + SpawnStage.get(i).entrySet().size() + "\n");
+        idx++;
+      }
+    } */
+
+   
   }
 
   /**
@@ -303,24 +304,11 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
    * the image.
    */
   private Vector getEnemySpawn(Integer Stage, EnemySpawnPos pos, Integer num) {
-    /* System.out.println("inputs: " + Stage +  ", " + pos + " & " + num + "gives: \n" + SpawnStage.get(Stage).get(pos).get(num)); */
-    outerloop:
     for (int S = 1; S <= 6; S++) {
-      for (EnemySpawnPos posi : SpawnStage.get(S).keySet()) {
-        for (int N : SpawnStage.get(S).get(posi).keySet()) {
-          if ((S == Stage) && (posi == pos) && (N == num)) {
-            System.out.println("Stage: " + S + ", posType: " + pos + " & idx: " + N);
-            System.out.println("position: " + SpawnStage.get(Stage).get(pos).get(num) + "\n");
-          }
-          else if (SpawnStage.get(Stage).get(pos).get(num) == null) {
-            System.out.println("position is null, given: \n");
-            System.out.println("Stage: " + S + " & " + Stage);
-            System.out.println("posType: " + posi + " & " + pos);
-            System.out.println("idx: " + N + " & " + num);
-            System.out.println("does not match \n");
-            break outerloop;
-          }
-        }
+      System.out.println("Sizes: " + SpawnStage.get(S).size() + " & " + getSprite.getSpawnOrder(S).size());
+      for (int iPos = 0;iPos < SpawnStage.get(S).size(); iPos++) {
+        System.out.println("  loader: " + SpawnStage.get(S).entrySet().iterator().next().getKey());
+        System.out.println("  DanmakuSpawner: " + getSprite.getSpawnOrder(S).get(iPos));
       }
     }
     return SpawnStage.get(Stage).get(pos).get(num);
@@ -667,30 +655,16 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     // note: make spawnpoint dependent on enemy variation?
     int nextSpawnIndex = this.currentEnemies.size() - 1;
     // set spawns: 
-    EnemySpawnPos setPos = EnemySpawnPos.horisontal;
-    // must corrospond with loadEnemySpawnpoints order?
-    if (wave == 1) {
-      setPos = EnemySpawnPos.verticalRight;
-    }
-    else if (wave == 2) {
-      setPos = EnemySpawnPos.verticalLeft;
-    }
-    else if (wave == 3) {
-      setPos = EnemySpawnPos.verticalMiddleR;
-    }
-    else if (wave == 4) {
-      setPos = EnemySpawnPos.verticalMiddelL;
-    }
-    else if (wave == 5) {
-      setPos = EnemySpawnPos.zigzag;
-    }
+    EnemySpawnPos setPos = getSprite.getSpawnOrder(this.currentStage).get(wave);
     Enemies enemy = this.currentEnemies.get(nextSpawnIndex);
     Vector pos = getEnemySpawn(this.currentStage, setPos, this.nextEnemyIndex);
     if (pos == null) {
-      System.out.println("null pos at enemy: " + this.nextEnemyIndex);
-      System.out.println("stage num: " + this.currentStage);
-      System.out.println("wave num: " + this.currentWaveIndex);
+      System.out.println("Stage: " + this.currentStage);
+      System.out.println("EnemySpawnPos: " + setPos);
+      System.out.println("enemy index: " + this.nextEnemyIndex);
+      
     }
+    
     this.currentEnemies.set(nextSpawnIndex, enemy.setNewPosition(pos));
 
   }
@@ -714,17 +688,9 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
         displacedEnemy = enemy.displaceBy(enemy.getVelocity());
       }
       else {
-        //NB! nullPointerException happening at stage 2
-        System.out.println(enemy.getVariation());
-        System.out.println(enemy.getHealthBars());
-        System.out.println(enemy.getHealthPoints());
-        System.out.println(enemy.getType());
-        System.out.println(enemy.getVelocity());
-        System.out.println(enemy.getPosition());
-        // unmoved
+        // default no movement
         displacedEnemy = enemy;
         
-
       }
       // eliminate enemy when they're outside screen.
       if (!enemyInsideScreen(enemy)) {

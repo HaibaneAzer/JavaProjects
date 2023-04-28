@@ -2,6 +2,8 @@ package no.uib.inf101.sem2.model.danmakus;
 
 import java.util.List;
 
+import no.uib.inf101.sem2.model.EnemySpawnPos;
+
 public interface DanmakuFactory {
   
   
@@ -35,5 +37,10 @@ public interface DanmakuFactory {
    * @return a new Consumable-object.
    */
   Consumables getNewCollectible(SpriteVariations C);
+
+  /**
+   * getSpawnOrder gets the order of spawnpositions per wave
+   */
+  List<EnemySpawnPos> getSpawnOrder(int stage);
   
 }

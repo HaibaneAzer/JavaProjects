@@ -1,7 +1,10 @@
 package no.uib.inf101.sem2.model.danmakus;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import no.uib.inf101.sem2.model.EnemySpawnPos;
 
 public class DanmakuSpawner implements DanmakuFactory{
 
@@ -17,7 +20,7 @@ public class DanmakuSpawner implements DanmakuFactory{
     },
     // stage 2
     {
-    {SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.fairy},
+    {SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.yokai, SpriteVariations.fairy},
     {SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai},
     {SpriteVariations.yokai, SpriteVariations.fairy, SpriteVariations.yokai},
     {SpriteVariations.fairy, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai},
@@ -101,6 +104,38 @@ public class DanmakuSpawner implements DanmakuFactory{
       waveNumber++;
     }
     return newStageEnemies;
+  }
+
+  @Override
+  public List<EnemySpawnPos> getSpawnOrder(int stage) {
+    switch (stage) {
+      case 1: 
+        return Arrays.asList(
+          EnemySpawnPos.horisontal, EnemySpawnPos.verticalRight, EnemySpawnPos.verticalLeft, 
+          EnemySpawnPos.verticalMiddleR, EnemySpawnPos.verticalMiddelL, EnemySpawnPos.zigzag);
+      case 2: 
+        return Arrays.asList(
+          EnemySpawnPos.zigzag, EnemySpawnPos.verticalLeft, EnemySpawnPos.verticalRight, 
+          EnemySpawnPos.verticalMiddleR, EnemySpawnPos.verticalMiddelL, EnemySpawnPos.horisontal);
+      case 3: 
+        return Arrays.asList(
+          EnemySpawnPos.horisontal, EnemySpawnPos.verticalRight, EnemySpawnPos.verticalMiddleR, 
+          EnemySpawnPos.verticalMiddelL, EnemySpawnPos.verticalLeft, EnemySpawnPos.zigzag);
+      case 4: 
+        return Arrays.asList(
+          EnemySpawnPos.zigzag, EnemySpawnPos.horisontal, EnemySpawnPos.verticalLeft, 
+          EnemySpawnPos.verticalRight, EnemySpawnPos.verticalMiddelL, EnemySpawnPos.verticalMiddleR);
+      case 5: 
+        return Arrays.asList(
+          EnemySpawnPos.horisontal, EnemySpawnPos.zigzag, EnemySpawnPos.verticalMiddelL, 
+          EnemySpawnPos.verticalMiddleR, EnemySpawnPos.verticalRight, EnemySpawnPos.verticalLeft);
+      case 6: 
+        return Arrays.asList(
+          EnemySpawnPos.verticalLeft, EnemySpawnPos.verticalRight, EnemySpawnPos.horisontal, 
+          EnemySpawnPos.verticalMiddleR, EnemySpawnPos.verticalMiddelL, EnemySpawnPos.zigzag);
+      default:
+        throw new IllegalArgumentException("Invalid token " + stage + ".\n Please use integers between 1 and 6");
+    }
   }
   
   
