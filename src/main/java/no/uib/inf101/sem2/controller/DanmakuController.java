@@ -212,7 +212,7 @@ public class DanmakuController implements ActionListener{
         this.controllModel.movePlayer(PlayerMove[3].multiplyScalar(this.playerSpeed));
       }
       if (this.keyBoard.keyDown(KeyEvent.VK_SHIFT)) {
-        this.playerSpeed = 3;
+        this.playerSpeed = 2;
       }
       else {
         this.playerSpeed = 5;

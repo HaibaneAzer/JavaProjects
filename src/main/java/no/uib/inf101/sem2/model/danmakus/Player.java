@@ -51,8 +51,8 @@ public final class Player extends Sprite<SpriteType, SpriteState>{
   static Player newPlayer(SpriteVariations newPlayerType) {
 
     Player playableC = switch(newPlayerType) {
-      case player1 -> new Player(newPlayerType, 8, new Vector(-8, -8, 1)); // want center at (0, 0)
-      case player2 -> new Player(newPlayerType, 10, new Vector(-10, -10, 1));
+      case player1 -> new Player(newPlayerType, 9, new Vector(-9, -9, 1)); // want center at (0, 0)
+      case player2 -> new Player(newPlayerType, 9, new Vector(-9, -9, 1));
       default -> throw new IllegalArgumentException("Type '" + newPlayerType + "' does not match one of two playable characters");
     };
     return playableC;

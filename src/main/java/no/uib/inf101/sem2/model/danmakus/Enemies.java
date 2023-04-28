@@ -48,7 +48,7 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
     Enemies enemy = switch(newEnemyVar) {
       case fairy -> new Enemies(newEnemyVar, 90, 1, 8, 
       new Vector(-8, -8, 1), 90); // want center at (0, 0)
-      case highFairy -> new Enemies(newEnemyVar, 1400, 1, 12, 
+      case highFairy -> new Enemies(newEnemyVar, 1100, 1, 12, 
       new Vector(-12, -12, 1), 70);
       case guardianFairy -> new Enemies(newEnemyVar, 400, 1, 9, 
       new Vector(-9, -9, 1), 100);

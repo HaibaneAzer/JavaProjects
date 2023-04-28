@@ -58,7 +58,12 @@ public class BulletPattern implements IBulletPattern {
     }
     // default for other bosses
     else {
-      return shootSpreadPattern(boss, 11, -(0.35)*Math.PI);
+      if (unleashSuper) {
+        return shootRotatingFullSpreadPattern(boss);
+      }
+      else {
+        return shootSpreadPattern(boss, 12, -(0.40)*Math.PI);
+      }
     }
   }
 

@@ -74,7 +74,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     this.gameState = GameState.GAME_MENU;
     this.FPSCounter = 0.0;
     // handle waves and stages
-    this.currentStage = 2;
+    this.currentStage = 4;
     this.currentWaveIndex = 0;
     this.waveDelay = 0;
     this.stageDelay = 0;
@@ -607,6 +607,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
               this.currentWaveIndex = 0; 
               this.stageDelay = 0;
               this.bossBattle = true;
+              this.currentEnemies = new ArrayList<>();
             }
           }
         }
@@ -671,16 +672,23 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
         displacedEnemy = enemy.displaceBy(enemy.getVelocity());
       }
       // move downwards
-      else {
+      else if (enemy.getPosition() != null) {
         enemy.setVelocity(new Vector(0, 0.5, 1));
         displacedEnemy = enemy.displaceBy(enemy.getVelocity());
+      }
+      else {
+        //NB! nullPointerException happening at stage 3
+        System.out.println(enemy);
+        displacedEnemy = null;
       }
       // eliminate enemy when they're outside screen.
       if (!enemyInsideScreen(enemy)) {
         this.currentEnemies.remove(i);
       }
       else {
-        this.currentEnemies.set(i, displacedEnemy);  
+        if (displacedEnemy != null) {
+          this.currentEnemies.set(i, displacedEnemy);  
+        }
       }
     } 
   }

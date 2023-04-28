@@ -12,9 +12,7 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -511,6 +509,7 @@ public class DanmakuView extends JPanel{
     double scaleFactor;
     BufferedImage playerImg;
     BufferedImage playerBox;
+    Ellipse2D playerBall;
     Ellipse2D outer;
     Ellipse2D inner;
     Area hCircle;
@@ -533,9 +532,9 @@ public class DanmakuView extends JPanel{
     diameter = 2*player.getRadius();
 
     // scale by smallest image length.
-    scaleFactor = 2*(diameter/imgHeight);
+    scaleFactor = 2.5*(diameter/imgHeight);
     if (imgWidth < imgHeight) {
-      scaleFactor = 2*(diameter/imgWidth);
+      scaleFactor = 2.5*(diameter/imgWidth);
     }
 
     // draw immunity ring
@@ -562,7 +561,12 @@ public class DanmakuView extends JPanel{
     // draw hitbox
     if (hasHitbox) {
       playerBox = getCharacterImage(player.getVariation(), "shift");
-      Inf101Graphics.drawCenteredImage(Canvas, playerBox, x, y, 1);
+      Inf101Graphics.drawCenteredImage(Canvas, playerBox, x - 2, y, 1.5*scaleFactor);
+      /* x -= player.getRadius();
+      y -= player.getRadius();
+      playerBall = new Ellipse2D.Double(x, y, diameter, diameter);
+      Canvas.setColor(Color.getSpriteColor('b'));
+      Canvas.fill(playerBall); */
     }
     
   }
@@ -807,7 +811,7 @@ public class DanmakuView extends JPanel{
     double foreImgX = 0;
     double bgHeight = backgroundRect.getHeight();
     double bgWidth = backgroundRect.getWidth();
-    double imgBackWidth;
+    double imgBackHeight;
     double imgForeWidth = 1;
     double width = fieldRect.getWidth();
     double height = fieldRect.getHeight();
@@ -828,12 +832,12 @@ public class DanmakuView extends JPanel{
 
         imgForeWidth = fieldForeImg.getWidth();
       }
-      imgBackWidth = fieldBackImg.getWidth();
+      imgBackHeight = fieldBackImg.getHeight();
 
       // scale background to screen size
-      scaleFactor = (bgHeight / imgBackWidth);
-      if (bgWidth < imgBackWidth) {
-        scaleFactor = (imgBackWidth / bgHeight);
+      scaleFactor = (bgHeight / imgBackHeight);
+      if (bgHeight < imgBackHeight) {
+        scaleFactor = (imgBackHeight / bgHeight);
       }
       // scale foreground to screen
       foreScaleFactor = (bgWidth / imgForeWidth);
