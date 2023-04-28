@@ -8,22 +8,58 @@ public class DanmakuSpawner implements DanmakuFactory{
   private final SpriteVariations[][][] enemySpawnList = {
     // stage 1
     {
-    {SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1},
-    {SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1},
-    {SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1},
-    {SpriteVariations.yokai2},
-    {SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1},
-    {SpriteVariations.yokai2, SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai2}
+    {SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai},
+    {SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai},
+    {SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai},
+    {SpriteVariations.fairy},
+    {SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai},
+    {SpriteVariations.fairy, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.fairy}
     },
     // stage 2
     {
-    {SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai2},
-    {SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1},
-    {SpriteVariations.yokai1, SpriteVariations.yokai2, SpriteVariations.yokai1},
-    {SpriteVariations.yokai2, SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1, SpriteVariations.yokai1},
-    {SpriteVariations.yokai2, SpriteVariations.yokai2, SpriteVariations.yokai2},
-    {SpriteVariations.yokai2, SpriteVariations.yokai2, SpriteVariations.yokai2}
-    }
+    {SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.fairy},
+    {SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai},
+    {SpriteVariations.yokai, SpriteVariations.fairy, SpriteVariations.yokai},
+    {SpriteVariations.fairy, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai},
+    {SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy},
+    {SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy}
+    },
+    // stage 3
+    {
+    {SpriteVariations.highFairy, SpriteVariations.highFairy, SpriteVariations.fairy, SpriteVariations.fairy},
+    {SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.yokai, SpriteVariations.fairy, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai},
+    {SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.yokai, SpriteVariations.fairy, SpriteVariations.fairy},
+    {SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy},
+    {SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy},
+    {SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy}
+    },
+    // stage 4
+    {
+    {SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.yokai, SpriteVariations.fairy, SpriteVariations.fairy},
+    {SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy},
+    {SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy},
+    {SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy},
+    {SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy},
+    {SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy}
+    },
+    // stage 5
+    {
+    {SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy},
+    {SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy},
+    {SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy},
+    {SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy},
+    {SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy},
+    {SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy}
+    },
+    // stage 6
+    {
+    {SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy},
+    {SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy},
+    {SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy},
+    {SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy},
+    {SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy},
+    {SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy, SpriteVariations.fairy}
+    },
     
   };
   

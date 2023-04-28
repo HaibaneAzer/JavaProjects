@@ -36,6 +36,7 @@ public class DanmakuController implements ActionListener{
   private int currentStage;
   private SpriteVariations currentBoss;
   private boolean gameOverExecuted;
+  private boolean gameWonExecuted;
   // player movement direction
   private static final Vector PlayerMove[] = {
     new Vector(0, -1, 1),
@@ -71,11 +72,12 @@ public class DanmakuController implements ActionListener{
     this.danView.setFocusable(true);
     this.danView.addKeyListener(this.keyBoard);
     // music
-    this.music = new DanmakuSong("01_a_shadow_in_the_blue_sky.mid");
+    this.music = new DanmakuSong("a_shadow_in_the_blue_sky.mid");
     this.music.run();
     this.currentStage = 0;
     this.currentBoss = null;
     this.gameOverExecuted = true;
+    this.gameWonExecuted = true;
 
   }
   
@@ -110,7 +112,19 @@ public class DanmakuController implements ActionListener{
           this.music = new DanmakuSong("youkai_mountain_mysterious_mountain.mid");
         }
         else if (stage == 2) {
-          this.music = new DanmakuSong("the_primal_scene_of_japan_the_girl_.mid");
+          this.music = new DanmakuSong("the_primal_scene_of_japan_the_girl.mid");
+        }
+        else if (stage == 3) {
+          this.music = new DanmakuSong("corpse_voyage_be_of_good_cheer.mid");
+        }
+        else if (stage == 4) {
+          this.music = new DanmakuSong("solar_sect_of_mystic_wisdom_nuclear.mid");
+        }
+        else if (stage == 5) {
+          this.music = new DanmakuSong("hartmanns_youkai_girl.mid");
+        }
+        else if (stage == 6) {
+          this.music = new DanmakuSong("the_venerable_ancient_battlefield.mid");
         }
         this.music.run();
       }
@@ -120,13 +134,22 @@ public class DanmakuController implements ActionListener{
 
       this.music.doStopMidiSounds();
       if (stage == 1) {
-        this.music = new DanmakuSong("fall_of_fall_autumnal_waterfall_has.mid");
+        this.music = new DanmakuSong("fall_of_fall_autumnal_waterfall.mid");
       }
       else if (stage == 2) {
-        this.music = new DanmakuSong("faith_is_for_the_transient_people_s_af6ee.mid");
+        this.music = new DanmakuSong("faith_is_for_the_transient_people.mid");
       }
       else if (stage == 3) {
         this.music = new DanmakuSong("lullaby_of_deserted_hell_sagittariu.mid");
+      }
+      else if (stage == 4) {
+        this.music = new DanmakuSong("littleprincess.mid");
+      }
+      else if (stage == 5) {
+        this.music = new DanmakuSong("owen_was_her.mid");
+      }
+      else if (stage == 6) {
+        this.music = new DanmakuSong("native_faith.mid");
       }
       this.music.run();
 
@@ -137,7 +160,25 @@ public class DanmakuController implements ActionListener{
    * keyBoardInput uses KeyInputPoller to handle input and their corrosponding actions.
    */
   protected void keyboardInput() {
-    if (controllModel.getGameState().equals(GameState.GAME_MENU)) {
+    if (controllModel.getGameState().equals(GameState.GAME_WON)) {
+      if (this.gameWonExecuted) {
+        this.gameWonExecuted = false;
+        this.music.doStopMidiSounds();
+        this.music = new DanmakuSong("touhou_player_score.mid");
+        this.music.run();
+      }
+      if (this.keyBoard.keyDownOnce(KeyEvent.VK_ENTER)) {
+        this.controllModel.resetField();
+        this.currentStage = 0;
+        this.currentBoss = null;
+        this.gameWonExecuted = true;
+        this.music.doStopMidiSounds();
+        this.music = new DanmakuSong("a_shadow_in_the_blue_sky.mid");
+        this.music.run();
+        this.controllModel.setGameState(GameState.GAME_MENU);
+      }
+    }
+    else if (controllModel.getGameState().equals(GameState.GAME_MENU)) {
       if (this.keyBoard.keyDownOnce(KeyEvent.VK_ENTER)) {
         this.controllModel.setGameState(GameState.SELECT_SCREEN);
       }
@@ -198,7 +239,7 @@ public class DanmakuController implements ActionListener{
         this.currentStage = 0;
         this.currentBoss = null;
         this.music.doStopMidiSounds();
-        this.music = new DanmakuSong("01_a_shadow_in_the_blue_sky.mid");
+        this.music = new DanmakuSong("a_shadow_in_the_blue_sky.mid");
         this.music.run();
         controllModel.setGameState(GameState.GAME_MENU);
       }    
@@ -207,7 +248,7 @@ public class DanmakuController implements ActionListener{
       if (this.gameOverExecuted) {
         this.gameOverExecuted = false;
         this.music.doStopMidiSounds();
-        this.music = new DanmakuSong("touhou_-_player_s_score (1).mid");
+        this.music = new DanmakuSong("touhou_player_score.mid");
         this.music.run();
       }
       if (this.keyBoard.keyDownOnce(KeyEvent.VK_ENTER)) {
@@ -225,7 +266,7 @@ public class DanmakuController implements ActionListener{
         this.currentStage = 0;
         this.currentBoss = null;
         this.music.doStopMidiSounds();
-        this.music = new DanmakuSong("01_a_shadow_in_the_blue_sky.mid");
+        this.music = new DanmakuSong("a_shadow_in_the_blue_sky.mid");
         this.music.run();
         controllModel.setGameState(GameState.GAME_MENU);
       }    

@@ -94,30 +94,79 @@ public class DanmakuView extends JPanel{
   private void loadBulletImages() {
     // arrow
     bulletImages.put(SpriteVariations.player1, 
-    Inf101Graphics.loadImageFromResources("/arrowMagenta.PNG"));
+    Inf101Graphics.loadImageFromResources("/arrowMagenta.png"));
     bulletMap.put(SpriteVariations.arrow, bulletImages);
     // ofuda
     bulletImages.put(SpriteVariations.player2, 
     Inf101Graphics.loadImageFromResources("/ofudaP2.png"));
     bulletMap.put(SpriteVariations.ofuda, bulletImages);
+    // ofudaHoming
+    bulletImages.put(SpriteVariations.player2, 
+    Inf101Graphics.loadImageFromResources("/ofudaHoming.png"));
+    bulletMap.put(SpriteVariations.ofudaHoming, bulletImages);
     // circleSmall
     bulletImages = new HashMap<>();
-    bulletImages.put(SpriteVariations.yokai1, 
+    bulletImages.put(SpriteVariations.fairy, 
     Inf101Graphics.loadImageFromResources("/circleSmallBlue.png"));
-    bulletImages.put(SpriteVariations.boss4, 
+    bulletImages.put(SpriteVariations.MoFboss1, 
     Inf101Graphics.loadImageFromResources("/circleSmallRed.png"));
-    bulletImages.put(SpriteVariations.boss5, 
+    bulletImages.put(SpriteVariations.MoFboss2, 
+    Inf101Graphics.loadImageFromResources("/circleSmallRed.png"));
+    bulletImages.put(SpriteVariations.SubAnimBoss3, 
+    Inf101Graphics.loadImageFromResources("/circleSmallRed.png"));
+    bulletImages.put(SpriteVariations.SubAnimBoss4, 
+    Inf101Graphics.loadImageFromResources("/circleSmallRed.png"));
+    bulletImages.put(SpriteVariations.SubAnimBoss5, 
+    Inf101Graphics.loadImageFromResources("/circleSmallRed.png"));
+    bulletImages.put(SpriteVariations.MoFExtraBoss, 
     Inf101Graphics.loadImageFromResources("/circleSmallRed.png"));
     bulletMap.put(SpriteVariations.circleSmall, bulletImages);
     // ellipseLarge
     bulletImages = new HashMap<>();
-    bulletImages.put(SpriteVariations.yokai2, 
+    bulletImages.put(SpriteVariations.highFairy, 
     Inf101Graphics.loadImageFromResources("/ellipseLargeRed.png"));
-    bulletImages.put(SpriteVariations.boss4, 
+    bulletImages.put(SpriteVariations.MoFboss1, 
     Inf101Graphics.loadImageFromResources("/ellipseLargeCyan.png"));
-    bulletImages.put(SpriteVariations.boss5, 
+    bulletImages.put(SpriteVariations.MoFboss2, 
     Inf101Graphics.loadImageFromResources("/ellipseLargeCyan.png"));
+    bulletImages.put(SpriteVariations.SubAnimBoss3, 
+    Inf101Graphics.loadImageFromResources("/ellipseLargeCyan.png"));
+    bulletImages.put(SpriteVariations.SubAnimBoss4, 
+    Inf101Graphics.loadImageFromResources("/ellipseLargeMagenta.png"));
+    bulletImages.put(SpriteVariations.SubAnimBoss5, 
+    Inf101Graphics.loadImageFromResources("/ellipseLargeCyan.png"));
+    bulletImages.put(SpriteVariations.MoFExtraBoss, 
+    Inf101Graphics.loadImageFromResources("/ellipseLargeMagenta.png"));
     bulletMap.put(SpriteVariations.ellipseLarge, bulletImages);
+    // star 
+    bulletImages = new HashMap<>();
+    bulletImages.put(SpriteVariations.player1, 
+    Inf101Graphics.loadImageFromResources("/starMagenta.png"));
+    bulletMap.put(SpriteVariations.star, bulletImages);
+    // ballLarge
+    bulletImages = new HashMap<>();
+    bulletImages.put(SpriteVariations.yokai, 
+    Inf101Graphics.loadImageFromResources("/ballLargeRed.png"));
+    bulletImages.put(SpriteVariations.Trancendent, 
+    Inf101Graphics.loadImageFromResources("/ballLargeGreen.png"));
+    bulletMap.put(SpriteVariations.ballLarge, bulletImages);
+    // heart
+    bulletImages = new HashMap<>();
+    bulletImages.put(SpriteVariations.SubAnimBoss5, 
+    Inf101Graphics.loadImageFromResources("/heartGreen.png"));
+    bulletImages.put(SpriteVariations.guardianFairy, 
+    Inf101Graphics.loadImageFromResources("/heartPink.png"));
+    bulletMap.put(SpriteVariations.heart, bulletImages);
+    // knife
+    bulletImages = new HashMap<>();
+    bulletImages.put(SpriteVariations.cursedFairy, 
+    Inf101Graphics.loadImageFromResources("/knifeBlue.png"));
+    bulletMap.put(SpriteVariations.knife, bulletImages);
+    // pellet
+
+    // note
+
+    // specials: 
 
   }
 
@@ -181,27 +230,18 @@ public class DanmakuView extends JPanel{
    * Character format (Sprite variation, velocity String).
    */
   private void loadCharacterImages() {
-    AffineTransform tx;
-    AffineTransformOp op;
-    List<BufferedImage> flipImages = new ArrayList<>();
     // boss images
-    BufferedImage boss4Right = Inf101Graphics.loadImageFromResources("/MoFBoss4Left.png");
-    BufferedImage boss5Left = Inf101Graphics.loadImageFromResources("/MoFBoss5Right.png");
-    flipImages.add(boss4Right);
-    flipImages.add(boss5Left);
-    // flip images horisontally
-    for (int i = flipImages.size() - 1; i >= 0; i--) {
-      BufferedImage image = flipImages.get(i);
-      tx = AffineTransform.getScaleInstance(-1, 1);
-      tx.translate(-image.getWidth(null), 0);
-      op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-      image = op.filter(image, null);
-      flipImages.set(i, image);
-    }
+    BufferedImage boss1Right = Inf101Graphics.loadImageFromResources("/MoFBoss1Left.png");
+    BufferedImage boss2Left = Inf101Graphics.loadImageFromResources("/MoFBoss2Right.png");
+    BufferedImage SubAnimBoss3Right = Inf101Graphics.loadImageFromResources("/SubAnimBoss3Left.png");
+    BufferedImage SubAnimBoss4Right = Inf101Graphics.loadImageFromResources("/SubAnimBoss4Left.png");
+    BufferedImage bossExtraLeft = Inf101Graphics.loadImageFromResources("/MoFExtraBossRight.png");
+    
     // player1
     CharacterImages.put("still", Inf101Graphics.loadImageFromResources("/player1.png"));
     CharacterImages.put("left", Inf101Graphics.loadImageFromResources("/player1Left.png"));
     CharacterImages.put("right", Inf101Graphics.loadImageFromResources("/player1Right.png"));
+    CharacterImages.put("shift", Inf101Graphics.loadImageFromResources("/playerHitbox.png"));
       // select screen image
     CharacterImages.put("select", Inf101Graphics.loadImageFromResources("/Th175Marisa.png"));
     CharacterMap.put(SpriteVariations.player1, CharacterImages);
@@ -210,31 +250,120 @@ public class DanmakuView extends JPanel{
     CharacterImages.put("still", Inf101Graphics.loadImageFromResources("/player2.PNG"));
     CharacterImages.put("left", Inf101Graphics.loadImageFromResources("/player2Left.png"));
     CharacterImages.put("right", Inf101Graphics.loadImageFromResources("/player2Right.png"));
+    CharacterImages.put("shift", Inf101Graphics.loadImageFromResources("/playerHitbox.png"));
       // select screen image
     CharacterImages.put("select", Inf101Graphics.loadImageFromResources("/Th175Reimu.png"));
     CharacterMap.put(SpriteVariations.player2, CharacterImages);
-    // boss4
+    // boss stage 1
     CharacterImages = new HashMap<>();
-    CharacterImages.put("still", Inf101Graphics.loadImageFromResources("/MoFBoss4.png"));
-    CharacterImages.put("left", Inf101Graphics.loadImageFromResources("/MoFBoss4Left.png"));
-    CharacterImages.put("right", flipImages.get(0));
-    CharacterImages.put("super", Inf101Graphics.loadImageFromResources("/MoFBoss4Super.png"));
-    CharacterMap.put(SpriteVariations.boss4, CharacterImages);
-    // boss5
+    CharacterImages.put("still", Inf101Graphics.loadImageFromResources("/MoFBoss1.png"));
+    CharacterImages.put("left", Inf101Graphics.loadImageFromResources("/MoFBoss1Left.png"));
+    CharacterImages.put("right", imageFliper(boss1Right));
+    CharacterImages.put("super", Inf101Graphics.loadImageFromResources("/MoFBoss1Super.png"));
+    CharacterMap.put(SpriteVariations.MoFboss1, CharacterImages);
+    // boss stage 2
     CharacterImages = new HashMap<>();
-    CharacterImages.put("still", Inf101Graphics.loadImageFromResources("/MoFBoss5.png"));
-    CharacterImages.put("left", flipImages.get(1));
-    CharacterImages.put("right", Inf101Graphics.loadImageFromResources("/MoFBoss5Right.png"));
-    CharacterImages.put("super", Inf101Graphics.loadImageFromResources("/MoFBoss5Super.png"));
-    CharacterMap.put(SpriteVariations.boss5, CharacterImages);
-    // yokai1
+    CharacterImages.put("still", Inf101Graphics.loadImageFromResources("/MoFBoss2.png"));
+    CharacterImages.put("left", imageFliper(boss2Left));
+    CharacterImages.put("right", Inf101Graphics.loadImageFromResources("/MoFBoss2Right.png"));
+    CharacterImages.put("super", Inf101Graphics.loadImageFromResources("/MoFBoss2Super.png"));
+    CharacterMap.put(SpriteVariations.MoFboss2, CharacterImages);
+    // boss stage 3
     CharacterImages = new HashMap<>();
-    CharacterImages.put("still", Inf101Graphics.loadImageFromResources("/yokai1.PNG"));
-    CharacterMap.put(SpriteVariations.yokai1, CharacterImages);
-    // yokai2
+    CharacterImages.put("still", Inf101Graphics.loadImageFromResources("/SubAnimBoss3.png"));
+    CharacterImages.put("spawning", Inf101Graphics.loadImageFromResources("/SubAnimBoss3Cat.png"));
+    CharacterImages.put("preBattle", Inf101Graphics.loadImageFromResources("/SubAnimBoss3CatRight.png"));
+    CharacterImages.put("left", Inf101Graphics.loadImageFromResources("/SubAnimBoss3Left.png"));
+    CharacterImages.put("right", imageFliper(SubAnimBoss3Right));
+    CharacterImages.put("super", Inf101Graphics.loadImageFromResources("/SubAnimBoss3.png"));
+    CharacterMap.put(SpriteVariations.SubAnimBoss3, CharacterImages);
+    // boss stage 4
     CharacterImages = new HashMap<>();
-    CharacterImages.put("still", Inf101Graphics.loadImageFromResources("/yokai2.PNG"));
-    CharacterMap.put(SpriteVariations.yokai2, CharacterImages);
+    CharacterImages.put("still", Inf101Graphics.loadImageFromResources("/SubAnimBoss4.png"));
+    CharacterImages.put("left", Inf101Graphics.loadImageFromResources("/SubAnimBoss4Left.png"));
+    CharacterImages.put("right", imageFliper(SubAnimBoss4Right));
+    CharacterImages.put("super", Inf101Graphics.loadImageFromResources("/SubAnimBoss4Super.png"));
+    CharacterMap.put(SpriteVariations.SubAnimBoss4, CharacterImages);
+    // sub boss stage 4
+    CharacterImages = new HashMap<>();
+    CharacterImages.put("still", Inf101Graphics.loadImageFromResources("/EoSDsubBoss4.png"));
+    CharacterImages.put("left", Inf101Graphics.loadImageFromResources("/EoSDsubBoss4Left.png"));
+    CharacterImages.put("right", Inf101Graphics.loadImageFromResources("/EoSDsubBoss4Right.png"));
+    CharacterImages.put("super", Inf101Graphics.loadImageFromResources("/EoSDsubBoss4Super.png"));
+    CharacterMap.put(SpriteVariations.EoSDsubBoss4, CharacterImages);
+    // boss stage 5
+    CharacterImages = new HashMap<>();
+    CharacterImages.put("still", Inf101Graphics.loadImageFromResources("/SubAnimBoss5.png"));
+    CharacterImages.put("left", Inf101Graphics.loadImageFromResources("/SubAnimBoss5Left.png"));
+    CharacterImages.put("right", Inf101Graphics.loadImageFromResources("/SubAnimBoss5Right.png"));
+    CharacterImages.put("super", Inf101Graphics.loadImageFromResources("/SubAnimBoss5Super.png"));
+    CharacterMap.put(SpriteVariations.SubAnimBoss5, CharacterImages);
+    // boss stage 6
+    CharacterImages = new HashMap<>();
+    CharacterImages.put("still", Inf101Graphics.loadImageFromResources("/MoFExtraBoss.png"));
+    CharacterImages.put("left", imageFliper(bossExtraLeft));
+    CharacterImages.put("right", Inf101Graphics.loadImageFromResources("/MoFExtraBossRight.png"));
+    CharacterImages.put("super", Inf101Graphics.loadImageFromResources("/MoFExtraBossSuper.png"));
+    CharacterMap.put(SpriteVariations.MoFExtraBoss, CharacterImages);
+    // fairy
+    BufferedImage fairyleft1 = Inf101Graphics.loadImageFromResources("/fairyBlueRight.png");
+    BufferedImage fairyleft2 = Inf101Graphics.loadImageFromResources("/fairyRedRight.png");
+    CharacterImages = new HashMap<>();
+    CharacterImages.put("still", Inf101Graphics.loadImageFromResources("/fairyBlue.png"));
+    CharacterImages.put("still2", Inf101Graphics.loadImageFromResources("/fairyRed.png"));
+    CharacterImages.put("right", Inf101Graphics.loadImageFromResources("/fairyBlueRight.png"));
+    CharacterImages.put("right2", Inf101Graphics.loadImageFromResources("/fairyRedRight.png"));
+    CharacterImages.put("left", imageFliper(fairyleft1));
+    CharacterImages.put("left2", imageFliper(fairyleft2));
+    CharacterMap.put(SpriteVariations.fairy, CharacterImages);
+    // high fairy
+    BufferedImage highFairyleft = Inf101Graphics.loadImageFromResources("/highFairyRight.png");
+    CharacterImages = new HashMap<>();
+    CharacterImages.put("still", Inf101Graphics.loadImageFromResources("/highFairy.png"));
+    CharacterImages.put("right", Inf101Graphics.loadImageFromResources("/highFairyRight.png"));
+    CharacterImages.put("left", imageFliper(highFairyleft));
+    CharacterMap.put(SpriteVariations.highFairy, CharacterImages);
+    // guardian fairy
+    BufferedImage gFairyleft = Inf101Graphics.loadImageFromResources("/guardianFairyGreenRight.png");
+    CharacterImages = new HashMap<>();
+    CharacterImages.put("still", Inf101Graphics.loadImageFromResources("/guardianFairyGreen.png"));
+    CharacterImages.put("right", Inf101Graphics.loadImageFromResources("/guardianFairyGreenRight.png"));
+    CharacterImages.put("left", imageFliper(gFairyleft));
+    CharacterMap.put(SpriteVariations.guardianFairy, CharacterImages);
+    // seasonal fairy
+    BufferedImage sFairyleft = Inf101Graphics.loadImageFromResources("/seasonalFairyRight.png");
+    CharacterImages = new HashMap<>();
+    CharacterImages.put("still", Inf101Graphics.loadImageFromResources("/seasonalFairy.png"));
+    CharacterImages.put("right", Inf101Graphics.loadImageFromResources("/seasonalFairyRight.png"));
+    CharacterImages.put("left", imageFliper(sFairyleft));
+    CharacterMap.put(SpriteVariations.seasonalFairy, CharacterImages);
+    // cursed fairy
+    BufferedImage cFairyleft = Inf101Graphics.loadImageFromResources("/cursedFairyRight.png");
+    CharacterImages = new HashMap<>();
+    CharacterImages.put("still", Inf101Graphics.loadImageFromResources("/cursedFairy.png"));
+    CharacterImages.put("right", Inf101Graphics.loadImageFromResources("/cursedFairyRight.png"));
+    CharacterImages.put("left", imageFliper(cFairyleft));
+    CharacterMap.put(SpriteVariations.cursedFairy, CharacterImages);
+    // yokai
+    CharacterImages = new HashMap<>();
+    CharacterImages.put("still", Inf101Graphics.loadImageFromResources("/yokaiRed.png"));
+    CharacterImages.put("still2", Inf101Graphics.loadImageFromResources("/yokaiGreen.png"));
+    CharacterMap.put(SpriteVariations.yokai, CharacterImages);
+    // Trancendent
+    CharacterImages = new HashMap<>();
+    CharacterImages.put("still", Inf101Graphics.loadImageFromResources("/Trancendent.png"));
+    CharacterMap.put(SpriteVariations.Trancendent, CharacterImages);
+  }
+
+  private BufferedImage imageFliper(BufferedImage image) {
+    AffineTransform tx;
+    AffineTransformOp op;
+    // flip images horisontally
+    tx = AffineTransform.getScaleInstance(-1, 1);
+    tx.translate(-image.getWidth(null), 0);
+    op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+    image = op.filter(image, null);
+    return image;
   }
  
   /**
@@ -255,10 +384,10 @@ public class DanmakuView extends JPanel{
    */
   private void loadFieldImages() {
     // stage 1
-    FieldImages.put("stage", Inf101Graphics.loadImageFromResources("/MoFStage4background.PNG"));
+    FieldImages.put("stage", Inf101Graphics.loadImageFromResources("/MoFStage4Background.png"));
     // stage boss 1
-    FieldImages.put("back", Inf101Graphics.loadImageFromResources("/MoFBoss4Background.PNG"));
-    FieldImages.put("fore", Inf101Graphics.loadImageFromResources("/MoFBoss4Foreground.png"));
+    FieldImages.put("back", Inf101Graphics.loadImageFromResources("/MoFBoss4Background.png"));
+    FieldImages.put("fore", Inf101Graphics.loadImageFromResources("/MoFBoss5Foreground.png"));
     FieldMap.put(1, FieldImages);
     // stage 2
     FieldImages = new HashMap<>();
@@ -267,6 +396,34 @@ public class DanmakuView extends JPanel{
     FieldImages.put("back", Inf101Graphics.loadImageFromResources("/MoFBoss5Background.PNG"));
     FieldImages.put("fore", Inf101Graphics.loadImageFromResources("/MoFBoss5Foreground.png"));
     FieldMap.put(2, FieldImages);
+    // stage 3
+    FieldImages = new HashMap<>();
+    FieldImages.put("stage", Inf101Graphics.loadImageFromResources("/WBWCStage3Background.png"));
+    // stage boss 3
+    FieldImages.put("back", Inf101Graphics.loadImageFromResources("/SubAnimBoss3Background.png"));
+    FieldImages.put("fore", Inf101Graphics.loadImageFromResources("/SubAnimBoss3Foreground.png"));
+    FieldMap.put(3, FieldImages);
+    // stage 4
+    FieldImages = new HashMap<>();
+    FieldImages.put("stage", Inf101Graphics.loadImageFromResources("/UFOStage4Background.png"));
+    // stage boss 4
+    FieldImages.put("back", Inf101Graphics.loadImageFromResources("/SubAnimBoss4Background.png"));
+    FieldImages.put("fore", Inf101Graphics.loadImageFromResources("/SubAnimBoss4Foreground.png"));
+    FieldMap.put(4, FieldImages);
+    // stage 5
+    FieldImages = new HashMap<>();
+    FieldImages.put("stage", Inf101Graphics.loadImageFromResources("/UFOStage3Background.png"));
+    // stage boss 5
+    FieldImages.put("back", Inf101Graphics.loadImageFromResources("/impNightBoss5Background.png"));
+    FieldImages.put("fore", Inf101Graphics.loadImageFromResources("/MoFBoss5Foreground.png"));
+    FieldMap.put(5, FieldImages);
+    // stage 6
+    FieldImages = new HashMap<>();
+    FieldImages.put("stage", Inf101Graphics.loadImageFromResources("/impNightStage4Background.png"));
+    // stage boss 6
+    FieldImages.put("back", Inf101Graphics.loadImageFromResources("/MoFBoss6Background.png"));
+    FieldImages.put("fore", Inf101Graphics.loadImageFromResources("/MoFBoss5Foreground.png"));
+    FieldMap.put(6, FieldImages);
   }
  
   /**
@@ -312,7 +469,7 @@ public class DanmakuView extends JPanel{
       // draw bullet field
       drawField(Canvas, fieldRect, backgroundRect, this.scrollY, Model, setColor);
       // draw player on field
-      drawPlayer(Canvas, Model.getPlayer(), Model.getIFrames(), setColor, false);
+      drawPlayer(Canvas, Model.getPlayer(), Model.getIFrames(), setColor, true);
       // draw enemies on field
       drawEnemy(Canvas, Model.getEnemiesOnField(), setColor, false);
       // draw bosses on field
@@ -340,6 +497,8 @@ public class DanmakuView extends JPanel{
       drawPauseScreen(Canvas, drawScreenRect, setColor, Model.getGameState());
       // draw game over screen when player has no lifes
       drawEndGameScreen(Canvas, drawScreenRect, setColor, Model.getGameState());
+      // draw game won screen
+      drawGameWonScreen(Canvas, drawScreenRect, setColor, Model.getGameState());
     }
   }
   
@@ -350,8 +509,8 @@ public class DanmakuView extends JPanel{
     double imgHeight;
     double diameter;
     double scaleFactor;
-    Ellipse2D playerBall;
     BufferedImage playerImg;
+    BufferedImage playerBox;
     Ellipse2D outer;
     Ellipse2D inner;
     Area hCircle;
@@ -402,14 +561,8 @@ public class DanmakuView extends JPanel{
     
     // draw hitbox
     if (hasHitbox) {
-      x -= player.getRadius();
-      y -= player.getRadius();
-      playerBall = new Ellipse2D.Double(x, y, diameter, diameter);
-      Canvas.setColor(Color.getSpriteColor('g'));
-      if (iFramesActive) {
-        Canvas.setColor(Color.getSpriteColor('r'));
-      }
-      Canvas.fill(playerBall);
+      playerBox = getCharacterImage(player.getVariation(), "shift");
+      Inf101Graphics.drawCenteredImage(Canvas, playerBox, x, y, 1);
     }
     
   }
@@ -564,7 +717,7 @@ public class DanmakuView extends JPanel{
       if (bullet.getVariation() != null && bullet.getBulletOwner() != null) {
         bulletImg = getBulletImage(bullet.getVariation(), bullet.getBulletOwner());
       }
-      
+  
       // initialize variables
       imgWidth = bulletImg.getWidth();
       imgHeight = bulletImg.getHeight();
@@ -653,8 +806,9 @@ public class DanmakuView extends JPanel{
     double backImgX;
     double foreImgX = 0;
     double bgHeight = backgroundRect.getHeight();
-    double imgBackHeight;
-    double imgForeHeight = 1;
+    double bgWidth = backgroundRect.getWidth();
+    double imgBackWidth;
+    double imgForeWidth = 1;
     double width = fieldRect.getWidth();
     double height = fieldRect.getHeight();
     double scaleFactor = 1;
@@ -665,26 +819,26 @@ public class DanmakuView extends JPanel{
     Canvas.setColor(Color.getFieldColor());
     Canvas.fill(fieldRect);
     // only draw available stages.
-    if (model.getCurrentStage() < 3) {
+    if (model.getCurrentStage() < 7) {
       // update background
       fieldBackImg = getFieldImage(model.getCurrentStage(), "stage");
       if (model.getBossEnemyOnField() != null) {
         fieldBackImg = getFieldImage(model.getCurrentStage(), "back");
         fieldForeImg = getFieldImage(model.getCurrentStage(), "fore");
 
-        imgForeHeight = fieldForeImg.getHeight();
+        imgForeWidth = fieldForeImg.getWidth();
       }
-      imgBackHeight = fieldBackImg.getHeight();
+      imgBackWidth = fieldBackImg.getWidth();
 
       // scale background to screen size
-      scaleFactor = (bgHeight / imgBackHeight);
-      if (bgHeight < imgBackHeight) {
-        scaleFactor = (imgBackHeight / bgHeight);
+      scaleFactor = (bgHeight / imgBackWidth);
+      if (bgWidth < imgBackWidth) {
+        scaleFactor = (imgBackWidth / bgHeight);
       }
-      // scale foreground to background
-      foreScaleFactor = (imgBackHeight / imgForeHeight);
-      if (imgBackHeight < imgForeHeight) {
-        foreScaleFactor = (imgForeHeight / imgBackHeight);
+      // scale foreground to screen
+      foreScaleFactor = (bgWidth / imgForeWidth);
+      if (bgWidth < imgForeWidth) {
+        foreScaleFactor = (imgForeWidth / bgWidth);
       }
 
       backImgX = centerX - (fieldBackImg.getWidth()*scaleFactor/2);
@@ -692,7 +846,7 @@ public class DanmakuView extends JPanel{
         foreImgX = centerX - (fieldForeImg.getWidth()*foreScaleFactor/2);
       }
       // scrolling variable
-      double scrollDown = scrollY - (imgBackHeight*scaleFactor);
+      double scrollDown = scrollY - (bgHeight);
       double scrollDown2 = scrollY;
       // draw stage background
       Inf101Graphics.drawImage(Canvas, fieldBackImg, backImgX, scrollDown, scaleFactor);
@@ -861,7 +1015,26 @@ public class DanmakuView extends JPanel{
       Inf101Graphics.drawCenteredString(Canvas, "Retry? (enter)", pressContinue);
       Inf101Graphics.drawCenteredString(Canvas, "Go back to menu? (backspace)", pressMenu);
     }
-  } 
+  }
+  
+  private void drawGameWonScreen(Graphics2D Canvas, Rectangle2D endGameBackground, ColorTheme color, GameState status) {
+    Rectangle2D pressMenu = new Rectangle2D.Double(0, 0.7*endGameBackground.getHeight(), endGameBackground.getWidth(), 30);
+    if (status.equals(GameState.GAME_WON)) {
+
+      Canvas.setColor(color.getGameOverColor("back"));
+      Canvas.fill(endGameBackground);
+      Canvas.setColor(color.getGameOverColor("gameover"));
+      Canvas.setFont(new Font("Times New Roman", Font.PLAIN, 69));
+
+      Inf101Graphics.drawCenteredString(Canvas, "GAME WON", endGameBackground);
+
+      Canvas.setColor(color.getGameOverColor("key"));
+      Canvas.setFont(new Font("Arial", Font.BOLD, 20));
+      Inf101Graphics.drawCenteredString(Canvas, "Go back to menu? (Enter)", pressMenu);
+    }
+
+
+  }
 
   private void drawPlayerSelectionScreen(Graphics2D Canvas, Rectangle2D MenuBackground, ColorTheme color, GameState gameStatus) {
     Rectangle2D player1 = new Rectangle2D.Double(0, 0.1*MenuBackground.getHeight(), 0.5*MenuBackground.getWidth(), 80);

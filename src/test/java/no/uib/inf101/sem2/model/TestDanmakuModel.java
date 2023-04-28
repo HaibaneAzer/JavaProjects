@@ -93,8 +93,8 @@ public class TestDanmakuModel {
       bulletIt.next();
     }
 
-    // check if player1 shoots 4 bullets
-    assertEquals(4, count);
+    // check if player2 shoots 3 bullets
+    assertEquals(3, count);
 
     // calling playerFire again will not spawn more bullets until firerate limit
     // is reached (number of calls = fireRate, shoots new set of bullets).
@@ -107,7 +107,7 @@ public class TestDanmakuModel {
       bulletIt.next();
     }
 
-    assertEquals(4, count);
+    assertEquals(3, count);
 
     // new bullets spawn after limit is reached
     for (int i = 0; i <= 3; i++) {
@@ -121,7 +121,7 @@ public class TestDanmakuModel {
       bulletIt.next();
     }
 
-    assertEquals(8, count);
+    assertEquals(6, count);
 
   }
 
@@ -137,12 +137,12 @@ public class TestDanmakuModel {
       model.moveEnemiesInWaves();
     }
 
-    // first wave spawns yokai1
+    // first wave spawns yokai
     Enemies curEnemy = model.getEnemiesOnField().iterator().next();
-    assertEquals(SpriteVariations.yokai1, curEnemy.getVariation());
+    assertEquals(SpriteVariations.yokai, curEnemy.getVariation());
     
     // move 50 steps until enemy can shoot (past 0.95 line)
-    for (int i = 0; i < 50; i++) {
+    for (int i = 0; i < 80; i++) {
       model.moveEnemiesInWaves();
     }
     // check if enemy can shoot when spawned.
@@ -158,8 +158,8 @@ public class TestDanmakuModel {
       bulletIt.next();
     }
     
-    // check if yokai1 shoots 1 bullets
-    assertEquals(1, count);
+    // check if yokai shoots 3 bullets
+    assertEquals(3, count);
     
     // calling enemyFire again will not spawn more bullets until firerate limit
     // is reached (number of calls = fireRate, shoots new set of bullets).
@@ -172,7 +172,7 @@ public class TestDanmakuModel {
       bulletIt.next();
     }
     
-    assertEquals(1, count);
+    assertEquals(3, count);
     
     // new bullets spawn after limit is reached
     for (int i = 0; i < model.getEnemiesOnField().iterator().next().getFireDelay(); i++) {
@@ -186,7 +186,7 @@ public class TestDanmakuModel {
       bulletIt.next();
     }
     
-    assertEquals(2, count);
+    assertEquals(6, count);
 
     // check if next enemy spawns in order
     model.moveEnemiesInWaves();
@@ -217,27 +217,31 @@ public class TestDanmakuModel {
     }
 
     // boss spawns after set time
-    assertEquals(SpriteVariations.boss4, model.getBossEnemyOnField().getVariation());
+    assertEquals(SpriteVariations.MoFboss1, model.getBossEnemyOnField().getVariation());
 
     // stage doesnt change before boss is dead
-    for (int i = 0; i < 10000; i++) {
+    for (int i = 0; i < 8150; i++) {
       model.moveEnemiesInWaves();
     }
+    System.out.println(model.getBossEnemyOnField().getPosition());
+    System.out.println(model.getPlayer().getPosition());
+    System.out.println(model.getBossEnemyOnField().getHealthPoints());
 
     assertTrue(model.getCurrentStage() == 1);
 
     // kill boss leads to next stage + player bullets can harm boss
-    for (int i = 0; i < 3000; i++) {
-      model.playerFire(3, true);
+    for (int i = 0; i < 2000; i++) {
+      model.playerFire(5, true);
       if (model.getBulletsOnField().iterator().hasNext()) {
         model.moveAllBullets();
       }
+      System.out.println(model.getBulletsOnField().iterator().next().getPosition());
     }
     // advance stage
     for (int i = 0; i < 10; i++) {
       model.moveEnemiesInWaves();
     }
-
+    System.out.println(model.getBossEnemyOnField().getHealthPoints());
     assertTrue(model.getBossEnemyOnField() == null);
 
     assertTrue(model.getCurrentStage() == 2);

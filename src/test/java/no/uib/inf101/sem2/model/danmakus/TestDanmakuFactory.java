@@ -16,11 +16,11 @@ public class TestDanmakuFactory {
 
     SpriteType typeEnemy = SpriteType.Enemy;
     List<List<Enemies>> enemyList = getSprite.getTotalEnemies(1);
-    Enemies enemy = getSprite.getNewEnemy(SpriteVariations.yokai1);
+    Enemies enemy = getSprite.getNewEnemy(SpriteVariations.fairy);
 
     assertEquals(typeEnemy, enemyList.get(0).get(0).getType());
 
-    assertEquals(SpriteVariations.yokai1, enemy.getVariation());
+    assertEquals(SpriteVariations.fairy, enemy.getVariation());
 
     // default state
     assertEquals(SpriteState.aim, enemy.getState());

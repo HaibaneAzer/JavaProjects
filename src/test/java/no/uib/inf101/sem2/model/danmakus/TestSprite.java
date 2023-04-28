@@ -32,12 +32,12 @@ public class TestSprite {
   assertNotEquals(p1, q1);
 
   // testing for Enemies
-  Sprite<SpriteType, SpriteState> t1 = Enemies.newEnemy(SpriteVariations.yokai1);
-  Sprite<SpriteType, SpriteState> t2 = Enemies.newEnemy(SpriteVariations.yokai1);
-  Sprite<SpriteType, SpriteState> t3 = Enemies.newEnemy(SpriteVariations.yokai1).displaceBy(direction);
-  Sprite<SpriteType, SpriteState> s1 = Enemies.newEnemy(SpriteVariations.yokai2);
+  Sprite<SpriteType, SpriteState> t1 = Enemies.newEnemy(SpriteVariations.fairy);
+  Sprite<SpriteType, SpriteState> t2 = Enemies.newEnemy(SpriteVariations.fairy);
+  Sprite<SpriteType, SpriteState> t3 = Enemies.newEnemy(SpriteVariations.fairy).displaceBy(direction);
+  Sprite<SpriteType, SpriteState> s1 = Enemies.newEnemy(SpriteVariations.highFairy);
   // displacing with the zero-vector should not move player
-  Sprite<SpriteType, SpriteState> s2 = Enemies.newEnemy(SpriteVariations.yokai2).displaceBy(zeroVector); 
+  Sprite<SpriteType, SpriteState> s2 = Enemies.newEnemy(SpriteVariations.highFairy).displaceBy(zeroVector); 
   assertEquals(t1, t2);
   assertEquals(s1, s2);
   assertEquals(t1.hashCode(), t2.hashCode());
@@ -63,8 +63,8 @@ public class TestSprite {
   @Test
   public void testEnemySpriteVelocity() {
     Vector direction = new Vector(5, 0, 1);
-    Sprite<SpriteType, SpriteState> enemy1 = Enemies.newEnemy(SpriteVariations.yokai1);
-    Sprite<SpriteType, SpriteState> enemy2 = Enemies.newEnemy(SpriteVariations.yokai1);
+    Sprite<SpriteType, SpriteState> enemy1 = Enemies.newEnemy(SpriteVariations.fairy);
+    Sprite<SpriteType, SpriteState> enemy2 = Enemies.newEnemy(SpriteVariations.fairy);
 
     Vector radius = new Vector(enemy1.Radius, enemy1.Radius, 1);
     enemy1 = enemy1.displaceBy(radius);
@@ -136,8 +136,8 @@ public class TestSprite {
   public void testEnemySpriteDisplacement() {
     Vector direction = new Vector(0, 5, 1);
     DanmakuField field = new DanmakuField(0, 0, 100, 100);
-    Sprite<SpriteType, SpriteState> e1 = Enemies.newEnemy(SpriteVariations.boss4);
-    Sprite<SpriteType, SpriteState> e2 = Enemies.newEnemy(SpriteVariations.boss4);
+    Sprite<SpriteType, SpriteState> e1 = Enemies.newEnemy(SpriteVariations.MoFboss1);
+    Sprite<SpriteType, SpriteState> e2 = Enemies.newEnemy(SpriteVariations.MoFboss1);
 
     /* testing displaceBy */
     // uncenter from origin
@@ -257,8 +257,8 @@ public class TestSprite {
   public void testEnemyAxisRotation() {
 
     Vector defaultdirection = new Vector(0, 2, 1);
-    Sprite<SpriteType, SpriteState> e1 = Enemies.newEnemy(SpriteVariations.yokai2);
-    Sprite<SpriteType, SpriteState> e2 = Enemies.newEnemy(SpriteVariations.yokai1);
+    Sprite<SpriteType, SpriteState> e1 = Enemies.newEnemy(SpriteVariations.highFairy);
+    Sprite<SpriteType, SpriteState> e2 = Enemies.newEnemy(SpriteVariations.fairy);
 
     // check same rotation for different enemies
     double angle1 = Math.PI*(0.5); // 90-degree counter clockwise

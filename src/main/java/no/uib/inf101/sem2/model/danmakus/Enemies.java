@@ -40,18 +40,40 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
   
   /**
   * newEnemy is a method that contains a list of valid enemy variations.
-  * Variations: yokai1, yokai2, boss4, boss5, etc....
+  * Variations: fairy, highfairy, guardianfairy, seasonalfairy,
+  * cursedfairy, yokai, Trancendent, MoFboss1, MoFboss2, SubAnimBoss3,
+  * SubAnimBoss4, EoSDsubBoss4, SubAnimBoss5 and MoFExtraBoss.
   */
   static Enemies newEnemy(SpriteVariations newEnemyVar) {
     Enemies enemy = switch(newEnemyVar) {
-      case yokai1 -> new Enemies(newEnemyVar, 90, 1, 8, 
-      new Vector(-8, -8, 1), 100); // want center at (0, 0)
-      case yokai2 -> new Enemies(newEnemyVar, 800, 1, 10, 
-      new Vector(-10, -10, 1), 110);
-      case boss4 -> new Enemies(newEnemyVar, 3500, 3, 12, 
-      new Vector(-12,-12,1), 45);
-      case boss5 -> new Enemies(newEnemyVar, 5500, 2, 12, 
-      new Vector(-12,-12,1), 50);
+      case fairy -> new Enemies(newEnemyVar, 90, 1, 8, 
+      new Vector(-8, -8, 1), 90); // want center at (0, 0)
+      case highFairy -> new Enemies(newEnemyVar, 1400, 1, 12, 
+      new Vector(-12, -12, 1), 70);
+      case guardianFairy -> new Enemies(newEnemyVar, 400, 1, 9, 
+      new Vector(-9, -9, 1), 100);
+      case seasonalFairy -> new Enemies(newEnemyVar, 300, 1, 9, 
+      new Vector(-9, -9, 1), 50);
+      case cursedFairy -> new Enemies(newEnemyVar, 1600, 1, 12, 
+      new Vector(-12, -12, 1), 75);
+      case yokai -> new Enemies(newEnemyVar, 500, 1, 10, 
+      new Vector(-10, -10, 1), 150);
+      case Trancendent -> new Enemies(newEnemyVar, 2000, 1, 15, 
+      new Vector(-15, -15, 1), 150);
+      case MoFboss1 -> new Enemies(newEnemyVar, 3500, 3, 14, 
+      new Vector(-14,-14,1), 45);
+      case MoFboss2 -> new Enemies(newEnemyVar, 4500, 3, 14, 
+      new Vector(-14,-14,1), 50);
+      case SubAnimBoss3 -> new Enemies(newEnemyVar, 3000, 3, 12, 
+      new Vector(-12,-12,1), 40);
+      case SubAnimBoss4 -> new Enemies(newEnemyVar, 7500, 3, 14, 
+      new Vector(-14,-14,1), 60);
+      case EoSDsubBoss4 -> new Enemies(newEnemyVar, 3500, 2, 10, 
+      new Vector(-10,-10,1), 40);
+      case SubAnimBoss5 -> new Enemies(newEnemyVar, 8500, 3, 14, 
+      new Vector(-14,-14,1), 50);
+      case MoFExtraBoss -> new Enemies(newEnemyVar, 11500, 3, 12, 
+      new Vector(-12,-12,1), 55);
       default -> throw new IllegalArgumentException(
         "Type '" + newEnemyVar + "' does not match one of two playable characters");
     };

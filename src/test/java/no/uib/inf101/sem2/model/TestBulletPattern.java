@@ -57,10 +57,10 @@ public class TestBulletPattern {
 
     DanmakuField field = new DanmakuField(x, y, width, height);
     DanmakuModel model = new DanmakuModel(field, sprite);
-    Enemies enemy = sprite.getNewEnemy(SpriteVariations.yokai1).shiftedToStartPoint(field);
+    Enemies enemy = sprite.getNewEnemy(SpriteVariations.yokai).shiftedToStartPoint(field);
     Player p1 = sprite.getNewPlayer(SpriteVariations.player1);
 
-    for (int i = 0; i < 550; i++) {
+    for (int i = 0; i < 600; i++) {
       model.moveEnemiesInWaves();
     }
     Vector lineUp = model.getEnemiesOnField().iterator().next().getPosition().subVect(enemy.getPosition());

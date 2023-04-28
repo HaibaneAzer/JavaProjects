@@ -74,14 +74,14 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     this.gameState = GameState.GAME_MENU;
     this.FPSCounter = 0.0;
     // handle waves and stages
-    this.currentStage = 1;
+    this.currentStage = 2;
     this.currentWaveIndex = 0;
     this.waveDelay = 0;
     this.stageDelay = 0;
     // player stuff:
     this.immunityFrames = this.maxImmunity;
     this.immunityActive = false;
-    this.currentPlayer = getSprite.getNewPlayer(SpriteVariations.player2).shiftedToStartPoint(Field);
+    this.currentPlayer = getSprite.getNewPlayer(SpriteVariations.player1).shiftedToStartPoint(Field);
     this.playerFireDelay = 0;
     // enemies stuff:
     this.TotalEnemies = getSprite.getTotalEnemies(this.currentStage);
@@ -302,8 +302,12 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
    * loadBossList is a list of bosses given their corrosponding stage.
    */
   private void loadBossList() {
-    bossList.put(1, SpriteVariations.boss4);
-    bossList.put(2, SpriteVariations.boss5);
+    bossList.put(1, SpriteVariations.MoFboss1);
+    bossList.put(2, SpriteVariations.MoFboss2);
+    bossList.put(3, SpriteVariations.SubAnimBoss3);
+    bossList.put(4, SpriteVariations.SubAnimBoss4);
+    bossList.put(5, SpriteVariations.SubAnimBoss5);
+    bossList.put(6, SpriteVariations.MoFExtraBoss);
   }
 
   private SpriteVariations getBossList(Integer stage) {
@@ -569,7 +573,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
       this.immunityActive = false;
     }
     // game won when all stages complete
-    if (this.currentStage < 3) {
+    if (this.currentStage < 7) {
       if (this.stageDelay < this.stageMaxInterval) {
         if (this.bossBattle) {
           runBossBattle(); // continues until boss is dead
@@ -615,6 +619,10 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
         }
       }
     }
+    else if (getGameState().equals(GameState.ACTIVE_GAME)) {
+      this.currentStage = 6;
+      setGameState(GameState.GAME_WON);
+    }
     moveAllEnemies(); 
   }
 
@@ -658,7 +666,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
       // move downwards
       Enemies displacedEnemy;
       Enemies enemy = this.currentEnemies.get(i);
-      if (enemy.getVariation().equals(SpriteVariations.yokai1)) {
+      if (enemy.getVariation().equals(SpriteVariations.fairy)) {
         enemy.setVelocity(new Vector(0, 1, 1));
         displacedEnemy = enemy.displaceBy(enemy.getVelocity());
       }
@@ -836,11 +844,26 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
             // get rewards
             rewardCollectibles(enemy);
             // calculate score
-            if (enemy.getVariation().equals(SpriteVariations.yokai1)) {
+            if (enemy.getVariation().equals(SpriteVariations.fairy)) {
               this.score += 150;
             }
-            else if (enemy.getVariation().equals(SpriteVariations.yokai2)) {
+            else if (enemy.getVariation().equals(SpriteVariations.highFairy)) {
               this.score += 500;
+            }
+            else if (enemy.getVariation().equals(SpriteVariations.guardianFairy)) {
+              this.score += 125;
+            }
+            else if (enemy.getVariation().equals(SpriteVariations.seasonalFairy)) {
+              this.score += 350;
+            }
+            else if (enemy.getVariation().equals(SpriteVariations.cursedFairy)) {
+              this.score += 550;
+            }
+            else if (enemy.getVariation().equals(SpriteVariations.yokai)) {
+              this.score += 350;
+            }
+            else if (enemy.getVariation().equals(SpriteVariations.Trancendent)) {
+              this.score += 850;
             }
             this.currentEnemies.remove(i);
           }
@@ -873,6 +896,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
 
   @Override
   public void moveAllCollectibles() {
+    Vector attract;
     for (int i = this.collectiblesOnField.size() - 1; i >= 0; i--) {
       Consumables item = this.collectiblesOnField.get(i);
       if (!itemInsideField(item.displaceBy(item.getVelocity()))) {
@@ -881,8 +905,13 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
       else {
         // player above point of collection
         if (this.currentPlayer.getPosition().y() < this.Field.getFieldY() + this.Field.height()*(0.28)) {
-          Vector attact = this.currentPlayer.getPosition().subVect(item.getPosition()).normaliseVect();
-          item.setVelocity(attact.multiplyScalar(5));
+          attract = this.currentPlayer.getPosition().subVect(item.getPosition()).normaliseVect();
+          item.setVelocity(attract.multiplyScalar(5));
+        }
+        // player is 2.5 radius from item
+        else if (item.getPosition().subVect(this.currentPlayer.getPosition()).length() < 3*(item.getRadius() + this.currentPlayer.getRadius())) {
+          attract = this.currentPlayer.getPosition().subVect(item.getPosition()).normaliseVect();
+          item.setVelocity(attract.multiplyScalar(5));
         }
         else {
           item.setVelocity(new Vector(0, 1, 1));
@@ -952,7 +981,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
       replacePower = true;
     }
     // yokai1 rewards powerSmall
-    if (enemy.getVariation().equals(SpriteVariations.yokai1)) {
+    if (enemy.getVariation().equals(SpriteVariations.fairy)) {
       if (!replacePower) {
         Consumables power = getSprite.getNewCollectible(SpriteVariations.powerSmall);
         power = power.setNewPosition(new Vector(cx, cy, 1));
@@ -966,7 +995,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
         this.collectiblesOnField.add(faith);
       }
     }
-    else if (enemy.getVariation().equals(SpriteVariations.yokai2)) {
+    else if (enemy.getVariation().equals(SpriteVariations.highFairy)) {
       if (!replacePower) {
         Consumables power = getSprite.getNewCollectible(SpriteVariations.powerMedium);
         power = power.setNewPosition(new Vector(cx, cy, 1));
@@ -1056,6 +1085,20 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
          extend = extend.setNewPosition(new Vector(cx, cy, 1));
 
          this.collectiblesOnField.add(extend);
+      }
+    }
+    // default reward
+    else {
+      if (!replacePower) {
+        Consumables power = getSprite.getNewCollectible(SpriteVariations.powerSmall);
+        power = power.setNewPosition(new Vector(cx, cy, 1));
+        this.collectiblesOnField.add(power);
+      }
+      else {
+        Consumables faith = getSprite.getNewCollectible(SpriteVariations.faithSmall);
+        faith = faith.setNewPosition(new Vector(cx, cy, 1));
+
+        this.collectiblesOnField.add(faith);
       }
     }
   }

@@ -13,8 +13,8 @@ public class TestEnemies {
     
     // check if dmg subtracts normally
     int dmg = 50;
-    Enemies e1 = Enemies.newEnemy(SpriteVariations.yokai1);
-    Enemies e2 = Enemies.newEnemy(SpriteVariations.boss4);
+    Enemies e1 = Enemies.newEnemy(SpriteVariations.fairy);
+    Enemies e2 = Enemies.newEnemy(SpriteVariations.MoFboss1);
 
     int oldHealth1 = e1.getMaxhealth();
     int oldHealth2 = e2.getMaxhealth();
@@ -42,8 +42,8 @@ public class TestEnemies {
   @Test
   public void testFireDelayAndDirectionState() {
 
-    Enemies e1 = Enemies.newEnemy(SpriteVariations.yokai1);
-    Enemies e2 = Enemies.newEnemy(SpriteVariations.yokai2);
+    Enemies e1 = Enemies.newEnemy(SpriteVariations.fairy);
+    Enemies e2 = Enemies.newEnemy(SpriteVariations.highFairy);
 
     // check fireTimer setter (default zero)
     int newTimer = 45;

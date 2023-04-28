@@ -28,20 +28,19 @@ public class BulletPattern implements IBulletPattern {
 
   @Override
   public List<Bullets> enemyShoot(Enemies enemy, Player player) {
-    if (enemy.getVariation().equals(SpriteVariations.yokai1)) {
+    if (enemy.getVariation().equals(SpriteVariations.fairy)) {
       return shootAimedPattern(enemy, player);
     }
-    else if (enemy.getVariation().equals(SpriteVariations.yokai2)) {
+    else if (enemy.getVariation().equals(SpriteVariations.highFairy)) {
       return shootSpreadPattern(enemy, 5, -(0.25)*Math.PI);
     }
-    else {
-      return new ArrayList<Bullets>();
-    }
+    // default
+    return shootSpreadPattern(enemy, 3, -(0.3)*Math.PI);
   }
 
   @Override
   public List<Bullets> bossShoot(Enemies boss, boolean unleashSuper) {
-    if (boss.getVariation().equals(SpriteVariations.boss4)) {
+    if (boss.getVariation().equals(SpriteVariations.MoFboss1)) {
       if (unleashSuper) {
         return shootRotatingFullSpreadPattern(boss);
       }
@@ -49,7 +48,7 @@ public class BulletPattern implements IBulletPattern {
         return shootSpreadPattern(boss, 9, -(0.45)*Math.PI);
       }
     }
-    else if (boss.getVariation().equals(SpriteVariations.boss5)) {
+    else if (boss.getVariation().equals(SpriteVariations.MoFboss2)) {
       if (unleashSuper) {
         return shootRotatingFullSpreadPattern(boss);
       }
@@ -57,8 +56,9 @@ public class BulletPattern implements IBulletPattern {
         return shootSpreadPattern(boss, 9, -(0.45)*Math.PI);
       }
     }
+    // default for other bosses
     else {
-      return new ArrayList<Bullets>();
+      return shootSpreadPattern(boss, 11, -(0.35)*Math.PI);
     }
   }
 
@@ -116,7 +116,10 @@ public class BulletPattern implements IBulletPattern {
       double constAngle = (-1)*startingAngle;
       for (int j = 0; j < shootSpread; j++) {
         Bullets newBullet = this.getSprite.getNewBullet(SpriteVariations.ellipseLarge);
-        newBullet.setBulletType(SpriteType.BossBullet);
+        if (enemy.getVariation().equals(SpriteVariations.yokai)) {
+          newBullet = this.getSprite.getNewBullet(SpriteVariations.ballLarge);
+        }
+        newBullet.setBulletType(SpriteType.EnemyBullet);
         newBullet.setBulletOwner(enemy.getVariation());
         Vector bulletRadius = new Vector(newBullet.getRadius(), 0, 1);
         // set bullets default spawnpoint
@@ -241,7 +244,7 @@ public class BulletPattern implements IBulletPattern {
     }
     // shoot homing
     if (maxHomingShooters > 0) {
-      Bullets newBullet = this.getSprite.getNewBullet(SpriteVariations.ofuda);
+      Bullets newBullet = this.getSprite.getNewBullet(SpriteVariations.ofudaHoming);
       newBullet.setBulletType(SpriteType.PlayerBullet);
       newBullet.setBulletOwner(player.getVariation());
       Vector bulletRadius = new Vector(newBullet.getRadius(), 0, 1);

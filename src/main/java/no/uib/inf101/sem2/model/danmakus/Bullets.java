@@ -48,23 +48,72 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
   * playable: enemy bullets: "circleSmall" and "ellipseLarge", player bullets: "arrow".
   */
   static Bullets newBullet(SpriteVariations newBulletVar) {
-    // hitbox variables. Using circular hitboxes for all to make collision calculation easier.
+    // hitbox variables.
+    // enemy
     int circleSmallR = 4;
     Vector circleSmallPos = new Vector(-circleSmallR, -circleSmallR, 1);
     int ellipseLargeR = 10;
     Vector ellipseLargePos = new Vector(-ellipseLargeR, -ellipseLargeR, 1);
-    int arrowR = 4;
-    Vector arrowPos = new Vector(-arrowR, -arrowR, 1);
+    int ballLargeR = 13;
+    Vector ballLargePos = new Vector(-ballLargeR, -ballLargeR, 1);
+    int starR = 5;
+    Vector starPos = new Vector(-starR, -starR, 1);
+    int heartR = 6;
+    Vector heartPos = new Vector(-heartR, -heartR, 1);
+    int pelletR = 3;
+    Vector pelletPos = new Vector(-pelletR, -pelletR, 1);
+    int knifeR = 4;
+    Vector knifePos = new Vector(-knifeR, -knifeR, 1);
+    int noteR = 5;
+    Vector notePos = new Vector(-noteR, -noteR, 1);
+    // player
     int ofudaR = 5;
     Vector ofudaPos = new Vector(-ofudaR, -ofudaR, 1);
+    int ofudaHomingR = 4;
+    Vector ofudaHomingPos = new Vector(-ofudaHomingR, -ofudaHomingR, 1);
+    int arrowR = 5;
+    Vector arrowPos = new Vector(-arrowR, -arrowR, 1);
+    // special attacks
+    int energyBlastR = 7;
+    Vector energyBlastPos = new Vector(-energyBlastR, -energyBlastR, 1);
+    int fusionBallR = 12;
+    Vector fusionBallPos = new Vector(-fusionBallR, -fusionBallR, 1);
+    int lazerR = 3;
+    Vector lazerPos = new Vector(-lazerR, -lazerR, 1);
+    int MSOR = 80;
+    Vector MSOPos = new Vector(-MSOR, -MSOR, 1);
+    int nuclearReactorR = 90;
+    Vector nuclearReactorPos = new Vector(-nuclearReactorR, -nuclearReactorR, 1);
+    int tractorBeamR = 5;
+    Vector tractorBeamPos = new Vector(-tractorBeamR, -tractorBeamR, 1);
+    int YYBR = 20;
+    Vector YYBPos = new Vector(-YYBR, -YYBR, 1);
+
 
     Bullets bullet = switch(newBulletVar) {
       // enemy bullets
       case circleSmall -> new Bullets(newBulletVar, circleSmallR, circleSmallPos);
+      case ballLarge -> new Bullets(newBulletVar, ballLargeR, ballLargePos);
+      case star -> new Bullets(newBulletVar, starR, starPos);
+      case heart -> new Bullets(newBulletVar, heartR, heartPos);
+      case pellet -> new Bullets(newBulletVar, pelletR, pelletPos);
+      case knife -> new Bullets(newBulletVar, knifeR, knifePos);
+      case note -> new Bullets(newBulletVar, noteR, notePos);
       case ellipseLarge -> new Bullets(newBulletVar, ellipseLargeR, ellipseLargePos);
+
+      // special
+      case energyBlast -> new Bullets(newBulletVar, energyBlastR, energyBlastPos, 40);
+      case fusionBall -> new Bullets(newBulletVar, fusionBallR, fusionBallPos);
+      case lazer -> new Bullets(newBulletVar, lazerR, lazerPos);
+      case masterSparkOvercharge -> new Bullets(newBulletVar, MSOR, MSOPos, 100);
+      case nuclearReactor -> new Bullets(newBulletVar, nuclearReactorR, nuclearReactorPos);
+      case tractorBeam -> new Bullets(newBulletVar, tractorBeamR, tractorBeamPos, 25);
+      case yinYangBlast -> new Bullets(newBulletVar, YYBR, YYBPos, 100);
+
       // player bullets
       case arrow -> new Bullets(newBulletVar, arrowR, arrowPos, 36); 
-      case ofuda -> new Bullets(newBulletVar, ofudaR, ofudaPos, 16); 
+      case ofuda -> new Bullets(newBulletVar, ofudaR, ofudaPos, 26); 
+      case ofudaHoming -> new Bullets(newBulletVar, ofudaHomingR, ofudaHomingPos, 16);
       default -> throw new IllegalArgumentException("Type '" + newBulletVar + "' does not match one of two playable characters");
     };
     return bullet;

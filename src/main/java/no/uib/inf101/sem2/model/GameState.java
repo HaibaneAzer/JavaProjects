@@ -5,6 +5,7 @@ public enum GameState {
   
   ACTIVE_GAME,
   GAME_OVER,
+  GAME_WON,
   SELECT_SCREEN,
   PAUSE_GAME,
   GAME_MENU,
