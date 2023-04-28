@@ -247,7 +247,7 @@ public class DanmakuView extends JPanel{
     CharacterMap.put(SpriteVariations.player1, CharacterImages);
     // player2
     CharacterImages = new HashMap<>();
-    CharacterImages.put("still", Inf101Graphics.loadImageFromResources("/player2.PNG"));
+    CharacterImages.put("still", Inf101Graphics.loadImageFromResources("/player2.png"));
     CharacterImages.put("left", Inf101Graphics.loadImageFromResources("/player2Left.png"));
     CharacterImages.put("right", Inf101Graphics.loadImageFromResources("/player2Right.png"));
     CharacterImages.put("shift", Inf101Graphics.loadImageFromResources("/playerHitbox.png"));
@@ -414,12 +414,12 @@ public class DanmakuView extends JPanel{
     FieldImages = new HashMap<>();
     FieldImages.put("stage", Inf101Graphics.loadImageFromResources("/UFOStage3Background.png"));
     // stage boss 5
-    FieldImages.put("back", Inf101Graphics.loadImageFromResources("/impNightBoss5Background.png"));
+    FieldImages.put("back", Inf101Graphics.loadImageFromResources("/ImpNightBoss5Background.png"));
     FieldImages.put("fore", Inf101Graphics.loadImageFromResources("/MoFBoss5Foreground.png"));
     FieldMap.put(5, FieldImages);
     // stage 6
     FieldImages = new HashMap<>();
-    FieldImages.put("stage", Inf101Graphics.loadImageFromResources("/impNightStage4Background.png"));
+    FieldImages.put("stage", Inf101Graphics.loadImageFromResources("/ImpNightStage4Background.png"));
     // stage boss 6
     FieldImages.put("back", Inf101Graphics.loadImageFromResources("/MoFBoss6Background.png"));
     FieldImages.put("fore", Inf101Graphics.loadImageFromResources("/MoFBoss5Foreground.png"));

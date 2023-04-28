@@ -304,13 +304,13 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
    * the image.
    */
   private Vector getEnemySpawn(Integer Stage, EnemySpawnPos pos, Integer num) {
-    for (int S = 1; S <= 6; S++) {
+    /* for (int S = 1; S <= 6; S++) {
       System.out.println("Sizes: " + SpawnStage.get(S).size() + " & " + getSprite.getSpawnOrder(S).size());
       for (int iPos = 0;iPos < SpawnStage.get(S).size(); iPos++) {
         System.out.println("  loader: " + SpawnStage.get(S).entrySet().iterator().next().getKey());
         System.out.println("  DanmakuSpawner: " + getSprite.getSpawnOrder(S).get(iPos));
       }
-    }
+    } */
     return SpawnStage.get(Stage).get(pos).get(num);
   }
 
@@ -658,12 +658,12 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     EnemySpawnPos setPos = getSprite.getSpawnOrder(this.currentStage).get(wave);
     Enemies enemy = this.currentEnemies.get(nextSpawnIndex);
     Vector pos = getEnemySpawn(this.currentStage, setPos, this.nextEnemyIndex);
-    if (pos == null) {
+    /* if (pos == null) {
       System.out.println("Stage: " + this.currentStage);
       System.out.println("EnemySpawnPos: " + setPos);
       System.out.println("enemy index: " + this.nextEnemyIndex);
       
-    }
+    } */
     
     this.currentEnemies.set(nextSpawnIndex, enemy.setNewPosition(pos));
 

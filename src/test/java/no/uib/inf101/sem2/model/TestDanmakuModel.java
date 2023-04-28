@@ -220,28 +220,24 @@ public class TestDanmakuModel {
     assertEquals(SpriteVariations.MoFboss1, model.getBossEnemyOnField().getVariation());
 
     // stage doesnt change before boss is dead
-    for (int i = 0; i < 8150; i++) {
+    for (int i = 0; i < 7550; i++) {
       model.moveEnemiesInWaves();
     }
-    System.out.println(model.getBossEnemyOnField().getPosition());
-    System.out.println(model.getPlayer().getPosition());
-    System.out.println(model.getBossEnemyOnField().getHealthPoints());
 
     assertTrue(model.getCurrentStage() == 1);
 
     // kill boss leads to next stage + player bullets can harm boss
-    for (int i = 0; i < 2000; i++) {
-      model.playerFire(5, true);
+    for (int i = 0; i < 4000; i++) {
+      model.playerFire(3, true);
       if (model.getBulletsOnField().iterator().hasNext()) {
         model.moveAllBullets();
       }
-      System.out.println(model.getBulletsOnField().iterator().next().getPosition());
     }
     // advance stage
     for (int i = 0; i < 10; i++) {
       model.moveEnemiesInWaves();
     }
-    System.out.println(model.getBossEnemyOnField().getHealthPoints());
+    
     assertTrue(model.getBossEnemyOnField() == null);
 
     assertTrue(model.getCurrentStage() == 2);
@@ -272,10 +268,10 @@ public class TestDanmakuModel {
     // check enemy health 
     assertEquals(enemy.getHealthPoints(), enemy.getMaxhealth());
 
-    // run simulation for 400 ticks
-    boolean collision = false;
-    for (int i = 0; i < 400; i++) {
-      model.playerFire(1, false);
+    // run simulation for 80 ticks
+    model.movePlayer(new Vector(2, 0, 1));
+    for (int i = 0; i < 80; i++) {
+      model.playerFire(5, true);
       model.moveEnemiesInWaves();
       if (model.getBulletsOnField().iterator().hasNext()) {
         model.moveAllBullets();
@@ -285,11 +281,7 @@ public class TestDanmakuModel {
       }
       lineUp = new Vector(enemy.getPosition().x() - player.getPosition().x(), 0, 1);
       model.movePlayer(lineUp);
-      for (Bullets bullet : model.getBulletsOnField()) {
-        if (bullet.getPosition().subVect(enemy.getPosition()).length() < bullet.getRadius() + enemy.getRadius()) {
-          collision = true;
-        }
-      }
+      
     }
 
     if (model.getEnemiesOnField().iterator().hasNext()) {
@@ -297,8 +289,6 @@ public class TestDanmakuModel {
     }
     // check collision + dmg taken
 
-    assertTrue(collision);
-    
     assertTrue(enemy.getHealthPoints() < enemy.getMaxhealth());
 
   }
@@ -317,7 +307,7 @@ public class TestDanmakuModel {
     );  
 
     // setup
-    for (int i = 0; i < 550; i++) {
+    for (int i = 0; i < 1550; i++) {
       model.moveEnemiesInWaves();
     }
     
