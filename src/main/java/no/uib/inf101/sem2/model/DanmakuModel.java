@@ -74,7 +74,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     this.gameState = GameState.GAME_MENU;
     this.FPSCounter = 0.0;
     // handle waves and stages
-    this.currentStage = 4;
+    this.currentStage = 1;
     this.currentWaveIndex = 0;
     this.waveDelay = 0;
     this.stageDelay = 0;
@@ -98,7 +98,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     // score
     this.score = 0;
     // load spawn
-    loadEnemySpawnpoints(this.Field, this.TotalEnemies);
+    loadEnemySpawnpoints(this.Field);
     loadBossList();
     
   }
@@ -218,74 +218,84 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
    * depending on wave number and stage.
    * spawnpoint format (integer stage, integer set, Integer enemies per wave).
    */
-  private void loadEnemySpawnpoints(FieldDimension field, List<List<Enemies>> waveEnemies) {
+  private void loadEnemySpawnpoints(FieldDimension field) {
     int fieldX = field.getFieldX();
     int fieldWidth = field.width();
+    List<List<Enemies>> waveEnemies = new ArrayList<>();
+    /* System.out.println("num enemies per wave");
+    for (int numEnemy = 0; numEnemy < waveEnemies.size(); numEnemy++) {
+      System.out.println("size of idx " + numEnemy + ": " + waveEnemies.get(numEnemy).size());
+    } */
+    for (int stage = 1; stage <= 6; stage++) {
+      waveEnemies = getSprite.getTotalEnemies(stage);
     
-    // stage 1
-    double x = fieldX + fieldWidth*(0.1);
-    // spawn enemies in horisontal line
-    for (int i = 0; i < waveEnemies.get(0).size(); i++) {
-      enemiesPerWave.put(i, new Vector(x, 0, 1));
-      if (x < fieldX + fieldWidth*(0.8)) {
-        x += fieldWidth*(0.1);
-      }
-    }
-    SpawnSet.put(EnemySpawnPos.horisontal, enemiesPerWave);
+      // refresh hashmaps
+      SpawnSet = new HashMap<>();
+      enemiesPerWave = new HashMap<>();
 
-    // spawn enemies in vertical line
-    // far right
-    enemiesPerWave = new HashMap<>();
-    x = fieldX + fieldWidth*(0.2);
-    for (int i = 0; i < waveEnemies.get(1).size(); i++) {
-      enemiesPerWave.put(i, new Vector(x, 0, 1));
+      double x = fieldX + fieldWidth*(0.1);
+      // spawn enemies in horisontal line
+      for (int i = 0; i < waveEnemies.get(0).size(); i++) {
+        enemiesPerWave.put(i, new Vector(x, 0, 1));
+        if (x < fieldX + fieldWidth*(0.8)) {
+          x += fieldWidth*(0.1);
+        }
+      }
+      SpawnSet.put(EnemySpawnPos.horisontal, enemiesPerWave);
+
+      // spawn enemies in vertical line
+      // far right
+      enemiesPerWave = new HashMap<>();
+      x = fieldX + fieldWidth*(0.2);
+      for (int i = 0; i < waveEnemies.get(1).size(); i++) {
+        enemiesPerWave.put(i, new Vector(x, 0, 1));
+      }
+      SpawnSet.put(EnemySpawnPos.verticalRight, enemiesPerWave);
+
+      // far left
+      enemiesPerWave = new HashMap<>();
+      x = fieldX + fieldWidth*(0.8);
+      for (int i = 0; i < waveEnemies.get(2).size(); i++) {
+        enemiesPerWave.put(i, new Vector(x, 0, 1));
+      }
+      SpawnSet.put(EnemySpawnPos.verticalLeft, enemiesPerWave);
+      
+      // middle right
+      enemiesPerWave = new HashMap<>();
+      x = fieldX + fieldWidth*(0.4);
+      for (int i = 0; i < waveEnemies.get(3).size(); i++) {
+        enemiesPerWave.put(i, new Vector(x, 0, 1));
+      } 
+      SpawnSet.put(EnemySpawnPos.verticalMiddleR, enemiesPerWave);
+    
+      // middle left
+      enemiesPerWave = new HashMap<>();
+      x = fieldX + fieldWidth*(0.6);
+      for (int i = 0; i < waveEnemies.get(4).size(); i++) {
+        enemiesPerWave.put(i, new Vector(x, 0, 1));
+      }
+      SpawnSet.put(EnemySpawnPos.verticalMiddelL, enemiesPerWave);
+
+      // spawn enemies from both sides simultaniously
+      enemiesPerWave = new HashMap<>();
+      x = fieldX + fieldWidth*(0.1);
+      boolean switcher = true;
+      for (int i = 0; i < waveEnemies.get(5).size(); i++) {
+        enemiesPerWave.put(i, new Vector(x, 0, 1));
+        if (switcher) {
+          switcher = false;
+          x = fieldX + fieldWidth*(0.9) - (0.05)*fieldWidth*i;
+        }
+        else {
+          switcher = true;
+          x = fieldX + fieldWidth*(0.1) + (0.05)*fieldWidth*i;
+        }
+      }
+      SpawnSet.put(EnemySpawnPos.zigzag, enemiesPerWave);
+      SpawnStage.put(stage, SpawnSet);
       
     }
-    SpawnSet.put(EnemySpawnPos.verticalRight, enemiesPerWave);
-
-    // far left
-    enemiesPerWave = new HashMap<>();
-    x = fieldX + fieldWidth*(0.8);
-    for (int i = 0; i < waveEnemies.get(2).size(); i++) {
-      enemiesPerWave.put(i, new Vector(x, 0, 1));
-    }
-    SpawnSet.put(EnemySpawnPos.verticalLeft, enemiesPerWave);
     
-    // middle right
-    enemiesPerWave = new HashMap<>();
-    x = fieldX + fieldWidth*(0.4);
-    for (int i = 0; i < waveEnemies.get(2).size(); i++) {
-      enemiesPerWave.put(i, new Vector(x, 0, 1));
-    }
-    SpawnSet.put(EnemySpawnPos.verticalMiddleR, enemiesPerWave);
-    
-    // middle left
-    enemiesPerWave = new HashMap<>();
-    x = fieldX + fieldWidth*(0.6);
-    for (int i = 0; i < waveEnemies.get(2).size(); i++) {
-      enemiesPerWave.put(i, new Vector(x, 0, 1));
-    }
-    SpawnSet.put(EnemySpawnPos.verticalMiddelL, enemiesPerWave);
-
-    // spawn enemies from both sides simultaniously
-    enemiesPerWave = new HashMap<>();
-    x = fieldX + fieldWidth*(0.1);
-    boolean switcher = true;
-    for (int i = 0; i < waveEnemies.get(2).size(); i++) {
-      enemiesPerWave.put(i, new Vector(x, 0, 1));
-      if (switcher) {
-        switcher = false;
-        x = fieldX + fieldWidth*(0.9) - (0.05)*fieldWidth*i;
-      }
-      else {
-        switcher = true;
-        x = fieldX + fieldWidth*(0.1) + (0.05)*fieldWidth*i;
-      }
-
-    }
-    SpawnSet.put(EnemySpawnPos.zigzag, enemiesPerWave);
-    SpawnStage.put(1, SpawnSet);
-
   }
 
   /**
@@ -293,6 +303,26 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
    * the image.
    */
   private Vector getEnemySpawn(Integer Stage, EnemySpawnPos pos, Integer num) {
+    /* System.out.println("inputs: " + Stage +  ", " + pos + " & " + num + "gives: \n" + SpawnStage.get(Stage).get(pos).get(num)); */
+    outerloop:
+    for (int S = 1; S <= 6; S++) {
+      for (EnemySpawnPos posi : SpawnStage.get(S).keySet()) {
+        for (int N : SpawnStage.get(S).get(posi).keySet()) {
+          if ((S == Stage) && (posi == pos) && (N == num)) {
+            System.out.println("Stage: " + S + ", posType: " + pos + " & idx: " + N);
+            System.out.println("position: " + SpawnStage.get(Stage).get(pos).get(num) + "\n");
+          }
+          else if (SpawnStage.get(Stage).get(pos).get(num) == null) {
+            System.out.println("position is null, given: \n");
+            System.out.println("Stage: " + S + " & " + Stage);
+            System.out.println("posType: " + posi + " & " + pos);
+            System.out.println("idx: " + N + " & " + num);
+            System.out.println("does not match \n");
+            break outerloop;
+          }
+        }
+      }
+    }
     return SpawnStage.get(Stage).get(pos).get(num);
   }
 
@@ -584,7 +614,9 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
       }
       else {
         // wait before next spawn
+        // get current stage's enemies
         this.TotalEnemies = getSprite.getTotalEnemies(this.currentStage);
+        // load new stage enemies
         if (this.spawnEnemyTimer < this.spawnEnemyInterval) {
           this.spawnEnemyTimer++; 
         }
@@ -607,7 +639,6 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
               this.currentWaveIndex = 0; 
               this.stageDelay = 0;
               this.bossBattle = true;
-              this.currentEnemies = new ArrayList<>();
             }
           }
         }
@@ -637,6 +668,7 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
     int nextSpawnIndex = this.currentEnemies.size() - 1;
     // set spawns: 
     EnemySpawnPos setPos = EnemySpawnPos.horisontal;
+    // must corrospond with loadEnemySpawnpoints order?
     if (wave == 1) {
       setPos = EnemySpawnPos.verticalRight;
     }
@@ -644,16 +676,21 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
       setPos = EnemySpawnPos.verticalLeft;
     }
     else if (wave == 3) {
-      setPos = EnemySpawnPos.zigzag;
+      setPos = EnemySpawnPos.verticalMiddleR;
     }
     else if (wave == 4) {
       setPos = EnemySpawnPos.verticalMiddelL;
     }
     else if (wave == 5) {
-      setPos = EnemySpawnPos.verticalMiddleR;
+      setPos = EnemySpawnPos.zigzag;
     }
     Enemies enemy = this.currentEnemies.get(nextSpawnIndex);
-    Vector pos = getEnemySpawn(1, setPos, this.nextEnemyIndex);
+    Vector pos = getEnemySpawn(this.currentStage, setPos, this.nextEnemyIndex);
+    if (pos == null) {
+      System.out.println("null pos at enemy: " + this.nextEnemyIndex);
+      System.out.println("stage num: " + this.currentStage);
+      System.out.println("wave num: " + this.currentWaveIndex);
+    }
     this.currentEnemies.set(nextSpawnIndex, enemy.setNewPosition(pos));
 
   }
@@ -677,18 +714,25 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
         displacedEnemy = enemy.displaceBy(enemy.getVelocity());
       }
       else {
-        //NB! nullPointerException happening at stage 3
-        System.out.println(enemy);
-        displacedEnemy = null;
+        //NB! nullPointerException happening at stage 2
+        System.out.println(enemy.getVariation());
+        System.out.println(enemy.getHealthBars());
+        System.out.println(enemy.getHealthPoints());
+        System.out.println(enemy.getType());
+        System.out.println(enemy.getVelocity());
+        System.out.println(enemy.getPosition());
+        // unmoved
+        displacedEnemy = enemy;
+        
+
       }
       // eliminate enemy when they're outside screen.
       if (!enemyInsideScreen(enemy)) {
         this.currentEnemies.remove(i);
       }
       else {
-        if (displacedEnemy != null) {
-          this.currentEnemies.set(i, displacedEnemy);  
-        }
+        this.currentEnemies.set(i, displacedEnemy);  
+        
       }
     } 
   }

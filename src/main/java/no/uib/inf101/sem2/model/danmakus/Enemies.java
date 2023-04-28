@@ -131,6 +131,9 @@ public class Enemies extends Sprite<SpriteType, SpriteState>{
   public Enemies displaceBy(Vector displacement) {
     
     Vector[] translate = Matrix.TranslationMatrix(displacement); // get translation matrix
+    if (this.Position == null) {
+      System.out.println("null pos: " + this.Variation + "&" + this.Velocity + "&" + displacement);
+    }
     Vector displacedPosition = this.Position.transformVect(translate); // displace position
 
     Enemies displacedEnemy = new Enemies(

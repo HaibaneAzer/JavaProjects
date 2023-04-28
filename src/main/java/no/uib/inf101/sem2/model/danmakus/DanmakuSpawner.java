@@ -8,12 +8,12 @@ public class DanmakuSpawner implements DanmakuFactory{
   private final SpriteVariations[][][] enemySpawnList = {
     // stage 1
     {
-    {SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai},
+    {SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai},
+    {SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai},
     {SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai},
-    {SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai},
-    {SpriteVariations.fairy},
-    {SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai},
-    {SpriteVariations.fairy, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.fairy}
+    {SpriteVariations.highFairy},
+    {SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai, SpriteVariations.yokai},
+    {SpriteVariations.fairy, SpriteVariations.yokai, SpriteVariations.fairy}
     },
     // stage 2
     {

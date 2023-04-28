@@ -35,6 +35,7 @@ public class DanmakuView extends JPanel{
   private static final double WFactor = 0.7;
   private double SCOREBOARDHEIGHT;
   private double scrollY;
+  private double rotateHitbox;
   // number incrementer
   private static final Pattern NUMBER = Pattern.compile("\\d+");
   
@@ -51,6 +52,7 @@ public class DanmakuView extends JPanel{
     int Width = this.Model.getDimension().width();
     int Height = this.Model.getDimension().height();
     this.scrollY = 0;
+    this.rotateHitbox = 0;
     // prefered scoreboard dimension
     this.SCOREBOARDWIDTH = WFactor*(Width);
     this.SCOREBOARDHEIGHT = Height + 2*y;
@@ -467,7 +469,7 @@ public class DanmakuView extends JPanel{
       // draw bullet field
       drawField(Canvas, fieldRect, backgroundRect, this.scrollY, Model, setColor);
       // draw player on field
-      drawPlayer(Canvas, Model.getPlayer(), Model.getIFrames(), setColor, true);
+      drawPlayer(Canvas, Model.getPlayer(), this.rotateHitbox, Model.getIFrames(), setColor, true);
       // draw enemies on field
       drawEnemy(Canvas, Model.getEnemiesOnField(), setColor, false);
       // draw bosses on field
@@ -484,8 +486,12 @@ public class DanmakuView extends JPanel{
       if (!(Model.getGameState().equals(GameState.PAUSE_GAME) || Model.getGameState().equals(GameState.GAME_OVER))) {
         // stop scrolling when game is pause or over.
         this.scrollY += 0.8; // scroll speed
+        this.rotateHitbox += (0.01)*Math.PI;
         if (this.scrollY > fieldRect.getHeight() + 2*fieldRect.getY()) {
           this.scrollY = 0;
+        }
+        if (this.rotateHitbox >= 2*Math.PI) {
+          this.rotateHitbox = 0;
         }
       }
       drawFieldFrame(Canvas, fieldRect, setColor);
@@ -500,7 +506,7 @@ public class DanmakuView extends JPanel{
     }
   }
   
-  private void drawPlayer(Graphics2D Canvas, Player player, boolean iFramesActive, ColorTheme Color, boolean hasHitbox) {
+  private void drawPlayer(Graphics2D Canvas, Player player, double angleInc, boolean iFramesActive, ColorTheme Color, boolean hasHitbox) {
     double x;
     double imgWidth;
     double y;
@@ -509,7 +515,6 @@ public class DanmakuView extends JPanel{
     double scaleFactor;
     BufferedImage playerImg;
     BufferedImage playerBox;
-    Ellipse2D playerBall;
     Ellipse2D outer;
     Ellipse2D inner;
     Area hCircle;
@@ -561,7 +566,7 @@ public class DanmakuView extends JPanel{
     // draw hitbox
     if (hasHitbox) {
       playerBox = getCharacterImage(player.getVariation(), "shift");
-      Inf101Graphics.drawCenteredImage(Canvas, playerBox, x - 2, y, 1.5*scaleFactor);
+      Inf101Graphics.drawCenteredImage(Canvas, playerBox, x, y, 1.5*scaleFactor, angleInc);
       /* x -= player.getRadius();
       y -= player.getRadius();
       playerBall = new Ellipse2D.Double(x, y, diameter, diameter);
@@ -850,7 +855,7 @@ public class DanmakuView extends JPanel{
         foreImgX = centerX - (fieldForeImg.getWidth()*foreScaleFactor/2);
       }
       // scrolling variable
-      double scrollDown = scrollY - (bgHeight);
+      double scrollDown = scrollY - (imgBackHeight*scaleFactor) + 3;
       double scrollDown2 = scrollY;
       // draw stage background
       Inf101Graphics.drawImage(Canvas, fieldBackImg, backImgX, scrollDown, scaleFactor);
