@@ -120,6 +120,7 @@ public abstract class Sprite<E, T> {
       return false;
     if (getClass() != obj.getClass())
       return false;
+    @SuppressWarnings("unchecked")
     Sprite<E, T> other = (Sprite<E, T>) obj;
     if (directionState == null) {
       if (other.directionState != null)
