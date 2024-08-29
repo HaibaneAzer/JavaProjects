@@ -48,10 +48,10 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
   private final int maxReloadInterval = 150; // time between each attack barrage.
   // handle waves and stages
   private int currentStage;
-  private final int stageMaxInterval = 450; // time between each stage
+  private final int stageMaxInterval = 350; // time between each stage
   private int stageDelay;
   private int currentWaveIndex;
-  private final int WaveMaxInterval = 300; // time between each wave
+  private final int WaveMaxInterval = 200; // time between each wave
   private int waveDelay;
   // setSpawnWaveEnemies method: 
   private final int spawnEnemyInterval = 50; // enemy spawn rate
@@ -604,7 +604,6 @@ public class DanmakuModel implements ViewableDanmakuModel, ControllableDanmakuMo
         // wait before next spawn
         // get current stage's enemies
         this.TotalEnemies = getSprite.getTotalEnemies(this.currentStage);
-        // load new stage enemies
         if (this.spawnEnemyTimer < this.spawnEnemyInterval) {
           this.spawnEnemyTimer++; 
         }

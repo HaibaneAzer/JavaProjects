@@ -424,6 +424,12 @@ public class DanmakuView extends JPanel{
     FieldImages.put("back", Inf101Graphics.loadImageFromResources("/MoFBoss6Background.png"));
     FieldImages.put("fore", Inf101Graphics.loadImageFromResources("/MoFBoss5Foreground.png"));
     FieldMap.put(6, FieldImages);
+
+    // win screen/credits
+    FieldImages = new HashMap<>();
+    FieldImages.put("back", Inf101Graphics.loadImageFromResources("/DanmakuEndscreen.png"));
+    FieldImages.put("fore", Inf101Graphics.loadImageFromResources("/DanmakuEndtext.png"));
+    FieldMap.put(8, FieldImages);
   }
  
   /**
@@ -1030,9 +1036,34 @@ public class DanmakuView extends JPanel{
     Rectangle2D pressMenu = new Rectangle2D.Double(0, 0.7*endGameBackground.getHeight(), endGameBackground.getWidth(), 30);
     if (status.equals(GameState.GAME_WON)) {
 
-      Canvas.setColor(color.getGameOverColor("back"));
+      BufferedImage EndGameImg = getFieldImage(8, "back");
+      BufferedImage EndTextImg = getFieldImage(8, "fore");
+
+      double imgForeHeight = EndTextImg.getHeight();
+      double imgBackWidth = EndGameImg.getWidth();
+
+      // scale background to screen size
+      double bgHeight = endGameBackground.getHeight();
+      double bgWidth = endGameBackground.getWidth();
+      double centerX = endGameBackground.getCenterX();
+      double scaleFactor = (bgWidth / imgBackWidth);
+      if (bgWidth < imgBackWidth) {
+        scaleFactor = (imgBackWidth / bgWidth);
+      }
+      // scale foreground to screen
+      double foreScaleFactor = (bgHeight / imgForeHeight);
+      if (bgHeight < imgForeHeight) {
+        foreScaleFactor = (imgForeHeight / bgHeight);
+      }
+
+      double backImgX = centerX - (EndGameImg.getWidth()*scaleFactor/2);
+      double foreImgX = centerX - (EndTextImg.getWidth()*foreScaleFactor/2);
+      
+      Inf101Graphics.drawImage(Canvas, EndGameImg, backImgX, 0, scaleFactor);
+      Inf101Graphics.drawImage(Canvas, EndTextImg, foreImgX, 0, foreScaleFactor);
+
       Canvas.fill(endGameBackground);
-      Canvas.setColor(color.getGameOverColor("gameover"));
+      Canvas.setColor(color.getSpriteColor('g'));
       Canvas.setFont(new Font("Times New Roman", Font.PLAIN, 69));
 
       Inf101Graphics.drawCenteredString(Canvas, "GAME WON", endGameBackground);

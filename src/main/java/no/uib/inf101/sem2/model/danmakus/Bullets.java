@@ -111,8 +111,8 @@ public class Bullets extends Sprite<SpriteType, SpriteState>{
       case yinYangBlast -> new Bullets(newBulletVar, YYBR, YYBPos, 100);
 
       // player bullets
-      case arrow -> new Bullets(newBulletVar, arrowR, arrowPos, 36); 
-      case ofuda -> new Bullets(newBulletVar, ofudaR, ofudaPos, 26); 
+      case arrow -> new Bullets(newBulletVar, arrowR, arrowPos, 56); 
+      case ofuda -> new Bullets(newBulletVar, ofudaR, ofudaPos, 46); 
       case ofudaHoming -> new Bullets(newBulletVar, ofudaHomingR, ofudaHomingPos, 16);
       default -> throw new IllegalArgumentException("Type '" + newBulletVar + "' does not match one of two playable characters");
     };
